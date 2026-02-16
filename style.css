@@ -1,0 +1,116 @@
+:root {
+    --bg-color: #f8f9fa; --card-bg-color: #ffffff; --text-color: #212529; --label-color: #6c757d;
+    --primary-color: #007bff; --secondary-color: #495057; --border-color: #dee2e6;
+    --danger-color: #dc3545;
+}
+
+body { 
+    /* 修改：使用系統原生字體堆疊，確保在各裝置上都顯示最正常的字體效果 */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    background-color: var(--bg-color); 
+    color: var(--text-color); 
+    display: flex; justify-content: center; align-items: flex-start; 
+    padding: 1rem; min-height: 100vh; box-sizing: border-box;
+}
+
+/* ▼▼▼ 統一所有元素使用繼承的系統字體 ▼▼▼ */
+.input-group input, .input-group select, .btn, .plan-age, .summary-label, footer, .display-label, .display-value, table, header h1, .section h2, .management-section h3, .image-overlay-title {
+    font-family: inherit;
+}
+
+.calculator-container { background: var(--card-bg-color); border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); width: 100%; max-width: 1100px; padding: 2.5rem; box-sizing: border-box; }
+header { text-align: center; border-bottom: 1px solid var(--border-color); padding-bottom: 1.5rem; margin-bottom: 2rem; }
+header h1 { color: var(--primary-color); margin-bottom: 0.5rem; font-weight: 700; font-size: 2.5rem; line-height: 1.3; }
+header p { color: var(--label-color); font-size: 1rem; max-width: 650px; margin: 0 auto; line-height: 1.6; }
+.section { margin-top: 3rem; }
+.section h2 { display: flex; align-items: center; justify-content: center; color: var(--secondary-color); margin-bottom: 1.5rem; font-size: 1.5rem; font-weight: 700;}
+.top-input-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem; align-items: center; margin-bottom: 2rem; justify-content: center; }
+.input-group { min-width: 120px; position: relative; }
+.input-group label { display: flex; align-items: center; justify-content: center; font-weight: 500; color: var(--label-color); margin-bottom: 0.5rem; text-align: center; }
+.input-group input, .input-group select, .btn { width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; box-sizing: border-box; text-align: center; background-color: #fff; color: var(--text-color); transition: all 0.2s ease; }
+.input-group input[type="range"] { padding: 0; }
+.input-group select {text-align: left; -webkit-appearance: none; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 16px 12px; padding-right: 2.5rem;}
+#medical-inflation-value { font-weight: bold; color: var(--primary-color); }
+.input-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; }
+
+/* 表格樣式優化：恢復累積表效果（隔行變色與懸停） */
+.table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 8px; border: 1px solid var(--border-color); }
+table { width: 100%; border-collapse: collapse; white-space: nowrap; margin-top: 0; }
+th, td { padding: 0.9rem 1rem; text-align: right; border-bottom: 1px solid var(--border-color); }
+th { font-weight: 600; color: var(--secondary-color); background-color: #e9ecef; vertical-align: middle; position: sticky; top: 0; z-index: 10;}
+tbody tr:nth-child(even) { background-color: #f8f9fa; } /* 隔行變色 */
+tbody tr:hover { background-color: #e2e6ea; } /* 滑鼠懸停效果 */
+
+thead .plan-age { font-size: 0.8rem; font-weight: 400; color: #666; display: block; margin-top: 4px; }
+tfoot { border-top: 2px solid var(--secondary-color); font-weight: bold; }
+tfoot td { background-color: #dee2e6; color: #212529; }
+#manual-year-input { max-width: 80px; padding: 0.5rem; font-weight: bold; border: 2px solid var(--primary-color); color: var(--primary-color); }
+#manual-year-age { font-size: 0.9rem; color: var(--secondary-color); margin-left: 5px; font-weight: normal;}
+
+.duel-summary { display: flex; justify-content: space-around; flex-wrap: wrap; gap: 1rem; margin-top: 1rem; padding: 1.5rem; background-color: #f8f9fa; border-radius: 8px; border: 1px solid var(--border-color); }
+.summary-item { text-align: center; }
+.summary-item .summary-value { font-size: 1.5rem; font-weight: 700; display: block; margin-bottom: 0.5rem;}
+.summary-item .summary-label { font-size: 0.9rem; color: var(--label-color); }
+.summary-item .difference { color: var(--danger-color); }
+
+.management-section { background-color: #e9ecef; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; }
+.management-section h3 { text-align: center; color: var(--secondary-color); margin-top: 0; margin-bottom: 1.5rem; font-size: 1.2rem; font-weight: 700; }
+.management-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; align-items: end; }
+
+/* 按鈕樣式與反應效果 */
+.btn { cursor: pointer; font-weight: 600; border: none; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+.btn:hover { transform: translateY(-1px); box-shadow: 0 4px 6px rgba(0,0,0,0.15); }
+.btn:active { transform: translateY(1px); box-shadow: none; filter: brightness(0.95); } /* 按下反應 */
+
+.btn-primary { background-color: var(--primary-color); color: white; }
+.btn-primary:hover { background-color: #0069d9; }
+.btn-secondary { background-color: var(--secondary-color); color: white; }
+.btn-secondary:hover { background-color: #343a40; }
+.btn-danger { background-color: var(--danger-color); color: white; }
+.btn-danger:hover { background-color: #c82333; }
+.btn-success { background-color: #28a745; color: white; }
+.btn-success:hover { background-color: #218838; }
+
+.date-display { text-align: center; padding: 0.75rem; background: #fff; border-radius: 8px; border: 1px solid var(--border-color); color: var(--primary-color); font-weight: 600; letter-spacing: 0.5px;}
+footer { text-align: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); font-size: 0.85rem; color: var(--label-color); }
+
+.image-calculator-container { position: relative; width: 100%; }
+.background-image { width: 100%; border-radius: 8px; display: block; filter: brightness(1.1) contrast(1.05); }
+
+/* 顯示框樣式 */
+.display-box {
+    position: absolute; background-color: #F3E5F5; border: 2px solid #9C27B0;
+    border-radius: 9px; padding: 7px 12px; text-align: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); min-width: 155px;
+}
+.display-label { font-size: 0.8rem; font-weight: 700; color: var(--secondary-color); margin-bottom: 4px; }
+.display-value { font-size: 1.05rem; font-weight: 700; color: #6A1B9A; }
+
+.image-overlay-title { position: absolute; top: 5%; left: 0; right: 0; text-align: center; font-size: 1.5rem; font-weight: 700; color: #4A148C; text-shadow: 0 2px 4px rgba(255,255,255,0.9); z-index: 10; }
+
+#box1 { top: 55%; left: 8%; }
+#box2 { top: 18%; left: 55%; }
+#box3 { top: 75%; left: 68%; }
+
+.policy-value-cell { color: var(--danger-color); font-weight: 900; }
+.contribution-cell { color: var(--primary-color); font-weight: 700; }
+
+/* 分享模態框樣式 */
+.modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(5px); justify-content: center; align-items: center; }
+.modal-content { background-color: transparent; margin: auto; padding: 0; width: 90%; max-width: 350px; position: relative; animation: slideUp 0.3s ease-out; }
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.close-btn { color: #fff; float: right; font-size: 28px; font-weight: bold; cursor: pointer; position: absolute; top: -40px; right: 0; z-index: 1001; }
+.share-card { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); text-align: center; }
+.share-header { background: linear-gradient(135deg, #007bff, #0056b3); color: white; padding: 25px 20px; }
+.share-header h3 { margin: 0; font-size: 1.3rem; font-weight: 600; letter-spacing: 1px; }
+.share-body { padding: 30px 20px; }
+.client-msg { font-size: 1.1rem; color: #333; margin-bottom: 10px; }
+.highlight-name { color: #007bff; font-weight: 700; font-size: 1.2rem; }
+.concept-msg { color: #666; font-size: 0.95rem; margin-bottom: 25px; }
+.qrcode-container { position: relative; width: 180px; height: 180px; margin: 0 auto 15px auto; border: 4px solid #f0f0f0; border-radius: 12px; padding: 10px; background: #fff; display: flex; justify-content: center; align-items: center; }
+.qrcode-container img { width: 100%; height: 100%; object-fit: contain; } /* 確保QR圖片填滿 */
+.qrcode-logo { position: absolute; width: 40px; height: 40px; background: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+.scan-hint { font-size: 0.9rem; font-weight: 700; color: #333; margin: 10px 0 0 0; }
+.scan-hint-sub { font-size: 0.8rem; color: #999; margin: 0; }
+.share-footer { background: #f8f9fa; padding: 15px; font-size: 0.8rem; color: #888; border-top: 1px solid #eee; }
+.modal-actions { text-align: center; margin-top: 15px; }

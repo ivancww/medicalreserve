@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>醫療儲備</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192x192.png">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="醫療儲備">
+    <meta name="theme-color" content="#007bff">
+    
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- 引入 JS 庫 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+
+    <div class="calculator-container">
+        <header>
+            <h1>醫療儲備</h1>
+            <p>未來的自己無懼醫保的加幅，兼享有價值的保障</p>
+        </header>
+
+        <div class="management-section">
+            <h3>客戶及資料管理</h3>
+            <div class="management-grid">
+                <div class="input-group"><label for="client-name">客戶名稱</label><input type="text" id="client-name" placeholder="輸入客戶名稱"></div>
+                <div class="input-group"><label for="load-client">載入 / 刪除方案</label><select id="load-client"><option value="">-- 選擇已儲存方案 --</option></select></div>
+                <div class="input-group"><button id="save-client" class="btn btn-primary">儲存方案</button></div>
+                <div class="input-group"><button id="delete-client" class="btn btn-danger">刪除選取方案</button></div>
+                <div class="input-group"><label>今日日期</label><div id="date-display" class="date-display"></div></div>
+                <div class="input-group"><label>檔案管理</label><button id="export-data" class="btn btn-secondary">匯出檔案</button></div>
+                <div class="input-group"><label>&nbsp;</label><button id="import-data-btn" class="btn btn-secondary">匯入檔案</button><input type="file" id="import-data" hidden accept=".json"></div>
+                <div class="input-group"><label>分享</label><button id="share-btn" class="btn btn-success" style="background-color: #28a745; border-color: #28a745; color: white;">分享給客戶</button></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="top-input-grid">
+                <div class="input-group" style="max-width: 250px; margin: auto;">
+                    <label for="start-age">開始歲數</label>
+                    <input type="number" id="start-age" value="30">
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>退休后醫療保費</h2>
+            <div class="top-input-grid">
+                <div class="input-group">
+                    <label for="medical-plan">醫療保障</label>
+                    <select id="medical-plan">
+                        <option value="flexi">自願醫保靈活計劃</option>
+                        <option value="high-end">自願醫保高端醫療</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="deductible">墊底費</label>
+                    <select id="deductible">
+                        <option value="0">HK$0</option>
+                        <option value="8000">HK$8,000</option>
+                        <option value="16000">HK$16,000</option>
+                        <option value="18000">HK$18,000</option>
+                        <option value="25000">HK$25,000</option>
+                        <option value="30000">HK$30,000</option>
+                        <option value="50000">HK$50,000</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="medical-premium-file-btn">保費表</label>
+                    <button id="medical-premium-file-btn" class="btn btn-secondary">上載Excel保費表</button>
+                    <input type="file" id="medical-premium-file" hidden accept=".xlsx, .xls">
+                </div>
+                <div class="input-group">
+                    <label for="medical-inflation-rate">
+                        預期醫療通脹率: <span id="medical-inflation-value">5.0%</span>
+                    </label>
+                    <input type="range" id="medical-inflation-rate" min="0" max="10" value="5" step="0.1">
+                </div>
+                <div class="input-group">
+                    <label for="retirement-age">預計退休年齡</label>
+                    <input type="number" id="retirement-age" value="65">
+                </div>
+                 <div class="input-group">
+                    <label for="life-expectancy">預期壽命</label>
+                    <input type="number" id="life-expectancy" value="99" max="100">
+                </div>
+            </div>
+            <div class="duel-summary">
+                <div class="summary-item">
+                    <span class="summary-value" id="total-premium-no-inflation">-</span>
+                    <span class="summary-label">未計通脹總保費</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-value" id="total-premium-with-inflation">-</span>
+                    <span class="summary-label">已計通脹總保費</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-value difference" id="inflation-difference">-</span>
+                    <span class="summary-label">通脹造成總差距</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>複利增值：各儲備金庫的貢獻</h2>
+            <div class="input-grid">
+                <div class="input-group"><label for="plan1-contribution">儲備金庫一</label><input type="text" id="plan1-contribution" value="40,000" inputmode="numeric"></div>
+                <div class="input-group"><label for="plan2-contribution">儲備金庫二</label><input type="text" id="plan2-contribution" value="50,000" inputmode="numeric"></div>
+                <div class="input-group"><label for="plan3-contribution">儲備金庫三</label><input type="text" id="plan3-contribution" value="60,000" inputmode="numeric"></div>
+                <div class="input-group"><label for="plan4-contribution">儲備金庫四</label><input type="text" id="plan4-contribution" value="70,000" inputmode="numeric"></div>
+            </div>
+            <div class="table-wrapper" style="margin-top: 2rem;">
+                <table id="results-table">
+                    <thead id="results-table-head"></thead>
+                    <tbody id="results-table-body"></tbody>
+                    <tfoot id="manual-year-footer">
+                        <tr>
+                            <td data-label="年份 (歲數)"><input type="number" id="manual-year-input" value="30"><span id="manual-year-age"></span></td>
+                            <td data-label="儲備金庫一" id="manual-year-plan1">-</td>
+                            <td data-label="儲備金庫二" id="manual-year-plan2">-</td>
+                            <td data-label="儲備金庫三" id="manual-year-plan3">-</td>
+                            <td data-label="儲備金庫四" id="manual-year-plan4">-</td>
+                            <td data-label="供款總額" id="manual-year-contribution" class="contribution-cell">-</td>
+                            <td data-label="保單總值" id="manual-year-total" class="policy-value-cell">-</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="image-calculator-container">
+                <div class="image-overlay-title">先支出，后享增值同時慳保費</div>
+                
+                <img src="IMG_4682.png" alt="計算背景圖" class="background-image">
+                
+                <div class="display-box" id="box1">
+                    <div class="display-label">總供款</div>
+                    <div class="display-value" id="display-total-contribution-value">-</div>
+                </div>
+                <div class="display-box" id="box2">
+                    <div class="display-label">退休累積金額</div>
+                    <div class="display-value" id="display-policy-value-value">-</div>
+                </div>
+                <div class="display-box" id="box3">
+                    <div class="display-label">通脹後總醫療保費</div>
+                    <div class="display-value" id="display-inflated-medical-value">-</div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>*所有市場數據均為基於公開資料的近似值，僅供參考。</p>
+        </footer>
+    </div>
+
+    <!-- 分享卡片模態框 -->
+    <div id="share-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div id="share-card" class="share-card">
+                <div class="share-header"><h3>專屬醫療儲備方案</h3></div>
+                <div class="share-body">
+                    <p class="client-msg">親愛的 <span id="share-client-name" class="highlight-name">客戶</span></p>
+                    <p class="concept-msg">這是你專屬的醫療儲備概念</p>
+                    <div class="qrcode-container"><div id="qrcode"></div><div class="qrcode-logo"><span style="font-size: 24px;">🏥</span></div></div>
+                    <p class="scan-hint">👆 長按識別 QR Code</p>
+                    <p class="scan-hint-sub">iOS / Android 適用</p>
+                </div>
+                <div class="share-footer"><p>專業理財 • 為您導航</p></div>
+            </div>
+            <div class="modal-actions"><p style="font-size: 0.9rem; color: #666; margin-bottom: 10px;">請截圖保存上方卡片發送給客戶</p></div>
+        </div>
+    </div>
+
+    <!-- 主程式 -->
+    <script src="script.js"></script>
+    
+    <!-- PWA 註冊 -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').then(registration => {
+                    console.log('SW registered');
+                }).catch(err => {
+                    console.log('SW failed', err);
+                });
+            });
+        }
+    </script>
+</body>
+</html>
