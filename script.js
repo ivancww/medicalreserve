@@ -1,5 +1,5 @@
 // === 強制更新版本控制 (Version Control) ===
-const APP_VERSION = "2.0.0"; // 如果未來改咗代碼，只需要改呢個數字，客戶端就會自動刷新
+const APP_VERSION = "2.0.1"; // 版本更新至 2.0.1
 
 if (localStorage.getItem('MEDICAL_APP_VERSION') !== APP_VERSION) {
     console.log("版本更新，清理舊數據...");
@@ -35,7 +35,7 @@ function getInterpolatedMultiplier(multipliersObj, year) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // === 顯示版本號於標題旁邊 ===
+    // 顯示版本號
     const versionDisplay = document.getElementById('app-version-display');
     if(versionDisplay) {
         versionDisplay.textContent = `Version ${APP_VERSION}`;
@@ -43,7 +43,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const inputsToWatch = [
         'start-age', 'medical-plan', 'deductible', 'medical-inflation-rate', 'retirement-age', 'life-expectancy',
-        'reserve-contribution', 'reserve-strategy'
+        'plan1-contribution', 'plan2-contribution', 'plan3-contribution', 'plan4-contribution',
+        'plan1-strategy', 'plan2-strategy', 'plan3-strategy', 'plan4-strategy'
     ];
 
     inputsToWatch.forEach(id => {
@@ -65,7 +66,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // === 匯出 PDF 報告 ===
     document.getElementById('generate-pdf-btn').addEventListener('click', () => {
         const element = document.getElementById('pdf-content');
-        // 隱藏不必要的按鈕 (例如生成 PDF 按鈕本身、上傳 Excel 按鈕等)
         const noPrintElements = document.querySelectorAll('.no-print');
         noPrintElements.forEach(el => el.style.display = 'none');
 
@@ -78,7 +78,6 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         html2pdf().set(opt).from(element).save().then(() => {
-            // 恢復顯示
             noPrintElements.forEach(el => el.style.display = '');
         });
     });
@@ -128,7 +127,6 @@ document.addEventListener('DOMContentLoaded', () => {
         let totalPremWithInf = 0;
 
         for(let age = retAge; age <= lifeExp; age++) {
-            // 若無 Excel 數據，預設使用 (年齡 * 300) 作為演示
             let basePrem = premiumData[age] || (age * 300); 
             totalPremNoInf += basePrem;
             totalPremWithInf += basePrem * Math.pow(1 + inflationRate, age - startAge);
@@ -139,27 +137,38 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('inflation-difference').textContent = '+$' + formatNumber(totalPremWithInf - totalPremNoInf);
         document.getElementById('display-inflated-medical-value').textContent = '$' + formatNumber(totalPremWithInf);
 
-        // --- 2. 計算單一儲備金庫與生成表格 ---
-        const annualContribution = parseFormattedNumber(document.getElementById('reserve-contribution').value);
-        const strategy = document.getElementById('reserve-strategy').value;
-        const totalPrincipal = annualContribution * 5; // 假設供5年
+        // --- 2. 計算 4 個儲備金庫與生成累計表格 ---
+        const contributions = [
+            parseFormattedNumber(document.getElementById('plan1-contribution').value),
+            parseFormattedNumber(document.getElementById('plan2-contribution').value),
+            parseFormattedNumber(document.getElementById('plan3-contribution').value),
+            parseFormattedNumber(document.getElementById('plan4-contribution').value)
+        ];
+        
+        const strategies = [
+            document.getElementById('plan1-strategy').value,
+            document.getElementById('plan2-strategy').value,
+            document.getElementById('plan3-strategy').value,
+            document.getElementById('plan4-strategy').value
+        ];
 
         const thead = document.getElementById('results-table-head');
         const tbody = document.getElementById('results-table-body');
         
-        // 表頭：對沖醫療保費、醫療保費(通脹後)、總戶口餘額等
+        // 更新表頭：取消醫療保費的 (通脹後) 字眼
         thead.innerHTML = `<tr>
             <th>保單年度 (歲數)</th>
             <th>累計供款</th>
             <th>對沖醫療保費</th>
             <th>累積對沖醫療保費</th>
-            <th style="color:#dc3545;">醫療保費 (通脹後)</th>
+            <th style="color:#dc3545;">醫療保費</th>
             <th>總已繳保費</th>
             <th>總戶口餘額</th>
         </tr>`;
         tbody.innerHTML = '';
 
         const maxYears = lifeExp - startAge + 1;
+        const startOffsets = [1, 6, 11, 16];
         
         let cumulativeContribution = 0;
         let cumulativeWithdrawal = 0;
@@ -167,30 +176,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
         for(let yr = 1; yr <= maxYears; yr++) {
             let currentAge = startAge + yr - 1;
-            let pA = yr; // 只有一個金庫，保單年度等於整體經過年數
             
-            let cV = 0; // 戶口餘額
-            let cA = 0; // 當年提取 (對沖醫療保費)
+            let rowTotalValue = 0;
+            let rowTotalWithdrawal = 0;
+            let rowContributedThisYear = 0;
 
-            // 累計供款 (首5年)
-            if (pA <= 5) {
-                cumulativeContribution += annualContribution;
-            }
-
-            // 根據策略計算提取及戶口餘額
-            if (pA > 0) {
-                if (strategy === 'withdraw8_from8' && pA >= 8) { cA = totalPrincipal * 0.08; cV = totalPrincipal * getInterpolatedMultiplier(returnMultipliers_withdraw8_from8, pA); }
-                else if (strategy === 'withdraw13_from15' && pA >= 15) { cA = totalPrincipal * 0.13; cV = totalPrincipal * getInterpolatedMultiplier(returnMultipliers_withdraw13_from15, pA); }
-                else if (strategy === 'withdraw18_from20' && pA >= 20) { cA = totalPrincipal * 0.18; cV = totalPrincipal * getInterpolatedMultiplier(returnMultipliers_withdraw18_from20, pA); }
-                else if (strategy === 'withdraw23_from25' && pA >= 25) { cA = totalPrincipal * 0.23; cV = totalPrincipal * getInterpolatedMultiplier(returnMultipliers_withdraw23_from25, pA); }
-                else if (strategy === 'withdraw29_from30' && pA >= 30) { cA = totalPrincipal * 0.29; cV = totalPrincipal * getInterpolatedMultiplier(returnMultipliers_withdraw29_from30, pA); }
-                else { cV = totalPrincipal * getInterpolatedMultiplier(returnMultipliers_none, pA); }
+            // 分別計算 4 隻金雞 (金庫)
+            for(let i=0; i<4; i++) {
+                const pA = yr - (startOffsets[i] - 1);
+                const aC = contributions[i];
+                const strategy = strategies[i];
+                const totalPrincipal = aC * 5; // 每個金庫固定供5年
                 
-                // 供款期內未開始回報倍增的顯示邏輯
-                if(pA < 5 && strategy !== 'none') { cV = cumulativeContribution; }
+                let cV = 0, cA = 0;
+
+                if (pA > 0) {
+                    if (pA <= 5) {
+                        rowContributedThisYear += aC;
+                    }
+
+                    if (strategy === 'withdraw8_from8' && pA >= 8) { cA = totalPrincipal * 0.08; cV = totalPrincipal * getInterpolatedMultiplier(returnMultipliers_withdraw8_from8, pA); }
+                    else if (strategy === 'withdraw13_from15' && pA >= 15) { cA = totalPrincipal * 0.13; cV = totalPrincipal * getInterpolatedMultiplier(returnMultipliers_withdraw13_from15, pA); }
+                    else if (strategy === 'withdraw18_from20' && pA >= 20) { cA = totalPrincipal * 0.18; cV = totalPrincipal * getInterpolatedMultiplier(returnMultipliers_withdraw18_from20, pA); }
+                    else if (strategy === 'withdraw23_from25' && pA >= 25) { cA = totalPrincipal * 0.23; cV = totalPrincipal * getInterpolatedMultiplier(returnMultipliers_withdraw23_from25, pA); }
+                    else if (strategy === 'withdraw29_from30' && pA >= 30) { cA = totalPrincipal * 0.29; cV = totalPrincipal * getInterpolatedMultiplier(returnMultipliers_withdraw29_from30, pA); }
+                    else { cV = totalPrincipal * getInterpolatedMultiplier(returnMultipliers_none, pA); }
+                    
+                    if(pA < 5 && strategy !== 'none') { cV = Math.min(pA, 5) * aC; }
+                }
+                
+                rowTotalValue += cV;
+                rowTotalWithdrawal += cA;
             }
 
-            cumulativeWithdrawal += cA;
+            cumulativeContribution += rowContributedThisYear;
+            cumulativeWithdrawal += rowTotalWithdrawal;
 
             // 計算該年的醫療保費 (基於保費表及通脹)
             let baseMedPrem = premiumData[currentAge] || (currentAge * 300);
@@ -202,18 +222,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 tr.innerHTML = `
                     <td>${yr} (${currentAge})</td>
                     <td>$${formatNumber(cumulativeContribution)}</td>
-                    <td style="color:var(--gain-color); font-weight:bold;">$${formatNumber(cA)}</td>
+                    <td style="color:var(--gain-color); font-weight:bold;">$${formatNumber(rowTotalWithdrawal)}</td>
                     <td>$${formatNumber(cumulativeWithdrawal)}</td>
                     <td style="color:#dc3545; font-weight:bold;">$${formatNumber(inflatedMedPrem)}</td>
                     <td>$${formatNumber(cumulativeContribution)}</td>
-                    <td style="font-weight:bold; color:#6f42c1;">$${formatNumber(cV)}</td>
+                    <td style="font-weight:bold; color:#6f42c1;">$${formatNumber(rowTotalValue)}</td>
                 `;
                 tbody.appendChild(tr);
             }
 
-            // 記錄退休時的戶口價值
             if (currentAge === retAge) {
-                latestTotalValue = cV;
+                latestTotalValue = rowTotalValue;
             }
         }
 
