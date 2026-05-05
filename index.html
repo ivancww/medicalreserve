@@ -14,7 +14,6 @@
     
     <link rel="stylesheet" href="style.css">
     
-    <!-- 引入 JS 庫 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 </head>
@@ -110,10 +109,54 @@
         <div class="section">
             <h2>複利增值：各儲備金庫的貢獻</h2>
             <div class="input-grid">
-                <div class="input-group"><label for="plan1-contribution">儲備金庫一</label><input type="text" id="plan1-contribution" value="40,000" inputmode="numeric"></div>
-                <div class="input-group"><label for="plan2-contribution">儲備金庫二</label><input type="text" id="plan2-contribution" value="50,000" inputmode="numeric"></div>
-                <div class="input-group"><label for="plan3-contribution">儲備金庫三</label><input type="text" id="plan3-contribution" value="60,000" inputmode="numeric"></div>
-                <div class="input-group"><label for="plan4-contribution">儲備金庫四</label><input type="text" id="plan4-contribution" value="70,000" inputmode="numeric"></div>
+                <div class="input-group">
+                    <label for="plan1-contribution">儲備金庫一 (第1年供)</label>
+                    <input type="text" id="plan1-contribution" value="40,000" inputmode="numeric">
+                    <select id="plan1-strategy" style="margin-top: 0.5rem; width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px;">
+                        <option value="none">滾存不提取</option>
+                        <option value="withdraw8_from8">第8年取8%</option>
+                        <option value="withdraw13_from15">第15年取13%</option>
+                        <option value="withdraw18_from20">第20年取18%</option>
+                        <option value="withdraw23_from25">第25年取23%</option>
+                        <option value="withdraw29_from30">第30年取29%</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="plan2-contribution">儲備金庫二 (第6年供)</label>
+                    <input type="text" id="plan2-contribution" value="50,000" inputmode="numeric">
+                    <select id="plan2-strategy" style="margin-top: 0.5rem; width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px;">
+                        <option value="none">滾存不提取</option>
+                        <option value="withdraw8_from8">第8年取8%</option>
+                        <option value="withdraw13_from15">第15年取13%</option>
+                        <option value="withdraw18_from20">第20年取18%</option>
+                        <option value="withdraw23_from25">第25年取23%</option>
+                        <option value="withdraw29_from30">第30年取29%</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="plan3-contribution">儲備金庫三 (第11年供)</label>
+                    <input type="text" id="plan3-contribution" value="60,000" inputmode="numeric">
+                    <select id="plan3-strategy" style="margin-top: 0.5rem; width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px;">
+                        <option value="none">滾存不提取</option>
+                        <option value="withdraw8_from8">第8年取8%</option>
+                        <option value="withdraw13_from15">第15年取13%</option>
+                        <option value="withdraw18_from20">第20年取18%</option>
+                        <option value="withdraw23_from25">第25年取23%</option>
+                        <option value="withdraw29_from30">第30年取29%</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="plan4-contribution">儲備金庫四 (第16年供)</label>
+                    <input type="text" id="plan4-contribution" value="70,000" inputmode="numeric">
+                    <select id="plan4-strategy" style="margin-top: 0.5rem; width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px;">
+                        <option value="none">滾存不提取</option>
+                        <option value="withdraw8_from8">第8年取8%</option>
+                        <option value="withdraw13_from15">第15年取13%</option>
+                        <option value="withdraw18_from20">第20年取18%</option>
+                        <option value="withdraw23_from25">第25年取23%</option>
+                        <option value="withdraw29_from30">第30年取29%</option>
+                    </select>
+                </div>
             </div>
             <div class="table-wrapper" style="margin-top: 2rem;">
                 <table id="results-table">
@@ -160,7 +203,6 @@
         </footer>
     </div>
 
-    <!-- 分享卡片模態框 -->
     <div id="share-modal" class="modal">
         <div class="modal-content">
             <span class="close-btn">&times;</span>
@@ -179,10 +221,8 @@
         </div>
     </div>
 
-    <!-- 主程式 -->
     <script src="script.js"></script>
     
-    <!-- PWA 註冊 -->
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
