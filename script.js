@@ -1,10 +1,10 @@
 // === 強制更新版本控制 (Version Control) ===
 const APP_VERSION = "2.0.0"; // 如果未來改咗代碼，只需要改呢個數字，客戶端就會自動刷新
 
-if (localStorage.getItem('APP_VERSION') !== APP_VERSION) {
+if (localStorage.getItem('MEDICAL_APP_VERSION') !== APP_VERSION) {
     console.log("版本更新，清理舊數據...");
     localStorage.clear(); // 清理舊版本可能遺留的不相容數據
-    localStorage.setItem('APP_VERSION', APP_VERSION);
+    localStorage.setItem('MEDICAL_APP_VERSION', APP_VERSION);
     alert("系統已自動更新至最新版本！");
     location.reload(true);
 }
@@ -35,8 +35,11 @@ function getInterpolatedMultiplier(multipliersObj, year) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 顯示版本號
-    document.getElementById('app-version-display').textContent = `Version ${APP_VERSION}`;
+    // === 顯示版本號於標題旁邊 ===
+    const versionDisplay = document.getElementById('app-version-display');
+    if(versionDisplay) {
+        versionDisplay.textContent = `Version ${APP_VERSION}`;
+    }
 
     const inputsToWatch = [
         'start-age', 'medical-plan', 'deductible', 'medical-inflation-rate', 'retirement-age', 'life-expectancy',
@@ -62,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // === 匯出 PDF 報告 ===
     document.getElementById('generate-pdf-btn').addEventListener('click', () => {
         const element = document.getElementById('pdf-content');
-        // 隱藏不必要的按鈕
+        // 隱藏不必要的按鈕 (例如生成 PDF 按鈕本身、上傳 Excel 按鈕等)
         const noPrintElements = document.querySelectorAll('.no-print');
         noPrintElements.forEach(el => el.style.display = 'none');
 
@@ -136,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('inflation-difference').textContent = '+$' + formatNumber(totalPremWithInf - totalPremNoInf);
         document.getElementById('display-inflated-medical-value').textContent = '$' + formatNumber(totalPremWithInf);
 
-        // --- 2. 計算儲備金庫與生成表格 ---
+        // --- 2. 計算單一儲備金庫與生成表格 ---
         const annualContribution = parseFormattedNumber(document.getElementById('reserve-contribution').value);
         const strategy = document.getElementById('reserve-strategy').value;
         const totalPrincipal = annualContribution * 5; // 假設供5年
@@ -144,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const thead = document.getElementById('results-table-head');
         const tbody = document.getElementById('results-table-body');
         
-        // 更新表頭：加入醫療保費欄位，並將被動收入改為對沖醫療保費
+        // 表頭：對沖醫療保費、醫療保費(通脹後)、總戶口餘額等
         thead.innerHTML = `<tr>
             <th>保單年度 (歲數)</th>
             <th>累計供款</th>
@@ -164,17 +167,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         for(let yr = 1; yr <= maxYears; yr++) {
             let currentAge = startAge + yr - 1;
-            let pA = yr;
+            let pA = yr; // 只有一個金庫，保單年度等於整體經過年數
             
             let cV = 0; // 戶口餘額
             let cA = 0; // 當年提取 (對沖醫療保費)
 
-            // 計算累計供款 (首5年)
+            // 累計供款 (首5年)
             if (pA <= 5) {
                 cumulativeContribution += annualContribution;
             }
 
-            // 根據策略計算戶口餘額及提取
+            // 根據策略計算提取及戶口餘額
             if (pA > 0) {
                 if (strategy === 'withdraw8_from8' && pA >= 8) { cA = totalPrincipal * 0.08; cV = totalPrincipal * getInterpolatedMultiplier(returnMultipliers_withdraw8_from8, pA); }
                 else if (strategy === 'withdraw13_from15' && pA >= 15) { cA = totalPrincipal * 0.13; cV = totalPrincipal * getInterpolatedMultiplier(returnMultipliers_withdraw13_from15, pA); }
@@ -208,6 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 tbody.appendChild(tr);
             }
 
+            // 記錄退休時的戶口價值
             if (currentAge === retAge) {
                 latestTotalValue = cV;
             }
