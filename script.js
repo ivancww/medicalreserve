@@ -1,8 +1,18 @@
+// === 強制更新版本控制 (Version Control) ===
+const APP_VERSION = "2.0.0"; // 如果未來改咗代碼，只需要改呢個數字，客戶端就會自動刷新
+
+if (localStorage.getItem('APP_VERSION') !== APP_VERSION) {
+    console.log("版本更新，清理舊數據...");
+    localStorage.clear(); // 清理舊版本可能遺留的不相容數據
+    localStorage.setItem('APP_VERSION', APP_VERSION);
+    alert("系統已自動更新至最新版本！");
+    location.reload(true);
+}
+
 // === 格式化與工具函數 ===
 function formatNumber(value) { return new Intl.NumberFormat('en-US', {maximumFractionDigits: 0}).format(value); }
 function parseFormattedNumber(str) { return parseFloat(String(str).replace(/,/g, '')) || 0; }
 
-const STORAGE_KEY = 'MEDICAL_RESERVE_PLANS';
 let premiumData = {}; // 儲存 Excel 匯入的保費表 { age: premium_amount }
 
 // === 提取策略與回報乘數 ===
@@ -25,14 +35,12 @@ function getInterpolatedMultiplier(multipliersObj, year) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // === 1. 初始化與事件綁定 ===
-    const today = new Date();
-    document.getElementById('date-display').textContent = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+    // 顯示版本號
+    document.getElementById('app-version-display').textContent = `Version ${APP_VERSION}`;
 
     const inputsToWatch = [
         'start-age', 'medical-plan', 'deductible', 'medical-inflation-rate', 'retirement-age', 'life-expectancy',
-        'plan1-contribution', 'plan2-contribution', 'plan3-contribution', 'plan4-contribution',
-        'plan1-strategy', 'plan2-strategy', 'plan3-strategy', 'plan4-strategy', 'manual-year-input'
+        'reserve-contribution', 'reserve-strategy'
     ];
 
     inputsToWatch.forEach(id => {
@@ -51,7 +59,28 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('medical-inflation-value').textContent = parseFloat(this.value).toFixed(1) + '%';
     });
 
-    // === 2. Excel 匯入保費表 ===
+    // === 匯出 PDF 報告 ===
+    document.getElementById('generate-pdf-btn').addEventListener('click', () => {
+        const element = document.getElementById('pdf-content');
+        // 隱藏不必要的按鈕
+        const noPrintElements = document.querySelectorAll('.no-print');
+        noPrintElements.forEach(el => el.style.display = 'none');
+
+        const opt = {
+            margin:       0.5,
+            filename:     '醫療儲備方案報告.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+        };
+
+        html2pdf().set(opt).from(element).save().then(() => {
+            // 恢復顯示
+            noPrintElements.forEach(el => el.style.display = '');
+        });
+    });
+
+    // === Excel 匯入保費表 ===
     document.getElementById('medical-premium-file-btn').addEventListener('click', () => {
         document.getElementById('medical-premium-file').click();
     });
@@ -84,19 +113,19 @@ document.addEventListener('DOMContentLoaded', () => {
         reader.readAsArrayBuffer(file);
     });
 
-    // === 3. 核心計算邏輯 ===
+    // === 核心計算邏輯 ===
     function calculateAll() {
         const startAge = parseInt(document.getElementById('start-age').value) || 30;
         const retAge = parseInt(document.getElementById('retirement-age').value) || 65;
         const lifeExp = parseInt(document.getElementById('life-expectancy').value) || 99;
         const inflationRate = parseFloat(document.getElementById('medical-inflation-rate').value) / 100 || 0.05;
 
-        // --- 計算醫療保費 ---
+        // --- 1. 計算退休後醫療保費總額 ---
         let totalPremNoInf = 0;
         let totalPremWithInf = 0;
 
         for(let age = retAge; age <= lifeExp; age++) {
-            // 如果沒有上傳保費表，會使用簡單預設值作示範顯示，避免空白
+            // 若無 Excel 數據，預設使用 (年齡 * 300) 作為演示
             let basePrem = premiumData[age] || (age * 300); 
             totalPremNoInf += basePrem;
             totalPremWithInf += basePrem * Math.pow(1 + inflationRate, age - startAge);
@@ -107,245 +136,88 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('inflation-difference').textContent = '+$' + formatNumber(totalPremWithInf - totalPremNoInf);
         document.getElementById('display-inflated-medical-value').textContent = '$' + formatNumber(totalPremWithInf);
 
-        // --- 計算儲備金庫 ---
-        const contributions = [
-            parseFormattedNumber(document.getElementById('plan1-contribution').value),
-            parseFormattedNumber(document.getElementById('plan2-contribution').value),
-            parseFormattedNumber(document.getElementById('plan3-contribution').value),
-            parseFormattedNumber(document.getElementById('plan4-contribution').value)
-        ];
-        
-        const strategies = [
-            document.getElementById('plan1-strategy').value,
-            document.getElementById('plan2-strategy').value,
-            document.getElementById('plan3-strategy').value,
-            document.getElementById('plan4-strategy').value
-        ];
+        // --- 2. 計算儲備金庫與生成表格 ---
+        const annualContribution = parseFormattedNumber(document.getElementById('reserve-contribution').value);
+        const strategy = document.getElementById('reserve-strategy').value;
+        const totalPrincipal = annualContribution * 5; // 假設供5年
 
         const thead = document.getElementById('results-table-head');
         const tbody = document.getElementById('results-table-body');
         
-        thead.innerHTML = `<tr><th>保單年度 (歲數)</th><th>金庫一提取</th><th>金庫一餘額</th><th>金庫二提取</th><th>金庫二餘額</th><th>金庫三提取</th><th>金庫三餘額</th><th>金庫四提取</th><th>金庫四餘額</th><th>總已繳保費</th><th>總戶口餘額</th></tr>`;
+        // 更新表頭：加入醫療保費欄位，並將被動收入改為對沖醫療保費
+        thead.innerHTML = `<tr>
+            <th>保單年度 (歲數)</th>
+            <th>累計供款</th>
+            <th>對沖醫療保費</th>
+            <th>累積對沖醫療保費</th>
+            <th style="color:#dc3545;">醫療保費 (通脹後)</th>
+            <th>總已繳保費</th>
+            <th>總戶口餘額</th>
+        </tr>`;
         tbody.innerHTML = '';
 
-        let totalContributedAllYears = 0;
         const maxYears = lifeExp - startAge + 1;
-        const startOffsets = [1, 6, 11, 16]; 
-
+        
+        let cumulativeContribution = 0;
+        let cumulativeWithdrawal = 0;
         let latestTotalValue = 0;
-        const manualYear = parseInt(document.getElementById('manual-year-input').value) || 30;
-        let manualRowData = null;
 
         for(let yr = 1; yr <= maxYears; yr++) {
             let currentAge = startAge + yr - 1;
-            let rowTotalWithdraw = 0;
-            let rowTotalValue = 0;
-            let rowTotalContribute = 0;
-            let tds = '';
+            let pA = yr;
+            
+            let cV = 0; // 戶口餘額
+            let cA = 0; // 當年提取 (對沖醫療保費)
 
-            for(let i=0; i<4; i++) {
-                const pA = yr - (startOffsets[i] - 1);
-                const aC = contributions[i];
-                const strategy = strategies[i];
-                const tP = 5 * aC; // 預設5年總本金
-                let cV = 0, cA = 0, cW = 0;
-
-                if (pA > 0) {
-                    rowTotalContribute += Math.min(pA, 5) * aC;
-                    
-                    if (strategy === 'withdraw8_from8' && pA >= 8) { cA = tP * 0.08; cV = tP * getInterpolatedMultiplier(returnMultipliers_withdraw8_from8, pA); }
-                    else if (strategy === 'withdraw13_from15' && pA >= 15) { cA = tP * 0.13; cV = tP * getInterpolatedMultiplier(returnMultipliers_withdraw13_from15, pA); }
-                    else if (strategy === 'withdraw18_from20' && pA >= 20) { cA = tP * 0.18; cV = tP * getInterpolatedMultiplier(returnMultipliers_withdraw18_from20, pA); }
-                    else if (strategy === 'withdraw23_from25' && pA >= 25) { cA = tP * 0.23; cV = tP * getInterpolatedMultiplier(returnMultipliers_withdraw23_from25, pA); }
-                    else if (strategy === 'withdraw29_from30' && pA >= 30) { cA = tP * 0.29; cV = tP * getInterpolatedMultiplier(returnMultipliers_withdraw29_from30, pA); }
-                    else { cV = tP * getInterpolatedMultiplier(returnMultipliers_none, pA); }
-                    
-                    if(pA < 5 && strategy !== 'none') { cV = Math.min(pA, 5) * aC; }
-                }
-                
-                rowTotalWithdraw += cA;
-                rowTotalValue += cV;
-                
-                if (yr % 5 === 0 || yr === maxYears || yr === manualYear) {
-                    tds += `<td style="color:var(--primary-color)">$${formatNumber(cA)}</td><td>$${formatNumber(cV)}</td>`;
-                }
+            // 計算累計供款 (首5年)
+            if (pA <= 5) {
+                cumulativeContribution += annualContribution;
             }
 
-            if (yr === maxYears) totalContributedAllYears = rowTotalContribute;
+            // 根據策略計算戶口餘額及提取
+            if (pA > 0) {
+                if (strategy === 'withdraw8_from8' && pA >= 8) { cA = totalPrincipal * 0.08; cV = totalPrincipal * getInterpolatedMultiplier(returnMultipliers_withdraw8_from8, pA); }
+                else if (strategy === 'withdraw13_from15' && pA >= 15) { cA = totalPrincipal * 0.13; cV = totalPrincipal * getInterpolatedMultiplier(returnMultipliers_withdraw13_from15, pA); }
+                else if (strategy === 'withdraw18_from20' && pA >= 20) { cA = totalPrincipal * 0.18; cV = totalPrincipal * getInterpolatedMultiplier(returnMultipliers_withdraw18_from20, pA); }
+                else if (strategy === 'withdraw23_from25' && pA >= 25) { cA = totalPrincipal * 0.23; cV = totalPrincipal * getInterpolatedMultiplier(returnMultipliers_withdraw23_from25, pA); }
+                else if (strategy === 'withdraw29_from30' && pA >= 30) { cA = totalPrincipal * 0.29; cV = totalPrincipal * getInterpolatedMultiplier(returnMultipliers_withdraw29_from30, pA); }
+                else { cV = totalPrincipal * getInterpolatedMultiplier(returnMultipliers_none, pA); }
+                
+                // 供款期內未開始回報倍增的顯示邏輯
+                if(pA < 5 && strategy !== 'none') { cV = cumulativeContribution; }
+            }
 
-            if (yr % 5 === 0 || yr === maxYears || yr === manualYear) {
+            cumulativeWithdrawal += cA;
+
+            // 計算該年的醫療保費 (基於保費表及通脹)
+            let baseMedPrem = premiumData[currentAge] || (currentAge * 300);
+            let inflatedMedPrem = baseMedPrem * Math.pow(1 + inflationRate, currentAge - startAge);
+
+            // 每 5 年、最後一年 顯示一行
+            if (yr % 5 === 0 || yr === maxYears) {
                 const tr = document.createElement('tr');
-                tr.innerHTML = `<td>${yr} (${currentAge})</td>${tds}<td>$${formatNumber(rowTotalContribute)}</td><td style="font-weight:bold; color:#d84315;">$${formatNumber(rowTotalValue)}</td>`;
+                tr.innerHTML = `
+                    <td>${yr} (${currentAge})</td>
+                    <td>$${formatNumber(cumulativeContribution)}</td>
+                    <td style="color:var(--gain-color); font-weight:bold;">$${formatNumber(cA)}</td>
+                    <td>$${formatNumber(cumulativeWithdrawal)}</td>
+                    <td style="color:#dc3545; font-weight:bold;">$${formatNumber(inflatedMedPrem)}</td>
+                    <td>$${formatNumber(cumulativeContribution)}</td>
+                    <td style="font-weight:bold; color:#6f42c1;">$${formatNumber(cV)}</td>
+                `;
                 tbody.appendChild(tr);
             }
 
-            if (yr === manualYear) {
-                manualRowData = { age: currentAge, contribute: rowTotalContribute, val: rowTotalValue };
-            }
-
             if (currentAge === retAge) {
-                latestTotalValue = rowTotalValue;
+                latestTotalValue = cV;
             }
         }
 
-        document.getElementById('display-total-contribution-value').textContent = '$' + formatNumber(totalContributedAllYears);
+        // 更新圖片上的數字
+        document.getElementById('display-total-contribution-value').textContent = '$' + formatNumber(cumulativeContribution);
         document.getElementById('display-policy-value-value').textContent = '$' + formatNumber(latestTotalValue);
-
-        if(manualRowData) {
-            document.getElementById('manual-year-age').textContent = ` (${manualRowData.age}歲)`;
-            document.getElementById('manual-year-contribution').textContent = '$' + formatNumber(manualRowData.contribute);
-            document.getElementById('manual-year-total').textContent = '$' + formatNumber(manualRowData.val);
-        }
     }
 
-    // === 4. 客戶資料與分享管理 ===
-    function updateClientDropdown() {
-        const plans = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-        const select = document.getElementById('load-client');
-        select.innerHTML = '<option value="">-- 選擇已儲存方案 --</option>';
-        Object.keys(plans).forEach(k => {
-            const opt = document.createElement('option');
-            opt.value = k; opt.textContent = k;
-            select.appendChild(opt);
-        });
-    }
-    
-    document.getElementById('save-client').addEventListener('click', () => {
-        const name = document.getElementById('client-name').value.trim();
-        if(!name) return alert('請輸入客戶名稱');
-        const plans = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-        
-        const data = {};
-        inputsToWatch.forEach(id => {
-            const el = document.getElementById(id);
-            if(el) data[id] = el.value;
-        });
-        
-        plans[name] = data;
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(plans));
-        updateClientDropdown();
-        document.getElementById('load-client').value = name;
-        alert('方案已儲存！');
-    });
-
-    document.getElementById('load-client').addEventListener('change', (e) => {
-        const name = e.target.value;
-        if(!name) return;
-        const plans = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-        if(plans[name]) {
-            document.getElementById('client-name').value = name;
-            Object.keys(plans[name]).forEach(id => {
-                const el = document.getElementById(id);
-                if(el) {
-                    el.value = plans[name][id];
-                    if(el.getAttribute('inputmode') === 'numeric') {
-                        el.value = formatNumber(parseFormattedNumber(el.value));
-                    }
-                }
-            });
-            calculateAll();
-        }
-    });
-
-    document.getElementById('delete-client').addEventListener('click', () => {
-        const name = document.getElementById('load-client').value;
-        if(!name) return alert('請選擇要刪除的方案');
-        if(confirm(`確定刪除 ${name} 嗎？`)) {
-            const plans = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-            delete plans[name];
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(plans));
-            updateClientDropdown();
-            document.getElementById('client-name').value = '';
-        }
-    });
-
-    document.getElementById('export-data').addEventListener('click', () => {
-        const data = localStorage.getItem(STORAGE_KEY) || '{}';
-        const blob = new Blob([data], {type: 'application/json'});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url; a.download = `醫療儲備備份_${new Date().toISOString().slice(0,10)}.json`;
-        a.click();
-    });
-
-    document.getElementById('import-data-btn').addEventListener('click', () => document.getElementById('import-data').click());
-    document.getElementById('import-data').addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if(!file) return;
-        const reader = new FileReader();
-        reader.onload = (evt) => {
-            try {
-                const imported = JSON.parse(evt.target.result);
-                const existing = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-                localStorage.setItem(STORAGE_KEY, JSON.stringify({...existing, ...imported}));
-                updateClientDropdown();
-                alert('匯入成功！');
-            } catch(err) { alert('檔案錯誤！'); }
-        };
-        reader.readAsText(file);
-    });
-
-    document.getElementById('share-btn').addEventListener('click', () => {
-        const clientName = document.getElementById('client-name').value || '尊貴客戶';
-        document.getElementById('share-client-name').textContent = clientName;
-        
-        // 分享時將資料編碼進URL，以便在客端載入
-        const dataToEncode = {};
-        inputsToWatch.forEach(id => {
-            const el = document.getElementById(id);
-            if(el) dataToEncode[id] = el.value;
-        });
-        const encodedData = btoa(encodeURIComponent(JSON.stringify(dataToEncode)));
-        const baseUrl = window.location.origin + window.location.pathname;
-        const shareUrl = baseUrl + '?data=' + encodedData;
-        
-        const qrContainer = document.getElementById('qrcode');
-        qrContainer.innerHTML = '';
-        new QRCode(qrContainer, {
-            text: shareUrl,
-            width: 200, height: 200,
-            colorDark : "#000000", colorLight: "#ffffff",
-            correctLevel : QRCode.CorrectLevel.L 
-        });
-
-        setTimeout(() => {
-            const canvas = qrContainer.querySelector('canvas');
-            if (canvas) {
-                const imgData = canvas.toDataURL('image/png');
-                const imgElement = document.createElement('img');
-                imgElement.src = imgData;
-                imgElement.style.cssText = "display: block; margin: 0 auto; width: 200px; height: 200px; pointer-events: auto; -webkit-touch-callout: default; user-select: auto;";
-                qrContainer.innerHTML = '';
-                qrContainer.appendChild(imgElement);
-            }
-        }, 150);
-
-        document.getElementById('share-modal').style.display = 'flex';
-    });
-
-    document.querySelector('.close-btn').addEventListener('click', () => {
-        document.getElementById('share-modal').style.display = 'none';
-    });
-
-    // 解析由URL進來的分享資料
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has('data')) {
-        try {
-            const sharedData = JSON.parse(decodeURIComponent(atob(urlParams.get('data'))));
-            Object.keys(sharedData).forEach(id => {
-                const el = document.getElementById(id);
-                if (el) { 
-                    el.value = sharedData[id]; 
-                    if(el.getAttribute('inputmode') === 'numeric'){
-                        el.value = formatNumber(sharedData[id]);
-                    }
-                }
-            });
-            document.querySelector('.management-section').style.display = 'none';
-        } catch (e) { console.error("解析分享連結失敗", e); }
-    }
-
-    // 初始化執行
-    updateClientDropdown();
+    // 初次載入執行
     calculateAll();
 });
