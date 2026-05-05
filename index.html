@@ -14,28 +14,24 @@
     
     <link rel="stylesheet" href="style.css">
     
+    <!-- 引入 JS 庫 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
 
-    <div class="calculator-container">
+    <div class="calculator-container" id="pdf-content">
         <header>
-            <h1>醫療儲備</h1>
+            <h1>醫療儲備方案</h1>
             <p>未來的自己無懼醫保的加幅，兼享有價值的保障</p>
         </header>
 
-        <div class="management-section">
-            <h3>客戶及資料管理</h3>
-            <div class="management-grid">
-                <div class="input-group"><label for="client-name">客戶名稱</label><input type="text" id="client-name" placeholder="輸入客戶名稱"></div>
-                <div class="input-group"><label for="load-client">載入 / 刪除方案</label><select id="load-client"><option value="">-- 選擇已儲存方案 --</option></select></div>
-                <div class="input-group"><button id="save-client" class="btn btn-primary">儲存方案</button></div>
-                <div class="input-group"><button id="delete-client" class="btn btn-danger">刪除選取方案</button></div>
-                <div class="input-group"><label>今日日期</label><div id="date-display" class="date-display"></div></div>
-                <div class="input-group"><label>檔案管理</label><button id="export-data" class="btn btn-secondary">匯出檔案</button></div>
-                <div class="input-group"><label>&nbsp;</label><button id="import-data-btn" class="btn btn-secondary">匯入檔案</button><input type="file" id="import-data" hidden accept=".json"></div>
-                <div class="input-group"><label>分享</label><button id="share-btn" class="btn btn-success" style="background-color: #28a745; border-color: #28a745; color: white;">分享給客戶</button></div>
+        <div class="management-section no-print">
+            <h3>報告管理</h3>
+            <div class="management-grid" style="display: flex; justify-content: center; gap: 1rem;">
+                <div class="input-group">
+                    <button id="generate-pdf-btn" class="btn btn-primary" style="font-size: 1.1rem; padding: 10px 20px;">📄 生成 PDF 報告</button>
+                </div>
             </div>
         </div>
 
@@ -70,7 +66,7 @@
                         <option value="50000">HK$50,000</option>
                     </select>
                 </div>
-                <div class="input-group">
+                <div class="input-group no-print">
                     <label for="medical-premium-file-btn">保費表</label>
                     <button id="medical-premium-file-btn" class="btn btn-secondary">上載Excel保費表</button>
                     <input type="file" id="medical-premium-file" hidden accept=".xlsx, .xls">
@@ -107,48 +103,12 @@
         </div>
 
         <div class="section">
-            <h2>複利增值：各儲備金庫的貢獻</h2>
-            <div class="input-grid">
-                <div class="input-group">
-                    <label for="plan1-contribution">儲備金庫一 (第1年供)</label>
-                    <input type="text" id="plan1-contribution" value="40,000" inputmode="numeric">
-                    <select id="plan1-strategy" style="margin-top: 0.5rem; width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px;">
-                        <option value="none">滾存不提取</option>
-                        <option value="withdraw8_from8">第8年取8%</option>
-                        <option value="withdraw13_from15">第15年取13%</option>
-                        <option value="withdraw18_from20">第20年取18%</option>
-                        <option value="withdraw23_from25">第25年取23%</option>
-                        <option value="withdraw29_from30">第30年取29%</option>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label for="plan2-contribution">儲備金庫二 (第6年供)</label>
-                    <input type="text" id="plan2-contribution" value="50,000" inputmode="numeric">
-                    <select id="plan2-strategy" style="margin-top: 0.5rem; width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px;">
-                        <option value="none">滾存不提取</option>
-                        <option value="withdraw8_from8">第8年取8%</option>
-                        <option value="withdraw13_from15">第15年取13%</option>
-                        <option value="withdraw18_from20">第20年取18%</option>
-                        <option value="withdraw23_from25">第25年取23%</option>
-                        <option value="withdraw29_from30">第30年取29%</option>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label for="plan3-contribution">儲備金庫三 (第11年供)</label>
-                    <input type="text" id="plan3-contribution" value="60,000" inputmode="numeric">
-                    <select id="plan3-strategy" style="margin-top: 0.5rem; width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px;">
-                        <option value="none">滾存不提取</option>
-                        <option value="withdraw8_from8">第8年取8%</option>
-                        <option value="withdraw13_from15">第15年取13%</option>
-                        <option value="withdraw18_from20">第20年取18%</option>
-                        <option value="withdraw23_from25">第25年取23%</option>
-                        <option value="withdraw29_from30">第30年取29%</option>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label for="plan4-contribution">儲備金庫四 (第16年供)</label>
-                    <input type="text" id="plan4-contribution" value="70,000" inputmode="numeric">
-                    <select id="plan4-strategy" style="margin-top: 0.5rem; width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px;">
+            <h2>複利增值：對沖醫療保費儲備</h2>
+            <div class="input-grid" style="display: flex; justify-content: center;">
+                <div class="input-group" style="max-width: 400px; width: 100%;">
+                    <label for="reserve-contribution">每年儲備供款 (供5年)</label>
+                    <input type="text" id="reserve-contribution" value="100,000" inputmode="numeric">
+                    <select id="reserve-strategy" style="margin-top: 0.5rem; width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px;">
                         <option value="none">滾存不提取</option>
                         <option value="withdraw8_from8">第8年取8%</option>
                         <option value="withdraw13_from15">第15年取13%</option>
@@ -162,17 +122,6 @@
                 <table id="results-table">
                     <thead id="results-table-head"></thead>
                     <tbody id="results-table-body"></tbody>
-                    <tfoot id="manual-year-footer">
-                        <tr>
-                            <td data-label="年份 (歲數)"><input type="number" id="manual-year-input" value="30"><span id="manual-year-age"></span></td>
-                            <td data-label="儲備金庫一" id="manual-year-plan1">-</td>
-                            <td data-label="儲備金庫二" id="manual-year-plan2">-</td>
-                            <td data-label="儲備金庫三" id="manual-year-plan3">-</td>
-                            <td data-label="儲備金庫四" id="manual-year-plan4">-</td>
-                            <td data-label="供款總額" id="manual-year-contribution" class="contribution-cell">-</td>
-                            <td data-label="保單總值" id="manual-year-total" class="policy-value-cell">-</td>
-                        </tr>
-                    </tfoot>
                 </table>
             </div>
         </div>
@@ -184,7 +133,7 @@
                 <img src="IMG_4682.png" alt="計算背景圖" class="background-image">
                 
                 <div class="display-box" id="box1">
-                    <div class="display-label">總供款</div>
+                    <div class="display-label">總已繳保費</div>
                     <div class="display-value" id="display-total-contribution-value">-</div>
                 </div>
                 <div class="display-box" id="box2">
@@ -200,29 +149,14 @@
         
         <footer>
             <p>*所有市場數據均為基於公開資料的近似值，僅供參考。</p>
+            <p style="font-size: 0.8rem; color: #aaa;" id="app-version-display">Version 2.0.0</p>
         </footer>
     </div>
 
-    <div id="share-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <div id="share-card" class="share-card">
-                <div class="share-header"><h3>專屬醫療儲備方案</h3></div>
-                <div class="share-body">
-                    <p class="client-msg">親愛的 <span id="share-client-name" class="highlight-name">客戶</span></p>
-                    <p class="concept-msg">這是你專屬的醫療儲備概念</p>
-                    <div class="qrcode-container"><div id="qrcode"></div><div class="qrcode-logo"><span style="font-size: 24px;">🏥</span></div></div>
-                    <p class="scan-hint">👆 長按識別 QR Code</p>
-                    <p class="scan-hint-sub">iOS / Android 適用</p>
-                </div>
-                <div class="share-footer"><p>專業理財 • 為您導航</p></div>
-            </div>
-            <div class="modal-actions"><p style="font-size: 0.9rem; color: #666; margin-bottom: 10px;">請截圖保存上方卡片發送給客戶</p></div>
-        </div>
-    </div>
-
+    <!-- 主程式 -->
     <script src="script.js"></script>
     
+    <!-- PWA 註冊 -->
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
