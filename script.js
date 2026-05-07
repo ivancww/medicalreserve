@@ -1,11 +1,11 @@
 // === 強制更新版本控制 (Version Control) ===
-const APP_VERSION = "2.0.3"; // 版本已統一更新至 2.0.3
+const APP_VERSION = "2.0.4"; // 版本更新至 2.0.4，修復0%通脹及精簡表格
 
 if (localStorage.getItem('MEDICAL_APP_VERSION') !== APP_VERSION) {
     console.log("版本更新，清理舊數據...");
     localStorage.clear(); // 清理舊版本可能遺留的不相容數據
     localStorage.setItem('MEDICAL_APP_VERSION', APP_VERSION);
-    alert("系統已自動更新至 Version 2.0.3 最新版本！");
+    alert("系統已自動更新至 Version 2.0.4 最新版本！");
     location.reload(true);
 }
 
@@ -121,7 +121,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const startAge = parseInt(document.getElementById('start-age').value) || 30;
         const retAge = parseInt(document.getElementById('retirement-age').value) || 65;
         const lifeExp = parseInt(document.getElementById('life-expectancy').value) || 99;
-        const inflationRate = parseFloat(document.getElementById('medical-inflation-rate').value) / 100 || 0.05;
+        
+        // 修正 0% 通脹率的 bug
+        let inflationInput = parseFloat(document.getElementById('medical-inflation-rate').value);
+        const inflationRate = isNaN(inflationInput) ? 0.05 : inflationInput / 100;
 
         // --- 1. 計算退休後醫療保費總額 ---
         let totalPremNoInf = 0;
@@ -156,12 +159,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const thead = document.getElementById('results-table-head');
         const tbody = document.getElementById('results-table-body');
         
-        // 取消了 (通脹後) 字眼，保持簡潔
+        // 更新表頭：取消了「累積對沖醫療保費」以保持精簡
         thead.innerHTML = `<tr>
             <th>保單年度 (歲數)</th>
             <th>累計供款</th>
-            <th>對沖醫療保費</th>
-            <th>累積對沖醫療保費</th>
+            <th>對沖醫療保費 (提取)</th>
             <th style="color:#dc3545;">醫療保費</th>
             <th>總已繳保費</th>
             <th>總戶口餘額</th>
@@ -172,7 +174,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const startOffsets = [1, 6, 11, 16];
         
         let cumulativeContribution = 0;
-        let cumulativeWithdrawal = 0;
         let latestTotalValue = 0;
 
         // 準備給 Chart.js 用的數據
@@ -215,7 +216,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             cumulativeContribution += rowContributedThisYear;
-            cumulativeWithdrawal += rowTotalWithdrawal;
 
             let baseMedPrem = premiumData[currentAge] || (currentAge * 300);
             let inflatedMedPrem = baseMedPrem * Math.pow(1 + inflationRate, currentAge - startAge);
@@ -232,7 +232,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     <td>${yr} (${currentAge})</td>
                     <td>$${formatNumber(cumulativeContribution)}</td>
                     <td style="color:var(--gain-color); font-weight:bold;">$${formatNumber(rowTotalWithdrawal)}</td>
-                    <td>$${formatNumber(cumulativeWithdrawal)}</td>
                     <td style="color:#dc3545; font-weight:bold;">$${formatNumber(inflatedMedPrem)}</td>
                     <td>$${formatNumber(cumulativeContribution)}</td>
                     <td style="font-weight:bold; color:#6f42c1;">$${formatNumber(rowTotalValue)}</td>
@@ -260,7 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 datasets: [
                     {
                         type: 'line',
-                        label: '醫療保費成本', // 這裡也移除了「通脹後」字眼
+                        label: '醫療保費成本',
                         data: chartPremiumData,
                         borderColor: '#dc3545',
                         backgroundColor: '#dc3545',
