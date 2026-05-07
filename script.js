@@ -1,11 +1,11 @@
 // === 強制更新版本控制 (Version Control) ===
-const APP_VERSION = "2.0.1"; // 版本更新至 2.0.1
+const APP_VERSION = "2.0.3"; // 版本已統一更新至 2.0.3
 
 if (localStorage.getItem('MEDICAL_APP_VERSION') !== APP_VERSION) {
     console.log("版本更新，清理舊數據...");
     localStorage.clear(); // 清理舊版本可能遺留的不相容數據
     localStorage.setItem('MEDICAL_APP_VERSION', APP_VERSION);
-    alert("系統已自動更新至最新版本！");
+    alert("系統已自動更新至 Version 2.0.3 最新版本！");
     location.reload(true);
 }
 
@@ -14,6 +14,7 @@ function formatNumber(value) { return new Intl.NumberFormat('en-US', {maximumFra
 function parseFormattedNumber(str) { return parseFloat(String(str).replace(/,/g, '')) || 0; }
 
 let premiumData = {}; // 儲存 Excel 匯入的保費表 { age: premium_amount }
+let medicalChart = null; // Chart.js 實例
 
 // === 提取策略與回報乘數 ===
 const returnMultipliers_none = { 10: 1.32, 15: 1.86, 20: 2.71, 25: 4.11, 30: 5.85, 35: 8.02, 40: 10.99, 45: 15.06, 50: 20.63, 55: 28.27, 60: 38.73, 65: 53.06, 70: 72.69 };
@@ -35,7 +36,7 @@ function getInterpolatedMultiplier(multipliersObj, year) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 顯示版本號
+    // 顯示版本號確保前後端一致
     const versionDisplay = document.getElementById('app-version-display');
     if(versionDisplay) {
         versionDisplay.textContent = `Version ${APP_VERSION}`;
@@ -155,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const thead = document.getElementById('results-table-head');
         const tbody = document.getElementById('results-table-body');
         
-        // 更新表頭：取消醫療保費的 (通脹後) 字眼
+        // 取消了 (通脹後) 字眼，保持簡潔
         thead.innerHTML = `<tr>
             <th>保單年度 (歲數)</th>
             <th>累計供款</th>
@@ -174,6 +175,11 @@ document.addEventListener('DOMContentLoaded', () => {
         let cumulativeWithdrawal = 0;
         let latestTotalValue = 0;
 
+        // 準備給 Chart.js 用的數據
+        let chartLabels = [];
+        let chartWithdrawalData = [];
+        let chartPremiumData = [];
+
         for(let yr = 1; yr <= maxYears; yr++) {
             let currentAge = startAge + yr - 1;
             
@@ -181,12 +187,11 @@ document.addEventListener('DOMContentLoaded', () => {
             let rowTotalWithdrawal = 0;
             let rowContributedThisYear = 0;
 
-            // 分別計算 4 隻金雞 (金庫)
             for(let i=0; i<4; i++) {
                 const pA = yr - (startOffsets[i] - 1);
                 const aC = contributions[i];
                 const strategy = strategies[i];
-                const totalPrincipal = aC * 5; // 每個金庫固定供5年
+                const totalPrincipal = aC * 5;
                 
                 let cV = 0, cA = 0;
 
@@ -212,11 +217,15 @@ document.addEventListener('DOMContentLoaded', () => {
             cumulativeContribution += rowContributedThisYear;
             cumulativeWithdrawal += rowTotalWithdrawal;
 
-            // 計算該年的醫療保費 (基於保費表及通脹)
             let baseMedPrem = premiumData[currentAge] || (currentAge * 300);
             let inflatedMedPrem = baseMedPrem * Math.pow(1 + inflationRate, currentAge - startAge);
 
-            // 每 5 年、最後一年 顯示一行
+            // 儲存圖表數據
+            chartLabels.push(currentAge);
+            chartWithdrawalData.push(rowTotalWithdrawal);
+            chartPremiumData.push(inflatedMedPrem);
+
+            // 每 5 年、最後一年 顯示一行表格
             if (yr % 5 === 0 || yr === maxYears) {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
@@ -236,9 +245,65 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // 更新圖片上的數字
         document.getElementById('display-total-contribution-value').textContent = '$' + formatNumber(cumulativeContribution);
         document.getElementById('display-policy-value-value').textContent = '$' + formatNumber(latestTotalValue);
+
+        // --- 3. 繪製動態圖表 (Chart.js) ---
+        const ctx = document.getElementById('medicalChart').getContext('2d');
+        if (medicalChart) {
+            medicalChart.destroy();
+        }
+        medicalChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: chartLabels,
+                datasets: [
+                    {
+                        type: 'line',
+                        label: '醫療保費成本', // 這裡也移除了「通脹後」字眼
+                        data: chartPremiumData,
+                        borderColor: '#dc3545',
+                        backgroundColor: '#dc3545',
+                        borderWidth: 2,
+                        fill: false,
+                        tension: 0.3,
+                        pointRadius: 0
+                    },
+                    {
+                        type: 'bar',
+                        label: '對沖醫療保費 (金庫提取)',
+                        data: chartWithdrawalData,
+                        backgroundColor: 'rgba(40, 167, 69, 0.7)',
+                        borderColor: '#28a745',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                scales: {
+                    x: { title: { display: true, text: '歲數' } },
+                    y: { title: { display: true, text: '金額 (HK$)' }, beginAtZero: true }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': $' + formatNumber(context.raw);
+                            }
+                        }
+                    },
+                    legend: {
+                        position: 'top',
+                    }
+                }
+            }
+        });
     }
 
     // 初次載入執行
