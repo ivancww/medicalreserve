@@ -1,11 +1,11 @@
 // === 強制更新版本控制 ===
-const APP_VERSION = "2.0.6"; // 分拆為兩個圖表：現金流對決 vs 財富大爆發
+const APP_VERSION = "2.0.7"; // 動態年齡標籤、戶口補貼柱狀圖、移走總已繳本金、加入圖表切換按鈕
 
 if (localStorage.getItem('MEDICAL_APP_VERSION') !== APP_VERSION) {
     console.log("版本更新，清理舊數據...");
     localStorage.clear();
     localStorage.setItem('MEDICAL_APP_VERSION', APP_VERSION);
-    alert("系統已自動更新至 Version 2.0.6 最新版本！");
+    alert("系統已自動更新至 Version 2.0.7 最新版本！");
     location.reload(true);
 }
 
@@ -14,8 +14,8 @@ function formatNumber(value) { return new Intl.NumberFormat('en-US', {maximumFra
 function parseFormattedNumber(str) { return parseFloat(String(str).replace(/,/g, '')) || 0; }
 
 let premiumData = {}; 
-let cashflowChart = null; // 圖表1實例
-let wealthChart = null;   // 圖表2實例
+let medicalChart = null; 
+let isCumulativeView = false; // 控制圖表顯示模式
 
 // === 提取策略與回報乘數 ===
 const returnMultipliers_none = { 10: 1.32, 15: 1.86, 20: 2.71, 25: 4.11, 30: 5.85, 35: 8.02, 40: 10.99, 45: 15.06, 50: 20.63, 55: 28.27, 60: 38.73, 65: 53.06, 70: 72.69 };
@@ -62,6 +62,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('medical-inflation-rate').addEventListener('input', function() {
         document.getElementById('medical-inflation-value').textContent = parseFloat(this.value).toFixed(1) + '%';
+    });
+
+    // 切換圖表按鈕
+    document.getElementById('toggle-chart-btn').addEventListener('click', function() {
+        isCumulativeView = !isCumulativeView;
+        this.textContent = isCumulativeView ? '🔄 切換至：每年現金流與補貼視角' : '🔄 切換至：累積保費與餘額視角';
+        document.getElementById('chart-title').textContent = isCumulativeView ? '累積保費成本 vs 總戶口餘額' : '先支出，後享增值同時慳保費';
+        calculateAll();
     });
 
     // 匯出 PDF 報告
@@ -122,6 +130,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const retAge = parseInt(document.getElementById('retirement-age').value) || 65;
         const lifeExp = parseInt(document.getElementById('life-expectancy').value) || 99;
         
+        // 更新金庫標籤上的歲數
+        document.getElementById('label-plan1').textContent = `儲備金庫一 (${startAge}-${startAge+4}歲)`;
+        document.getElementById('label-plan2').textContent = `儲備金庫二 (${startAge+5}-${startAge+9}歲)`;
+        document.getElementById('label-plan3').textContent = `儲備金庫三 (${startAge+10}-${startAge+14}歲)`;
+        document.getElementById('label-plan4').textContent = `儲備金庫四 (${startAge+15}-${startAge+19}歲)`;
+
         let inflationInput = parseFloat(document.getElementById('medical-inflation-rate').value);
         const inflationRate = isNaN(inflationInput) ? 0.05 : inflationInput / 100;
 
@@ -155,12 +169,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const thead = document.getElementById('results-table-head');
         const tbody = document.getElementById('results-table-body');
         
+        // 表格移走「總已繳本金」
         thead.innerHTML = `<tr>
             <th>保單年度 (歲數)</th>
             <th>累計供款</th>
             <th>對沖醫療保費 (提取)</th>
-            <th style="color:#dc3545;">醫療保費成本</th>
-            <th>總已繳本金</th>
+            <th style="color:#dc3545;">醫療保費</th>
             <th>總戶口餘額</th>
         </tr>`;
         tbody.innerHTML = '';
@@ -170,12 +184,16 @@ document.addEventListener('DOMContentLoaded', () => {
         
         let cumulativeContribution = 0;
         let cumulativeWithdrawal = 0;
+        let cumulativeMedPrem = 0;
+        let cumulativeShortfall = 0; // 用於從戶口餘額中扣除補貼
 
         // Chart Data Arrays
         let chartLabels = [];
         let chartWithdrawalData = [];
+        let chartSubsidizedData = []; // 戶口餘額補貼
         let chartPremiumData = [];
-        let chartCumulativeContributionData = [];
+        let chartCumWithdrawalData = [];
+        let chartCumPremiumData = [];
         let chartAccountValueData = [];
 
         for(let yr = 1; yr <= maxYears; yr++) {
@@ -217,13 +235,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let baseMedPrem = premiumData[currentAge] || (currentAge * 300);
             let inflatedMedPrem = baseMedPrem * Math.pow(1 + inflationRate, currentAge - startAge);
+            cumulativeMedPrem += inflatedMedPrem;
 
+            // 計算戶口餘額補貼差額 (當開始提取長糧，且長糧不夠交保費時)
+            let shortfall = 0;
+            if (rowTotalWithdrawal > 0 && inflatedMedPrem > rowTotalWithdrawal) {
+                shortfall = inflatedMedPrem - rowTotalWithdrawal;
+            }
+            
+            // 從總戶口餘額中概念性扣除補貼
+            cumulativeShortfall += shortfall;
+            rowTotalValue = Math.max(0, rowTotalValue - cumulativeShortfall);
+
+            // 儲存圖表數據
             chartLabels.push(currentAge);
             chartWithdrawalData.push(rowTotalWithdrawal);
+            chartSubsidizedData.push(shortfall);
             chartPremiumData.push(inflatedMedPrem);
-            chartCumulativeContributionData.push(cumulativeContribution);
+            
+            chartCumWithdrawalData.push(cumulativeWithdrawal);
+            chartCumPremiumData.push(cumulativeMedPrem);
             chartAccountValueData.push(rowTotalValue);
 
+            // 每 5 年、最後一年 顯示一行表格
             if (yr % 5 === 0 || yr === maxYears) {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
@@ -231,102 +265,119 @@ document.addEventListener('DOMContentLoaded', () => {
                     <td>$${formatNumber(cumulativeContribution)}</td>
                     <td style="color:var(--gain-color); font-weight:bold;">$${formatNumber(rowTotalWithdrawal)}</td>
                     <td style="color:#dc3545; font-weight:bold;">$${formatNumber(inflatedMedPrem)}</td>
-                    <td>$${formatNumber(cumulativeContribution)}</td>
                     <td style="font-weight:bold; color:#6f42c1;">$${formatNumber(rowTotalValue)}</td>
                 `;
                 tbody.appendChild(tr);
             }
         }
 
-        // --- 3A. 繪製圖表 1: 現金流對決 (醫療保費 vs 提取) ---
-        const ctxCashflow = document.getElementById('cashflowChart').getContext('2d');
-        if (cashflowChart) cashflowChart.destroy();
-        cashflowChart = new Chart(ctxCashflow, {
-            type: 'bar',
-            data: {
-                labels: chartLabels,
-                datasets: [
-                    {
-                        type: 'line',
-                        label: '醫療保費成本 (支出)',
-                        data: chartPremiumData,
-                        borderColor: '#dc3545',
-                        backgroundColor: '#dc3545',
-                        borderWidth: 2,
-                        fill: false,
-                        tension: 0.3,
-                        pointRadius: 0
-                    },
-                    {
-                        type: 'bar',
-                        label: '對沖醫療保費 (長糧提取)',
-                        data: chartWithdrawalData,
-                        backgroundColor: 'rgba(40, 167, 69, 0.7)',
-                        borderColor: '#28a745',
-                        borderWidth: 1
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                interaction: { mode: 'index', intersect: false },
-                scales: {
-                    x: { title: { display: true, text: '歲數' } },
-                    y: { title: { display: true, text: '每年現金流 (HK$)' }, beginAtZero: true }
-                },
-                plugins: {
-                    tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: $${formatNumber(ctx.raw)}` } },
-                    legend: { position: 'top' }
-                }
-            }
-        });
+        // --- 3. 繪製動態圖表 (視角切換) ---
+        const ctx = document.getElementById('medicalChart').getContext('2d');
+        if (medicalChart) {
+            medicalChart.destroy();
+        }
 
-        // --- 3B. 繪製圖表 2: 財富滾存 (本金 vs 餘額) ---
-        const ctxWealth = document.getElementById('wealthChart').getContext('2d');
-        if (wealthChart) wealthChart.destroy();
-        wealthChart = new Chart(ctxWealth, {
-            type: 'line',
-            data: {
-                labels: chartLabels,
-                datasets: [
-                    {
-                        label: '總戶口餘額 (資產)',
-                        data: chartAccountValueData,
-                        borderColor: '#6f42c1',
-                        backgroundColor: 'rgba(111, 66, 193, 0.2)',
-                        borderWidth: 2,
-                        fill: true,
-                        tension: 0.3,
-                        pointRadius: 0
-                    },
-                    {
-                        label: '累計已繳本金 (成本)',
-                        data: chartCumulativeContributionData,
-                        borderColor: '#007bff',
-                        backgroundColor: '#007bff',
-                        borderWidth: 2,
-                        fill: false,
-                        borderDash: [5, 5],
-                        tension: 0.1,
-                        pointRadius: 0
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                interaction: { mode: 'index', intersect: false },
-                scales: {
-                    x: { title: { display: true, text: '歲數' } },
-                    y: { title: { display: true, text: '累積總值 (HK$)' }, beginAtZero: true }
+        if (isCumulativeView) {
+            // 累積視角
+            medicalChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: chartLabels,
+                    datasets: [
+                        {
+                            label: '累計對沖提取總額',
+                            data: chartCumWithdrawalData,
+                            borderColor: '#28a745',
+                            backgroundColor: 'transparent',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            pointRadius: 0
+                        },
+                        {
+                            label: '累計醫療保費成本',
+                            data: chartCumPremiumData,
+                            borderColor: '#dc3545',
+                            backgroundColor: 'transparent',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            tension: 0.3,
+                            pointRadius: 0
+                        },
+                        {
+                            label: '總戶口餘額',
+                            data: chartAccountValueData,
+                            borderColor: '#6f42c1',
+                            backgroundColor: 'rgba(111, 66, 193, 0.2)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 0
+                        }
+                    ]
                 },
-                plugins: {
-                    tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: $${formatNumber(ctx.raw)}` } },
-                    legend: { position: 'top' }
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    scales: {
+                        x: { title: { display: true, text: '歲數' } },
+                        y: { title: { display: true, text: '累積金額 (HK$)' }, beginAtZero: true }
+                    },
+                    plugins: {
+                        tooltip: { callbacks: { label: (context) => context.dataset.label + ': $' + formatNumber(context.raw) } },
+                        legend: { position: 'top' }
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            // 每年現金流視角 (預設)
+            medicalChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: chartLabels,
+                    datasets: [
+                        {
+                            type: 'line',
+                            label: '醫療保費成本',
+                            data: chartPremiumData,
+                            borderColor: '#dc3545',
+                            backgroundColor: '#dc3545',
+                            borderWidth: 2,
+                            fill: false,
+                            tension: 0.3,
+                            pointRadius: 0
+                        },
+                        {
+                            type: 'bar',
+                            label: '對沖醫療保費 (金庫提取)',
+                            data: chartWithdrawalData,
+                            backgroundColor: 'rgba(40, 167, 69, 0.8)',
+                            stack: 'Stack 0' // 確保柱狀圖堆疊
+                        },
+                        {
+                            type: 'bar',
+                            label: '戶口餘額自動補貼 (補足差額)',
+                            data: chartSubsidizedData,
+                            backgroundColor: 'rgba(255, 193, 7, 0.8)', // 醒目黃色
+                            stack: 'Stack 0' // 與提取疊加
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    scales: {
+                        x: { stacked: true, title: { display: true, text: '歲數' } },
+                        y: { stacked: true, title: { display: true, text: '金額 (HK$)' }, beginAtZero: true }
+                    },
+                    plugins: {
+                        tooltip: { callbacks: { label: (context) => context.dataset.label + ': $' + formatNumber(context.raw) } },
+                        legend: { position: 'top' }
+                    }
+                }
+            });
+        }
     }
 
     // 初次載入執行
