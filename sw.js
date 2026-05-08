@@ -1,7 +1,7 @@
 // === Service Worker 版本管理 ===
 // 每次你修改了 index.html, script.js 或 style.css 後，
-// 必須更改下面的 CACHE_NAME 編號（例如下次改做 v2.0.7），否則手機 App 唔會更新。
-const CACHE_NAME = 'medical-reserve-cache-v2.0.6';
+// 必須更改下面的 CACHE_NAME 編號（例如下次改做 v2.0.8），否則手機 App 唔會更新。
+const CACHE_NAME = 'medical-reserve-cache-v2.0.7';
 
 const urlsToCache = [
   './',
