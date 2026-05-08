@@ -1,14 +1,13 @@
 // === Service Worker 版本管理 ===
 // 每次你修改了 index.html, script.js 或 style.css 後，
-// 必須更改下面的 CACHE_NAME 編號（例如下次改做 v2.0.6），否則手機 App 唔會更新。
-const CACHE_NAME = 'medical-reserve-cache-v2.0.5';
+// 必須更改下面的 CACHE_NAME 編號（例如下次改做 v2.0.7），否則手機 App 唔會更新。
+const CACHE_NAME = 'medical-reserve-cache-v2.0.6';
 
 const urlsToCache = [
   './',
   './index.html',
   './style.css',
   './script.js',
-  './IMG_4682.png',
   'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js',
   'https://cdn.jsdelivr.net/npm/chart.js'
