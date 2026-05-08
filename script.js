@@ -1,11 +1,11 @@
 // === 強制更新版本控制 (Version Control) ===
-const APP_VERSION = "2.0.4"; // 版本更新至 2.0.4，修復0%通脹及精簡表格
+const APP_VERSION = "2.0.5"; // 圖表加入累計本金與戶口餘額 (雙Y軸)，移除底部數字框
 
 if (localStorage.getItem('MEDICAL_APP_VERSION') !== APP_VERSION) {
     console.log("版本更新，清理舊數據...");
-    localStorage.clear(); // 清理舊版本可能遺留的不相容數據
+    localStorage.clear();
     localStorage.setItem('MEDICAL_APP_VERSION', APP_VERSION);
-    alert("系統已自動更新至 Version 2.0.4 最新版本！");
+    alert("系統已自動更新至 Version 2.0.5 最新版本！");
     location.reload(true);
 }
 
@@ -13,8 +13,8 @@ if (localStorage.getItem('MEDICAL_APP_VERSION') !== APP_VERSION) {
 function formatNumber(value) { return new Intl.NumberFormat('en-US', {maximumFractionDigits: 0}).format(value); }
 function parseFormattedNumber(str) { return parseFloat(String(str).replace(/,/g, '')) || 0; }
 
-let premiumData = {}; // 儲存 Excel 匯入的保費表 { age: premium_amount }
-let medicalChart = null; // Chart.js 實例
+let premiumData = {}; 
+let medicalChart = null; 
 
 // === 提取策略與回報乘數 ===
 const returnMultipliers_none = { 10: 1.32, 15: 1.86, 20: 2.71, 25: 4.11, 30: 5.85, 35: 8.02, 40: 10.99, 45: 15.06, 50: 20.63, 55: 28.27, 60: 38.73, 65: 53.06, 70: 72.69 };
@@ -24,7 +24,7 @@ const returnMultipliers_withdraw18_from20 = { 20: 2.527, 25: 2.772, 30: 2.93, 35
 const returnMultipliers_withdraw23_from25 = { 25: 3.447, 30: 3.475, 35: 3.492, 40: 3.401, 45: 3.329, 50: 3.23, 55: 3.0943, 60: 2.911 };
 const returnMultipliers_withdraw29_from30 = { 30: 4.754, 35: 4.841, 40: 4.805, 45: 4.821, 50: 4.838, 55: 4.858, 60: 4.866 };
 
-// 插值計算函數 (Interpolation)
+// 插值計算函數
 function getInterpolatedMultiplier(multipliersObj, year) {
     const keys = Object.keys(multipliersObj).map(Number).sort((a,b)=>a-b);
     if (year <= keys[0]) return year <= 5 ? year / 5 : 1.0 + (multipliersObj[keys[0]] - 1.0) * ((year - 5) / (keys[0] - 5));
@@ -36,7 +36,6 @@ function getInterpolatedMultiplier(multipliersObj, year) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 顯示版本號確保前後端一致
     const versionDisplay = document.getElementById('app-version-display');
     if(versionDisplay) {
         versionDisplay.textContent = `Version ${APP_VERSION}`;
@@ -64,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('medical-inflation-value').textContent = parseFloat(this.value).toFixed(1) + '%';
     });
 
-    // === 匯出 PDF 報告 ===
+    // 匯出 PDF 報告
     document.getElementById('generate-pdf-btn').addEventListener('click', () => {
         const element = document.getElementById('pdf-content');
         const noPrintElements = document.querySelectorAll('.no-print');
@@ -83,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // === Excel 匯入保費表 ===
+    // Excel 匯入保費表
     document.getElementById('medical-premium-file-btn').addEventListener('click', () => {
         document.getElementById('medical-premium-file').click();
     });
@@ -122,11 +121,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const retAge = parseInt(document.getElementById('retirement-age').value) || 65;
         const lifeExp = parseInt(document.getElementById('life-expectancy').value) || 99;
         
-        // 修正 0% 通脹率的 bug
         let inflationInput = parseFloat(document.getElementById('medical-inflation-rate').value);
         const inflationRate = isNaN(inflationInput) ? 0.05 : inflationInput / 100;
 
-        // --- 1. 計算退休後醫療保費總額 ---
         let totalPremNoInf = 0;
         let totalPremWithInf = 0;
 
@@ -139,9 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('total-premium-no-inflation').textContent = '$' + formatNumber(totalPremNoInf);
         document.getElementById('total-premium-with-inflation').textContent = '$' + formatNumber(totalPremWithInf);
         document.getElementById('inflation-difference').textContent = '+$' + formatNumber(totalPremWithInf - totalPremNoInf);
-        document.getElementById('display-inflated-medical-value').textContent = '$' + formatNumber(totalPremWithInf);
 
-        // --- 2. 計算 4 個儲備金庫與生成累計表格 ---
         const contributions = [
             parseFormattedNumber(document.getElementById('plan1-contribution').value),
             parseFormattedNumber(document.getElementById('plan2-contribution').value),
@@ -159,7 +154,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const thead = document.getElementById('results-table-head');
         const tbody = document.getElementById('results-table-body');
         
-        // 更新表頭：取消了「累積對沖醫療保費」以保持精簡
         thead.innerHTML = `<tr>
             <th>保單年度 (歲數)</th>
             <th>累計供款</th>
@@ -174,12 +168,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const startOffsets = [1, 6, 11, 16];
         
         let cumulativeContribution = 0;
-        let latestTotalValue = 0;
+        let cumulativeWithdrawal = 0;
 
-        // 準備給 Chart.js 用的數據
+        // Chart Data Arrays
         let chartLabels = [];
         let chartWithdrawalData = [];
         let chartPremiumData = [];
+        let chartCumulativeContributionData = [];
+        let chartAccountValueData = [];
 
         for(let yr = 1; yr <= maxYears; yr++) {
             let currentAge = startAge + yr - 1;
@@ -216,16 +212,17 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             cumulativeContribution += rowContributedThisYear;
+            cumulativeWithdrawal += rowTotalWithdrawal;
 
             let baseMedPrem = premiumData[currentAge] || (currentAge * 300);
             let inflatedMedPrem = baseMedPrem * Math.pow(1 + inflationRate, currentAge - startAge);
 
-            // 儲存圖表數據
             chartLabels.push(currentAge);
             chartWithdrawalData.push(rowTotalWithdrawal);
             chartPremiumData.push(inflatedMedPrem);
+            chartCumulativeContributionData.push(cumulativeContribution);
+            chartAccountValueData.push(rowTotalValue);
 
-            // 每 5 年、最後一年 顯示一行表格
             if (yr % 5 === 0 || yr === maxYears) {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
@@ -238,16 +235,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
                 tbody.appendChild(tr);
             }
-
-            if (currentAge === retAge) {
-                latestTotalValue = rowTotalValue;
-            }
         }
 
-        document.getElementById('display-total-contribution-value').textContent = '$' + formatNumber(cumulativeContribution);
-        document.getElementById('display-policy-value-value').textContent = '$' + formatNumber(latestTotalValue);
-
-        // --- 3. 繪製動態圖表 (Chart.js) ---
+        // --- 3. 繪製動態圖表 (雙 Y 軸設計) ---
         const ctx = document.getElementById('medicalChart').getContext('2d');
         if (medicalChart) {
             medicalChart.destroy();
@@ -266,15 +256,42 @@ document.addEventListener('DOMContentLoaded', () => {
                         borderWidth: 2,
                         fill: false,
                         tension: 0.3,
-                        pointRadius: 0
+                        pointRadius: 0,
+                        yAxisID: 'y' // 左邊 Y 軸
                     },
                     {
                         type: 'bar',
-                        label: '對沖醫療保費 (金庫提取)',
+                        label: '對沖醫療保費 (提取)',
                         data: chartWithdrawalData,
                         backgroundColor: 'rgba(40, 167, 69, 0.7)',
                         borderColor: '#28a745',
-                        borderWidth: 1
+                        borderWidth: 1,
+                        yAxisID: 'y' // 左邊 Y 軸
+                    },
+                    {
+                        type: 'line',
+                        label: '累計已繳供款',
+                        data: chartCumulativeContributionData,
+                        borderColor: '#007bff', // 藍色
+                        backgroundColor: '#007bff',
+                        borderWidth: 2,
+                        fill: false,
+                        borderDash: [5, 5], // 虛線區分
+                        tension: 0.1,
+                        pointRadius: 0,
+                        yAxisID: 'y1' // 右邊 Y 軸
+                    },
+                    {
+                        type: 'line',
+                        label: '總戶口餘額',
+                        data: chartAccountValueData,
+                        borderColor: '#6f42c1', // 紫色
+                        backgroundColor: 'rgba(111, 66, 193, 0.2)',
+                        borderWidth: 2,
+                        fill: true, // 填滿區域增加視覺對比
+                        tension: 0.3,
+                        pointRadius: 0,
+                        yAxisID: 'y1' // 右邊 Y 軸
                     }
                 ]
             },
@@ -286,8 +303,26 @@ document.addEventListener('DOMContentLoaded', () => {
                     intersect: false,
                 },
                 scales: {
-                    x: { title: { display: true, text: '歲數' } },
-                    y: { title: { display: true, text: '金額 (HK$)' }, beginAtZero: true }
+                    x: { 
+                        title: { display: true, text: '歲數' } 
+                    },
+                    y: { 
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: { display: true, text: '每年現金流 (HK$)' }, 
+                        beginAtZero: true 
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: { display: true, text: '累積總值 (HK$)' },
+                        beginAtZero: true,
+                        grid: {
+                            drawOnChartArea: false // 避免左右軸的網格線重疊打架
+                        }
+                    }
                 },
                 plugins: {
                     tooltip: {
@@ -305,6 +340,5 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 初次載入執行
     calculateAll();
 });
