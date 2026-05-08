@@ -24,7 +24,7 @@
         <header>
             <h1 style="display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap;">
                 醫療儲備方案
-                <span id="app-version-display" style="font-size: 0.9rem; color: var(--primary-color); background: #e7f3ff; padding: 4px 10px; border-radius: 12px; font-weight: bold; border: 1px solid #cce5ff;">Version 2.0.6</span>
+                <span id="app-version-display" style="font-size: 0.9rem; color: var(--primary-color); background: #e7f3ff; padding: 4px 10px; border-radius: 12px; font-weight: bold; border: 1px solid #cce5ff;">Version 2.0.7</span>
             </h1>
             <p>未來的自己無懼醫保的加幅，兼享有價值的保障</p>
         </header>
@@ -109,7 +109,7 @@
             <h2>複利增值：對沖醫療保費儲備</h2>
             <div class="input-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
                 <div class="input-group">
-                    <label for="plan1-contribution">儲備金庫一 (第1年供)</label>
+                    <label id="label-plan1" for="plan1-contribution">儲備金庫一</label>
                     <input type="text" id="plan1-contribution" value="40,000" inputmode="numeric">
                     <select id="plan1-strategy" style="margin-top: 0.5rem; width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px;">
                         <option value="none">滾存不提取</option>
@@ -121,7 +121,7 @@
                     </select>
                 </div>
                 <div class="input-group">
-                    <label for="plan2-contribution">儲備金庫二 (第6年供)</label>
+                    <label id="label-plan2" for="plan2-contribution">儲備金庫二</label>
                     <input type="text" id="plan2-contribution" value="50,000" inputmode="numeric">
                     <select id="plan2-strategy" style="margin-top: 0.5rem; width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px;">
                         <option value="none">滾存不提取</option>
@@ -133,7 +133,7 @@
                     </select>
                 </div>
                 <div class="input-group">
-                    <label for="plan3-contribution">儲備金庫三 (第11年供)</label>
+                    <label id="label-plan3" for="plan3-contribution">儲備金庫三</label>
                     <input type="text" id="plan3-contribution" value="60,000" inputmode="numeric">
                     <select id="plan3-strategy" style="margin-top: 0.5rem; width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px;">
                         <option value="none">滾存不提取</option>
@@ -145,7 +145,7 @@
                     </select>
                 </div>
                 <div class="input-group">
-                    <label for="plan4-contribution">儲備金庫四 (第16年供)</label>
+                    <label id="label-plan4" for="plan4-contribution">儲備金庫四</label>
                     <input type="text" id="plan4-contribution" value="70,000" inputmode="numeric">
                     <select id="plan4-strategy" style="margin-top: 0.5rem; width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px;">
                         <option value="none">滾存不提取</option>
@@ -165,21 +165,18 @@
             </div>
         </div>
 
-        <div class="section" style="margin-bottom: 3rem;">
-            <h2 style="text-align: center; margin-bottom: 1rem; color: var(--primary-color);">1. 現金流對決：自製長糧完美覆蓋醫保</h2>
-            <div class="chart-container" style="position: relative; height: 350px; width: 100%; background: #fff; padding: 1rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 2rem;">
-                <canvas id="cashflowChart"></canvas>
+        <div class="section" style="margin-bottom: 2rem;">
+            <h2 id="chart-title" style="text-align: center; margin-bottom: 1rem;">先支出，後享增值同時慳保費</h2>
+            
+            <div class="chart-container" style="position: relative; height: 500px; width: 100%; background: #fff; padding: 1rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                <canvas id="medicalChart"></canvas>
             </div>
 
-            <h2 style="text-align: center; margin-bottom: 1rem; color: #6f42c1;">2. 財富大爆發：無損本金，持續滾存</h2>
-            <div class="chart-container" style="position: relative; height: 350px; width: 100%; background: #fff; padding: 1rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 2rem;">
-                <canvas id="wealthChart"></canvas>
+            <div class="no-print" style="text-align: center; margin-top: 1.5rem;">
+                <button id="toggle-chart-btn" class="btn btn-secondary" style="width: auto; padding: 10px 30px; font-weight: bold; background-color: #6f42c1; border-color: #6f42c1;">🔄 切換至：累積保費與餘額視角</button>
             </div>
         </div>
         
-        <footer style="text-align: center; padding-bottom: 1rem;">
-            <p style="font-size: 0.8rem; color: #888;">*所有市場數據均為基於公開資料的近似值，僅供參考。</p>
-        </footer>
     </div>
 
     <script src="script.js"></script>
