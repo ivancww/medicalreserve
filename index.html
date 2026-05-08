@@ -24,7 +24,7 @@
         <header>
             <h1 style="display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap;">
                 醫療儲備方案
-                <span id="app-version-display" style="font-size: 0.9rem; color: var(--primary-color); background: #e7f3ff; padding: 4px 10px; border-radius: 12px; font-weight: bold; border: 1px solid #cce5ff;">Version 2.0.5</span>
+                <span id="app-version-display" style="font-size: 0.9rem; color: var(--primary-color); background: #e7f3ff; padding: 4px 10px; border-radius: 12px; font-weight: bold; border: 1px solid #cce5ff;">Version 2.0.6</span>
             </h1>
             <p>未來的自己無懼醫保的加幅，兼享有價值的保障</p>
         </header>
@@ -166,10 +166,14 @@
         </div>
 
         <div class="section" style="margin-bottom: 3rem;">
-            <h2 style="text-align: center; margin-bottom: 1rem;">先支出，後享增值同時慳保費</h2>
-            
-            <div class="chart-container" style="position: relative; height: 500px; width: 100%; background: #fff; padding: 1rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                <canvas id="medicalChart"></canvas>
+            <h2 style="text-align: center; margin-bottom: 1rem; color: var(--primary-color);">1. 現金流對決：自製長糧完美覆蓋醫保</h2>
+            <div class="chart-container" style="position: relative; height: 350px; width: 100%; background: #fff; padding: 1rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 2rem;">
+                <canvas id="cashflowChart"></canvas>
+            </div>
+
+            <h2 style="text-align: center; margin-bottom: 1rem; color: #6f42c1;">2. 財富大爆發：無損本金，持續滾存</h2>
+            <div class="chart-container" style="position: relative; height: 350px; width: 100%; background: #fff; padding: 1rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 2rem;">
+                <canvas id="wealthChart"></canvas>
             </div>
         </div>
         
