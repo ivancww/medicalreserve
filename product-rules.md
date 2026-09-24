@@ -12,9 +12,9 @@ The interaction follows Easy for Agent → Natural Conversation → Instant Visu
 
 ## Official data boundary
 
-The official endpoint is centralized in `app.js` configuration and is never embedded in calculation/UI components. The app consumes the normalized response boundary from GAS actions `health`, `bootstrap`, `premium`, `premiumRange`, `reserve`, and `medicalReserve`. Official premium sheets remain the numeric source of truth. The correct product name is **尊耀計劃**.
+The official endpoint is centralized in `app.js` configuration and is never embedded in calculation/UI components. `bootstrap` is the primary source for SystemSettings, AppFlow, FlowOptions, MedicalPlans, ReserveStrategies, and Visualization. `health` is used for status/version validation and only supplies a degraded premium-plan availability boundary when bootstrap is unavailable. The app consumes the normalized response boundary from GAS actions `health`, `bootstrap`, `premium`, `premiumRange`, `reserve`, and `medicalReserve`. Official premium sheets remain the numeric source of truth. The correct product name is **尊耀計劃**.
 
-`MedicalPlans` is the app-facing mapping layer. A plan maps `plan_id` to display name, gender where returned, deductible, and official `premium_sheet`/mapped sheet identity. The app does not interpret arbitrary Sheet layouts.
+`MedicalPlans` is the app-facing mapping layer. A plan maps `plan_id` to display name, gender where returned, deductible, and official `premium_sheet`/mapped sheet identity. The app does not interpret arbitrary Sheet layouts. Built-in flow values are safe fallback structure only; official bootstrap values take precedence.
 
 Premium ranges use every annual row from retirement age through coverage age for the total. Customer presentation uses official checkpoints, normally every five years, with annual premium and growth from the prior checkpoint. No estimate, invented inflation, sample value, or fabricated missing data is permitted.
 
