@@ -34,9 +34,10 @@ const SAFE_FALLBACK_CONFIG = Object.freeze({
   reserveStrategies: [],
   visualization: {}
 });
+const entry = new URLSearchParams(location.search).get('avaEntry');
 const state = {
-  step: 0, mode: new URLSearchParams(location.search).get('mode') === 'presentation' ? 'presentation' : 'use',
-  dev: ['1', 'user', 'admin'].includes(new URLSearchParams(location.search).get('dev') || new URLSearchParams(location.search).get('avaEntry')),
+  step: 0, mode: entry === 'user' ? 'edit' : new URLSearchParams(location.search).get('mode') === 'presentation' ? 'presentation' : 'use',
+  dev: ['1', 'user', 'admin'].includes(new URLSearchParams(location.search).get('dev') || entry),
   currentAge: 40, retirementAge: 65, coverageAge: 90, funding: '', planId: '', plans: [], premiumRange: null,
   flow: SAFE_FALLBACK_FLOW, officialConfig: SAFE_FALLBACK_CONFIG,
   official: { status: 'not_loaded', version: null, updatedAt: null, warnings: [] }, user: loadUser()

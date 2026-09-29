@@ -11,6 +11,9 @@
   </head>
   <body>
     <main id="app" class="ava-front" data-ava-mode="use" aria-live="polite"></main>
-    <script type="module" src="app.js"></script>
+    <script type="module">
+      const entry = new URLSearchParams(location.search).get('avaEntry');
+      import(entry === 'admin' ? './admin.js' : './app.js');
+    </script>
   </body>
 </html>
