@@ -1,0 +1,7 @@
+{
+  "name": "medicalreserve",
+  "version": "1.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": { "test": "node --test", "check": "node --check app.js && node --check domain.js" }
+}

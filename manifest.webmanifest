@@ -1,0 +1,16 @@
+{
+  "name": "Medical Reserve",
+  "short_name": "Medical Reserve",
+  "version": "1.0.1",
+  "description": "退休醫療保費及醫療儲備引導工具",
+  "lang": "zh-Hant",
+  "dir": "ltr",
+  "start_url": "./?avaEntry=frontend",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f8fb",
+  "theme_color": "#1e3a8a",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

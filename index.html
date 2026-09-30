@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#1e3a8a">
+    <meta name="description" content="Medical Reserve — 將退休醫療保費及所需儲備具體化。">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="stylesheet" href="styles.css">
+    <title>Medical Reserve</title>
+  </head>
+  <body>
+    <main id="app" class="ava-front" data-ava-mode="use" aria-live="polite"></main>
+    <script type="module">
+      const entry = new URLSearchParams(location.search).get('avaEntry');
+      import(entry === 'admin' ? './admin.js' : './app.js');
+    </script>
+  </body>
+</html>
