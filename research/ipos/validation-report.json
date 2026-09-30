@@ -5868,10 +5868,10 @@
   "diagnosis": {
     "worstCase": "50yrs_5pay_130k_avpu",
     "primaryObservedFactors": [
-      "first-withdrawal base-curve interpolation for non-anchor Policy Years",
-      "terminal-dividend behavior after a correct first withdrawal",
-      "remaining long-horizon transition behavior"
+      "terminal-dividend state recovery after a correct first withdrawal",
+      "remaining long-horizon transition behavior",
+      "display rounding at low Policy Years"
     ],
-    "evidenceBoundary": "Calibration-only first-withdrawal component reconstruction is used for base curves; holdout first-withdrawal rows remain validation-only. Later rows use the fitted transition model."
+    "evidenceBoundary": "Terminal-dividend state recovery is fitted only from calibration component rows; holdout first-withdrawal rows remain validation-only."
   }
 }

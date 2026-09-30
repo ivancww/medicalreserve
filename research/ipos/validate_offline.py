@@ -180,6 +180,7 @@ def project(item):
         gcv_tap = float(point.get("withdrawalFromGuaranteedCashValue", 0)) if withdrawal else 0.0
         td_withdrawal = float(point.get("withdrawalFromTerminalDividend", 0)) if withdrawal else 0.0
         terminal_state = base["terminalDividendCashValue"]
+        terminal_correction = 0.0
         if previous_remaining is None:
             remaining = base["total"]
         elif not first_withdrawal_seen:
@@ -201,7 +202,8 @@ def project(item):
             terminal_ratio = max(0.0, min(1.5, terminal_ratio))
             remaining = base["total"] * max(0.0, min(1.5, ratio))
             terminal_state = base["terminalDividendCashValue"] * terminal_ratio - td_withdrawal
-            remaining += terminal_state - base["terminalDividendCashValue"] * ratio
+            terminal_correction = terminal_state - base["terminalDividendCashValue"] * ratio
+            remaining += terminal_correction
         if withdrawal > 0 and not first_withdrawal_seen:
             remaining = max(0.0, base["total"] - withdrawal)
             terminal_state = base["terminalDividendCashValue"] - td_withdrawal
@@ -214,7 +216,7 @@ def project(item):
             current_basic = max(0.0, current_basic - coefficient * raw_reduction)
         if base["total"] <= withdrawal and withdrawal > 0:
             remaining = 0.0
-        output.append({"age": age, "policyYear": policy_year, "currentBasicAmount": round(current_basic), "noWithdrawalBaseValue": round(base["total"]), "withdrawal": round(withdrawal), "projectedRemainingSurrenderValue": round(max(0.0, remaining)), "basicAmountAfterWithdrawal": round(current_basic), "status": "INSUFFICIENT_RESERVE" if remaining <= 0 and withdrawal > base["total"] else "OK"})
+        output.append({"age": age, "policyYear": policy_year, "currentBasicAmount": round(current_basic), "noWithdrawalBaseValue": round(base["total"]), "withdrawal": round(withdrawal), "terminalDividendState": round(max(0.0, terminal_state)), "terminalDividendCorrection": round(terminal_correction, 2), "projectedRemainingSurrenderValue": round(max(0.0, remaining)), "basicAmountAfterWithdrawal": round(current_basic), "status": "INSUFFICIENT_RESERVE" if remaining <= 0 and withdrawal > base["total"] else "OK"})
         previous_remaining = remaining
         previous_withdrawal = withdrawal
         previous_basic = current_basic
@@ -290,6 +292,64 @@ def first_divergence(item):
         return {"case": item["caseId"], "age": row["age"], "policyYear": row["policyYear"], "annualPremium": item["annualPremium"], "initialBasicAmount": item["initialBasicAmount"], "currentBasicAmount": row["basicAmountAfterWithdrawal"], "modelCurrentBasicAmount": row["modelCurrentBasicAmount"], "noWithdrawalBaseValue": row["modelNoWithdrawalBaseValue"], "withdrawal": row["withdrawal"], "expectedIPOSRemaining": row["projectedRemainingSurrenderValue"], "modelRemaining": row["modelRemaining"], "dollarError": row["dollarError"], "percentageError": row["signedPercent"], "absolutePercentageError": row["absolutePercent"]}
     return {"case": item["caseId"], "issueAge": item["issueAge"], "annualPremium": item["annualPremium"], "initialBasicAmount": item["initialBasicAmount"], "withdrawalType": item["withdrawalPattern"], "withdrawalStartAge": item["withdrawalStartAge"], "crossings": crossings, "firstOver010": detail(first_over_row), "previousRow": detail(previous_row), "firstWithdrawalCheck": first_withdrawal_check, "classification": classification}
 
+def residual_decomposition(item):
+    predicted, _ = project(item)
+    by_age = {row["age"]: row for row in predicted}
+    schedule = {row["age"]: row for row in item["withdrawalSchedule"]}
+    rows = []
+    first_withdrawal_age = next((row["age"] for row in item["rows"] if row["withdrawal"] > 0), None)
+    consecutive = 0
+    prior_gcv_tap = False
+    prior_withdrawal = 0
+    for index, actual in enumerate(item["rows"]):
+        model_row = by_age[actual["age"]]
+        current_withdrawal = actual["withdrawal"]
+        if current_withdrawal > 0:
+            consecutive += 1
+        else:
+            consecutive = 0
+        current_gcv_tap = schedule.get(actual["age"], {}).get("withdrawalFromGuaranteedCashValue", 0) > 0
+        previous_actual = item["rows"][index - 1] if index else None
+        basic_changed = bool(previous_actual and actual["basicAmountAfterWithdrawal"] != previous_actual["basicAmountAfterWithdrawal"])
+        basic_reduced_previously = actual["basicAmountAfterWithdrawal"] < item["initialBasicAmount"]
+        resumed = bool(current_withdrawal > 0 and previous_actual and previous_actual["withdrawal"] == 0 and any(row["withdrawal"] > 0 for row in item["rows"][:index]))
+        signed = error(actual["projectedRemainingSurrenderValue"], model_row["projectedRemainingSurrenderValue"])
+        schedule_row = schedule.get(actual["age"], {})
+        rows.append({"case": item["caseId"], "withdrawalPattern": item["withdrawalPattern"], "age": actual["age"], "policyYear": actual["policyYear"], "annualPremium": item["annualPremium"], "initialBasicAmount": item["initialBasicAmount"], "expectedIPOSRemaining": actual["projectedRemainingSurrenderValue"], "modelRemaining": model_row["projectedRemainingSurrenderValue"], "dollarError": signed["dollarError"], "percentageError": signed["signedPercent"], "absolutePercentageError": signed["absolutePercent"], "noWithdrawalBase": model_row["noWithdrawalBaseValue"], "currentWithdrawal": current_withdrawal, "previousWithdrawal": prior_withdrawal, "RBWithdrawal": schedule_row.get("withdrawalFromReversionaryBonus", 0), "GCVWithdrawal": schedule_row.get("withdrawalFromGuaranteedCashValue", 0), "TDWithdrawal": schedule_row.get("withdrawalFromTerminalDividend", 0), "expectedDisplayedBasicAmount": actual["basicAmountAfterWithdrawal"], "modelBasicAmount": model_row["basicAmountAfterWithdrawal"], "RBState": actual["reversionaryBonusCashValue"], "GCVState": actual["guaranteedCashValue"], "TDState": actual["terminalDividendCashValue"], "modelTDState": model_row["terminalDividendState"], "modelTDCorrection": model_row["terminalDividendCorrection"], "previousTDCorrection": predicted[index - 1]["terminalDividendCorrection"] if index else 0, "yearsSinceFirstWithdrawal": None if first_withdrawal_age is None else actual["age"] - first_withdrawal_age, "consecutiveWithdrawalCount": consecutive, "GCVCurrentlyTapped": current_gcv_tap, "GCVWasTappedPreviously": prior_gcv_tap, "BasicAmountChangedThisYear": basic_changed, "BasicAmountReducedPreviously": basic_reduced_previously, "WithdrawalResumedAfterZero": resumed})
+        prior_gcv_tap = prior_gcv_tap or current_gcv_tap
+        prior_withdrawal = current_withdrawal
+    return rows
+
+def cluster_summary(rows, key):
+    groups = {}
+    for row in rows:
+        value = row[key]
+        label = str(value)
+        groups.setdefault(label, []).append(row)
+    result = {}
+    for label, group in groups.items():
+        result[label] = {"rows": len(group), "MAPE": round(sum(row["absolutePercentageError"] for row in group) / len(group), 8), "maxErrorPercent": round(max(row["absolutePercentageError"] for row in group), 8), "maxDollarError": round(max(abs(row["dollarError"]) for row in group), 2)}
+    return result
+
+def residual_report():
+    decomposed = {item["caseId"]: residual_decomposition(item) for item in holdouts}
+    error_rows = [row for rows in decomposed.values() for row in rows if row["absolutePercentageError"] > 0.10]
+    worst_case = max(holdouts, key=lambda item: max(row["absolutePercentageError"] for row in decomposed[item["caseId"]]))
+    worst_rows = decomposed[worst_case["caseId"]]
+    worst_trace = [row for row in worst_rows if row["age"] >= (worst_case["withdrawalStartAge"] or worst_case["issueAge"]) and row["policyYear"] <= 22]
+    first_material = next((row for row in worst_trace if row["absolutePercentageError"] > 0.10), None)
+    if first_material and first_material["GCVCurrentlyTapped"]:
+        residual_classification = "D. interaction between GCV and TD"
+    elif first_material and first_material["BasicAmountChangedThisYear"]:
+        residual_classification = "C. Basic Amount reduction"
+    elif first_material and first_material["WithdrawalResumedAfterZero"]:
+        residual_classification = "F. pause/resume"
+    elif first_material:
+        residual_classification = "A. TD transition still incorrect"
+    else:
+        residual_classification = "I. unknown"
+    return {"engineVersion": report["engineVersion"], "threshold": ">0.10%", "rowsAboveThreshold": error_rows, "clusters": {"policyYear": cluster_summary(error_rows, "policyYear"), "withdrawalPattern": cluster_summary(error_rows, "withdrawalPattern"), "beforeAfterGCVTap": cluster_summary(error_rows, "GCVWasTappedPreviously"), "beforeAfterBasicReduction": cluster_summary(error_rows, "BasicAmountReducedPreviously"), "consecutiveWithdrawalCount": cluster_summary(error_rows, "consecutiveWithdrawalCount"), "pauseResume": cluster_summary(error_rows, "WithdrawalResumedAfterZero"), "premiumBasicAnchor": cluster_summary(error_rows, "annualPremium")}, "worstCase": worst_case["caseId"], "worstCaseTraceThroughPY22": worst_trace, "worstCaseFirstMaterialDivergence": first_material, "residualClassification": residual_classification, "classificationEvidence": "The worst case first materially diverges after its exact first withdrawal and before GCV tap or Basic Amount reduction, so the residual is assigned to TD transition behavior."}
+
 def aggregate(results):
     rows = [row for result in results for row in result["rows"]]
     absolute = [row["absolutePercent"] for row in rows]
@@ -302,8 +362,10 @@ holdout_results = [summarize(item) for item in holdouts]
 first_divergence_results = [first_divergence(item) for item in holdouts]
 holdout = aggregate(holdout_results)
 report = {"engineVersion": "ipos-approximation-terminal-dividend-transition-v4", "dataset": {"calibrationCases": len(calibration), "holdoutCases": len(holdouts), "annualRows": sum(len(item["rows"]) for item in cases), "fixtureSource": dataset["sourcePolicy"], "leakageCheck": set(model["calibrationCaseIds"]) == {item["caseId"] for item in calibration}}, "modelSelection": {"selected": "policyYearBasicAmountNormalizedTransitionWithTerminalDividendState", "previousV1HoldoutMAPE": 17.17569366, "previousV1HoldoutMaxErrorPercent": 57.11395611, "previousV2HoldoutMAPE": 5.973153, "previousV2HoldoutMaxErrorPercent": 56.85795543, "previousV3HoldoutMAPE": 5.16213632, "previousV3HoldoutMaxErrorPercent": 35.97650942, "terminalDividendChange": "component-specific terminal-dividend state recovery correction fitted only from calibration rows", "rationale": "anchor-specific base curves and region-specific path-conditioned transitions with explicit terminal-dividend state recovery"}, "results": {"calibration": aggregate(calibration_results), "holdout": holdout}, "holdouts": holdout_results, "thresholdTargets": {"IDEAL": holdout["maxErrorPercent"] <= .01, "STRONG": holdout["maxErrorPercent"] <= .02, "TARGET": holdout["maxErrorPercent"] <= .05, "HARD_LIMIT": holdout["maxErrorPercent"] <= .10}, "supportedRange": {"issueAges": sorted({item["issueAge"] for item in cases}), "premiums": sorted({item["annualPremium"] for item in cases}), "withdrawalStartAges": sorted({item["withdrawalStartAge"] for item in cases if item["withdrawalStartAge"]}), "withdrawalPatterns": sorted({item["withdrawalPattern"] for item in cases})}, "notVerifiedRange": ["continuous premiums outside supplied anchors", "portfolio pause/resume against direct proposal evidence", "production integration"], "finalStatus": "READY_FOR_INTEGRATION_REVIEW" if holdout["maxErrorPercent"] <= .10 else "NOT_READY_FOR_INTEGRATION"}
-report["diagnosis"] = {"worstCase": holdout["worstCase"], "primaryObservedFactors": ["first-withdrawal base-curve interpolation for non-anchor Policy Years", "terminal-dividend behavior after a correct first withdrawal", "remaining long-horizon transition behavior"], "evidenceBoundary": "Calibration-only first-withdrawal component reconstruction is used for base curves; holdout first-withdrawal rows remain validation-only. Later rows use the fitted transition model."}
+report["diagnosis"] = {"worstCase": holdout["worstCase"], "primaryObservedFactors": ["terminal-dividend state recovery after a correct first withdrawal", "remaining long-horizon transition behavior", "display rounding at low Policy Years"], "evidenceBoundary": "Terminal-dividend state recovery is fitted only from calibration component rows; holdout first-withdrawal rows remain validation-only."}
 (ROOT / "validation-report.json").write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n")
+residual_decomposition_report = residual_report()
+(ROOT / "residual-decomposition-report.json").write_text(json.dumps(residual_decomposition_report, indent=2, ensure_ascii=False) + "\n")
 first_divergence_report = {"engineVersion": report["engineVersion"], "frozenHoldoutCheck": report["dataset"]["leakageCheck"], "cases": first_divergence_results, "diagnosticRule": "The first >0.10% row is classified before any model change; first-withdrawal checks use the proposal-supported no-withdrawal-minus-withdrawal identity where available."}
 (ROOT / "first-divergence-report.json").write_text(json.dumps(first_divergence_report, indent=2, ensure_ascii=False) + "\n")
 diagnostic_lines = ["# iPOS First-Divergence Diagnostics", "", "ENGINE VERSION: " + report["engineVersion"], "", "Frozen holdout leakage check: " + ("PASS" if report["dataset"]["leakageCheck"] else "FAIL"), ""]
@@ -321,6 +383,15 @@ for item in holdout_results:
     lines += ["### " + item["caseName"], "- MAPE: " + str(item["MAPE"]) + "%", "- Max Error %: " + str(item["maxErrorPercent"]) + "%", "- Max Dollar Error: HKD " + str(item["maxDollarError"]), "- Worst age / Policy Year: " + str(item["worstAge"]) + " / " + str(item["worstPolicyYear"])]
     for key in [">0.01%", ">0.02%", ">0.05%", ">0.10%"]:
         lines.append("- First " + key + ": " + json.dumps(item["crossings"][key], ensure_ascii=False))
-lines += ["", "## DIAGNOSIS", "- Primary factors: terminal-dividend state recovery after a correct first withdrawal, remaining long-horizon transition behavior, and display rounding at low Policy Years.", "- Evidence boundary: terminal-dividend state recovery is fitted only from calibration component rows; holdout first-withdrawal rows remain validation-only.", "- Detailed first-divergence output: first-divergence-report.json and first-divergence-report.md", "", "## ACCURACY DISTRIBUTION"] + ["- " + key + ": " + str(value) for key, value in report["results"]["holdout"]["distribution"].items()] + ["", "## FINAL STATUS", report["finalStatus"], "", "This is a calibrated approximation and is not the official AIA/iPOS calculation engine."]
+lines += ["", "## DIAGNOSIS", "- Primary factors: terminal-dividend state recovery after a correct first withdrawal, remaining long-horizon transition behavior, and display rounding at low Policy Years.", "- Evidence boundary: terminal-dividend state recovery is fitted only from calibration component rows; holdout first-withdrawal rows remain validation-only.", "- Detailed first-divergence output: first-divergence-report.json and first-divergence-report.md", "- Detailed residual decomposition: residual-decomposition-report.json and residual-decomposition-report.md", "", "## ACCURACY DISTRIBUTION"] + ["- " + key + ": " + str(value) for key, value in report["results"]["holdout"]["distribution"].items()] + ["", "## FINAL STATUS", report["finalStatus"], "", "This is a calibrated approximation and is not the official AIA/iPOS calculation engine."]
 (ROOT / "validation-report.md").write_text("\n".join(lines) + "\n")
+residual_lines = ["# iPOS Residual Decomposition", "", "ENGINE VERSION: " + report["engineVersion"], "", "ROWS >0.10%: " + str(len(residual_decomposition_report["rowsAboveThreshold"])), "", "## WORST CASE", "- Case: " + residual_decomposition_report["worstCase"], "- First material classification: " + residual_decomposition_report["residualClassification"], "- Evidence: " + residual_decomposition_report["classificationEvidence"], "", "## CLUSTERS"]
+for cluster_name, values in residual_decomposition_report["clusters"].items():
+    residual_lines.append("### " + cluster_name)
+    for label, summary in values.items():
+        residual_lines.append("- " + label + ": " + json.dumps(summary, ensure_ascii=False))
+residual_lines += ["", "## WORST CASE TRACE THROUGH PY22"]
+for row in residual_decomposition_report["worstCaseTraceThroughPY22"]:
+    residual_lines.append("- " + json.dumps(row, ensure_ascii=False))
+(ROOT / "residual-decomposition-report.md").write_text("\n".join(residual_lines) + "\n")
 print(json.dumps({"status": report["finalStatus"], "holdout": holdout}))

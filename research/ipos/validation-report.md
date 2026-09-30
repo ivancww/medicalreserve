@@ -77,6 +77,7 @@ ENGINE VERSION: ipos-approximation-terminal-dividend-transition-v4
 - Primary factors: terminal-dividend state recovery after a correct first withdrawal, remaining long-horizon transition behavior, and display rounding at low Policy Years.
 - Evidence boundary: terminal-dividend state recovery is fitted only from calibration component rows; holdout first-withdrawal rows remain validation-only.
 - Detailed first-divergence output: first-divergence-report.json and first-divergence-report.md
+- Detailed residual decomposition: residual-decomposition-report.json and residual-decomposition-report.md
 
 ## ACCURACY DISTRIBUTION
 - <=0.005%: 77
