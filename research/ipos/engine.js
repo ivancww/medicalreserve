@@ -86,6 +86,17 @@ export function buildCalibrationModel(cases) {
       list.push(baseComponentRow(row, item.initialBasicAmount));
       years.set(row.policyYear, list);
     });
+    const firstRow = item.rows.find(row => Number(row.withdrawal || 0) > 0 && row.withdrawalType === 'medicalWithdrawal');
+    if (firstRow) {
+      const scheduleRow = item.withdrawalSchedule.find(row => row.age === firstRow.age) || {};
+      const list = years.get(firstRow.policyYear) || [];
+      list.push({
+        guaranteedCashValue: (Number(firstRow.guaranteedCashValue || 0) + Number(scheduleRow.withdrawalFromGuaranteedCashValue || 0)) / item.initialBasicAmount,
+        reversionaryBonusCashValue: (Number(firstRow.reversionaryBonusCashValue || 0) + Number(scheduleRow.withdrawalFromReversionaryBonus || 0)) / item.initialBasicAmount,
+        terminalDividendCashValue: (Number(firstRow.terminalDividendCashValue || 0) + Number(scheduleRow.withdrawalFromTerminalDividend || 0)) / item.initialBasicAmount
+      });
+      years.set(firstRow.policyYear, list);
+    }
     byAnchor.set(item.annualPremium, years);
   });
   const curves = new Map();

@@ -1,5 +1,5 @@
 {
-  "engineVersion": "ipos-approximation-policy-year-transition-v2",
+  "engineVersion": "ipos-approximation-policy-year-transition-v3-basecurve",
   "dataset": {
     "calibrationCases": 14,
     "holdoutCases": 6,
@@ -11,11 +11,14 @@
     "selected": "policyYearBasicAmountNormalizedTransition",
     "previousV1HoldoutMAPE": 17.17569366,
     "previousV1HoldoutMaxErrorPercent": 57.11395611,
+    "previousV2HoldoutMAPE": 5.973153,
+    "previousV2HoldoutMaxErrorPercent": 56.85795543,
+    "baseCurveChange": "calibration-only first-withdrawal component reconstruction; no holdout rows used",
     "rationale": "anchor-specific base curves and region-specific path-conditioned transitions; no global component mean or global Basic Amount ratio"
   },
   "results": {
     "calibration": {
-      "MAPE": 4.44962792,
+      "MAPE": 5.65566368,
       "maxErrorPercent": 69.78829946,
       "maxDollarError": 10171673,
       "worstCase": "40yrs_5pay_130k_avf",
@@ -23,28 +26,28 @@
       "worstPolicyYear": 55,
       "annualRows": 765,
       "distribution": {
-        "<=0.005%": 201,
-        "<=0.01%": 201,
-        "<=0.02%": 202,
-        "<=0.05%": 207,
+        "<=0.005%": 209,
+        "<=0.01%": 209,
+        "<=0.02%": 209,
+        "<=0.05%": 212,
         "<=0.10%": 214,
         ">0.10%": 765
       }
     },
     "holdout": {
-      "MAPE": 5.973153,
-      "maxErrorPercent": 56.85795543,
-      "maxDollarError": 4226531,
-      "worstCase": "45yrs_5pay_130k_avpu_55yr",
+      "MAPE": 5.16213632,
+      "maxErrorPercent": 35.97650942,
+      "maxDollarError": 6140453,
+      "worstCase": "5pay_avpu_200k",
       "worstAge": 100,
       "worstPolicyYear": 55,
       "annualRows": 325,
       "distribution": {
-        "<=0.005%": 74,
-        "<=0.01%": 74,
-        "<=0.02%": 75,
+        "<=0.005%": 77,
+        "<=0.01%": 77,
+        "<=0.02%": 77,
         "<=0.05%": 77,
-        "<=0.10%": 81,
+        "<=0.10%": 79,
         ">0.10%": 325
       }
     }
@@ -239,10 +242,10 @@
           "policyYear": 11,
           "withdrawal": 14400,
           "iposRemainingSurrenderValue": 858040,
-          "modelRemainingSurrenderValue": 855206,
-          "dollarError": -2834,
-          "signedPercent": -0.33028763,
-          "absolutePercent": 0.33028763,
+          "modelRemainingSurrenderValue": 853765,
+          "dollarError": -4275,
+          "signedPercent": -0.49822852,
+          "absolutePercent": 0.49822852,
           "status": "OK"
         },
         {
@@ -256,10 +259,10 @@
           "policyYear": 12,
           "withdrawal": 14784,
           "iposRemainingSurrenderValue": 902335,
-          "modelRemainingSurrenderValue": 897586,
-          "dollarError": -4749,
-          "signedPercent": -0.52630121,
-          "absolutePercent": 0.52630121,
+          "modelRemainingSurrenderValue": 895119,
+          "dollarError": -7216,
+          "signedPercent": -0.79970299,
+          "absolutePercent": 0.79970299,
           "status": "OK"
         },
         {
@@ -273,10 +276,10 @@
           "policyYear": 13,
           "withdrawal": 15334,
           "iposRemainingSurrenderValue": 954578,
-          "modelRemainingSurrenderValue": 948794,
-          "dollarError": -5784,
-          "signedPercent": -0.6059222,
-          "absolutePercent": 0.6059222,
+          "modelRemainingSurrenderValue": 945680,
+          "dollarError": -8898,
+          "signedPercent": -0.93213965,
+          "absolutePercent": 0.93213965,
           "status": "OK"
         },
         {
@@ -290,10 +293,10 @@
           "policyYear": 14,
           "withdrawal": 15937,
           "iposRemainingSurrenderValue": 1010675,
-          "modelRemainingSurrenderValue": 1004952,
-          "dollarError": -5723,
-          "signedPercent": -0.56625523,
-          "absolutePercent": 0.56625523,
+          "modelRemainingSurrenderValue": 1001529,
+          "dollarError": -9146,
+          "signedPercent": -0.90493977,
+          "absolutePercent": 0.90493977,
           "status": "OK"
         },
         {
@@ -307,10 +310,10 @@
           "policyYear": 15,
           "withdrawal": 16701,
           "iposRemainingSurrenderValue": 1058007,
-          "modelRemainingSurrenderValue": 1053959,
-          "dollarError": -4048,
-          "signedPercent": -0.38260616,
-          "absolutePercent": 0.38260616,
+          "modelRemainingSurrenderValue": 1050693,
+          "dollarError": -7314,
+          "signedPercent": -0.69129977,
+          "absolutePercent": 0.69129977,
           "status": "OK"
         },
         {
@@ -324,10 +327,10 @@
           "policyYear": 16,
           "withdrawal": 17745,
           "iposRemainingSurrenderValue": 1108601,
-          "modelRemainingSurrenderValue": 1107491,
-          "dollarError": -1110,
-          "signedPercent": -0.1001262,
-          "absolutePercent": 0.1001262,
+          "modelRemainingSurrenderValue": 1104727,
+          "dollarError": -3874,
+          "signedPercent": -0.34944944,
+          "absolutePercent": 0.34944944,
           "status": "OK"
         },
         {
@@ -341,10 +344,10 @@
           "policyYear": 17,
           "withdrawal": 18776,
           "iposRemainingSurrenderValue": 1170812,
-          "modelRemainingSurrenderValue": 1174033,
-          "dollarError": 3221,
-          "signedPercent": 0.27510822,
-          "absolutePercent": 0.27510822,
+          "modelRemainingSurrenderValue": 1171892,
+          "dollarError": 1080,
+          "signedPercent": 0.09224367,
+          "absolutePercent": 0.09224367,
           "status": "OK"
         },
         {
@@ -358,10 +361,10 @@
           "policyYear": 18,
           "withdrawal": 20030,
           "iposRemainingSurrenderValue": 1234713,
-          "modelRemainingSurrenderValue": 1256263,
-          "dollarError": 21550,
-          "signedPercent": 1.74534487,
-          "absolutePercent": 1.74534487,
+          "modelRemainingSurrenderValue": 1255221,
+          "dollarError": 20508,
+          "signedPercent": 1.66095279,
+          "absolutePercent": 1.66095279,
           "status": "OK"
         },
         {
@@ -375,10 +378,10 @@
           "policyYear": 19,
           "withdrawal": 21090,
           "iposRemainingSurrenderValue": 1311991,
-          "modelRemainingSurrenderValue": 1341041,
-          "dollarError": 29050,
-          "signedPercent": 2.21419202,
-          "absolutePercent": 2.21419202,
+          "modelRemainingSurrenderValue": 1339980,
+          "dollarError": 27989,
+          "signedPercent": 2.13332256,
+          "absolutePercent": 2.13332256,
           "status": "OK"
         },
         {
@@ -392,10 +395,10 @@
           "policyYear": 20,
           "withdrawal": 22820,
           "iposRemainingSurrenderValue": 1401635,
-          "modelRemainingSurrenderValue": 1435413,
-          "dollarError": 33778,
-          "signedPercent": 2.40989987,
-          "absolutePercent": 2.40989987,
+          "modelRemainingSurrenderValue": 1434245,
+          "dollarError": 32610,
+          "signedPercent": 2.32656861,
+          "absolutePercent": 2.32656861,
           "status": "OK"
         },
         {
@@ -409,10 +412,10 @@
           "policyYear": 21,
           "withdrawal": 23905,
           "iposRemainingSurrenderValue": 1514836,
-          "modelRemainingSurrenderValue": 1540577,
-          "dollarError": 25741,
-          "signedPercent": 1.69925985,
-          "absolutePercent": 1.69925985,
+          "modelRemainingSurrenderValue": 1544734,
+          "dollarError": 29898,
+          "signedPercent": 1.973679,
+          "absolutePercent": 1.973679,
           "status": "OK"
         },
         {
@@ -426,10 +429,10 @@
           "policyYear": 22,
           "withdrawal": 25137,
           "iposRemainingSurrenderValue": 1596112,
-          "modelRemainingSurrenderValue": 1642212,
-          "dollarError": 46100,
-          "signedPercent": 2.88826849,
-          "absolutePercent": 2.88826849,
+          "modelRemainingSurrenderValue": 1644208,
+          "dollarError": 48096,
+          "signedPercent": 3.01332237,
+          "absolutePercent": 3.01332237,
           "status": "OK"
         },
         {
@@ -443,10 +446,10 @@
           "policyYear": 23,
           "withdrawal": 26380,
           "iposRemainingSurrenderValue": 1695355,
-          "modelRemainingSurrenderValue": 1740436,
-          "dollarError": 45081,
-          "signedPercent": 2.6590891,
-          "absolutePercent": 2.6590891,
+          "modelRemainingSurrenderValue": 1740492,
+          "dollarError": 45137,
+          "signedPercent": 2.66239224,
+          "absolutePercent": 2.66239224,
           "status": "OK"
         },
         {
@@ -460,10 +463,10 @@
           "policyYear": 24,
           "withdrawal": 27668,
           "iposRemainingSurrenderValue": 1781925,
-          "modelRemainingSurrenderValue": 1837093,
-          "dollarError": 55168,
-          "signedPercent": 3.09597766,
-          "absolutePercent": 3.09597766,
+          "modelRemainingSurrenderValue": 1835408,
+          "dollarError": 53483,
+          "signedPercent": 3.00141701,
+          "absolutePercent": 3.00141701,
           "status": "OK"
         },
         {
@@ -477,10 +480,10 @@
           "policyYear": 25,
           "withdrawal": 29329,
           "iposRemainingSurrenderValue": 1894652,
-          "modelRemainingSurrenderValue": 1928552,
-          "dollarError": 33900,
-          "signedPercent": 1.78924679,
-          "absolutePercent": 1.78924679,
+          "modelRemainingSurrenderValue": 1925333,
+          "dollarError": 30681,
+          "signedPercent": 1.61934751,
+          "absolutePercent": 1.61934751,
           "status": "OK"
         },
         {
@@ -494,10 +497,10 @@
           "policyYear": 26,
           "withdrawal": 31195,
           "iposRemainingSurrenderValue": 2021221,
-          "modelRemainingSurrenderValue": 2041586,
-          "dollarError": 20365,
-          "signedPercent": 1.00755929,
-          "absolutePercent": 1.00755929,
+          "modelRemainingSurrenderValue": 2037835,
+          "dollarError": 16614,
+          "signedPercent": 0.8219784,
+          "absolutePercent": 0.8219784,
           "status": "OK"
         },
         {
@@ -511,10 +514,10 @@
           "policyYear": 27,
           "withdrawal": 33060,
           "iposRemainingSurrenderValue": 2109049,
-          "modelRemainingSurrenderValue": 2151674,
-          "dollarError": 42625,
-          "signedPercent": 2.02105309,
-          "absolutePercent": 2.02105309,
+          "modelRemainingSurrenderValue": 2147382,
+          "dollarError": 38333,
+          "signedPercent": 1.81754905,
+          "absolutePercent": 1.81754905,
           "status": "OK"
         },
         {
@@ -528,10 +531,10 @@
           "policyYear": 28,
           "withdrawal": 34924,
           "iposRemainingSurrenderValue": 2201125,
-          "modelRemainingSurrenderValue": 2258322,
-          "dollarError": 57197,
-          "signedPercent": 2.59853484,
-          "absolutePercent": 2.59853484,
+          "modelRemainingSurrenderValue": 2253490,
+          "dollarError": 52365,
+          "signedPercent": 2.37901073,
+          "absolutePercent": 2.37901073,
           "status": "OK"
         },
         {
@@ -545,10 +548,10 @@
           "policyYear": 29,
           "withdrawal": 36789,
           "iposRemainingSurrenderValue": 2296317,
-          "modelRemainingSurrenderValue": 2361743,
-          "dollarError": 65426,
-          "signedPercent": 2.84917109,
-          "absolutePercent": 2.84917109,
+          "modelRemainingSurrenderValue": 2356384,
+          "dollarError": 60067,
+          "signedPercent": 2.61579738,
+          "absolutePercent": 2.61579738,
           "status": "OK"
         },
         {
@@ -562,10 +565,10 @@
           "policyYear": 30,
           "withdrawal": 38996,
           "iposRemainingSurrenderValue": 2395191,
-          "modelRemainingSurrenderValue": 2462059,
-          "dollarError": 66868,
-          "signedPercent": 2.79176066,
-          "absolutePercent": 2.79176066,
+          "modelRemainingSurrenderValue": 2456193,
+          "dollarError": 61002,
+          "signedPercent": 2.54685326,
+          "absolutePercent": 2.54685326,
           "status": "OK"
         },
         {
@@ -579,10 +582,10 @@
           "policyYear": 31,
           "withdrawal": 40878,
           "iposRemainingSurrenderValue": 2513618,
-          "modelRemainingSurrenderValue": 2598337,
-          "dollarError": 84719,
-          "signedPercent": 3.37040075,
-          "absolutePercent": 3.37040075,
+          "modelRemainingSurrenderValue": 2591906,
+          "dollarError": 78288,
+          "signedPercent": 3.1145544,
+          "absolutePercent": 3.1145544,
           "status": "OK"
         },
         {
@@ -596,10 +599,10 @@
           "policyYear": 32,
           "withdrawal": 42759,
           "iposRemainingSurrenderValue": 2638473,
-          "modelRemainingSurrenderValue": 2731692,
-          "dollarError": 93219,
-          "signedPercent": 3.53306628,
-          "absolutePercent": 3.53306628,
+          "modelRemainingSurrenderValue": 2724736,
+          "dollarError": 86263,
+          "signedPercent": 3.26942895,
+          "absolutePercent": 3.26942895,
           "status": "OK"
         },
         {
@@ -613,10 +616,10 @@
           "policyYear": 33,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 2816436,
-          "modelRemainingSurrenderValue": 2860161,
-          "dollarError": 43725,
-          "signedPercent": 1.552494,
-          "absolutePercent": 1.552494,
+          "modelRemainingSurrenderValue": 2852864,
+          "dollarError": 36428,
+          "signedPercent": 1.2934077,
+          "absolutePercent": 1.2934077,
           "status": "OK"
         },
         {
@@ -630,10 +633,10 @@
           "policyYear": 34,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 2987710,
-          "modelRemainingSurrenderValue": 3027192,
-          "dollarError": 39482,
-          "signedPercent": 1.32148033,
-          "absolutePercent": 1.32148033,
+          "modelRemainingSurrenderValue": 3019057,
+          "dollarError": 31347,
+          "signedPercent": 1.04919822,
+          "absolutePercent": 1.04919822,
           "status": "OK"
         },
         {
@@ -647,10 +650,10 @@
           "policyYear": 35,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 3161379,
-          "modelRemainingSurrenderValue": 3195070,
-          "dollarError": 33691,
-          "signedPercent": 1.06570582,
-          "absolutePercent": 1.06570582,
+          "modelRemainingSurrenderValue": 3185967,
+          "dollarError": 24588,
+          "signedPercent": 0.77776186,
+          "absolutePercent": 0.77776186,
           "status": "OK"
         },
         {
@@ -664,10 +667,10 @@
           "policyYear": 36,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 3344742,
-          "modelRemainingSurrenderValue": 3413366,
-          "dollarError": 68624,
-          "signedPercent": 2.05169786,
-          "absolutePercent": 2.05169786,
+          "modelRemainingSurrenderValue": 3402991,
+          "dollarError": 58249,
+          "signedPercent": 1.74150951,
+          "absolutePercent": 1.74150951,
           "status": "OK"
         },
         {
@@ -681,10 +684,10 @@
           "policyYear": 37,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 3537818,
-          "modelRemainingSurrenderValue": 3633065,
-          "dollarError": 95247,
-          "signedPercent": 2.69225268,
-          "absolutePercent": 2.69225268,
+          "modelRemainingSurrenderValue": 3621215,
+          "dollarError": 83397,
+          "signedPercent": 2.35730046,
+          "absolutePercent": 2.35730046,
           "status": "OK"
         },
         {
@@ -698,10 +701,10 @@
           "policyYear": 38,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 3742216,
-          "modelRemainingSurrenderValue": 3854494,
-          "dollarError": 112278,
-          "signedPercent": 3.00030784,
-          "absolutePercent": 3.00030784,
+          "modelRemainingSurrenderValue": 3840934,
+          "dollarError": 98718,
+          "signedPercent": 2.63795569,
+          "absolutePercent": 2.63795569,
           "status": "OK"
         },
         {
@@ -715,10 +718,10 @@
           "policyYear": 39,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 3957323,
-          "modelRemainingSurrenderValue": 4078021,
-          "dollarError": 120698,
-          "signedPercent": 3.04999112,
-          "absolutePercent": 3.04999112,
+          "modelRemainingSurrenderValue": 4062477,
+          "dollarError": 105154,
+          "signedPercent": 2.65720033,
+          "absolutePercent": 2.65720033,
           "status": "OK"
         },
         {
@@ -732,10 +735,10 @@
           "policyYear": 40,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 4199581,
-          "modelRemainingSurrenderValue": 4304064,
-          "dollarError": 104483,
-          "signedPercent": 2.48793868,
-          "absolutePercent": 2.48793868,
+          "modelRemainingSurrenderValue": 4286218,
+          "dollarError": 86637,
+          "signedPercent": 2.06299152,
+          "absolutePercent": 2.06299152,
           "status": "OK"
         },
         {
@@ -749,10 +752,10 @@
           "policyYear": 41,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 4455020,
-          "modelRemainingSurrenderValue": 4606863,
-          "dollarError": 151843,
-          "signedPercent": 3.40835731,
-          "absolutePercent": 3.40835731,
+          "modelRemainingSurrenderValue": 4586015,
+          "dollarError": 130995,
+          "signedPercent": 2.94039084,
+          "absolutePercent": 2.94039084,
           "status": "OK"
         },
         {
@@ -766,10 +769,10 @@
           "policyYear": 42,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 4726488,
-          "modelRemainingSurrenderValue": 4913625,
-          "dollarError": 187137,
-          "signedPercent": 3.95932456,
-          "absolutePercent": 3.95932456,
+          "modelRemainingSurrenderValue": 4889287,
+          "dollarError": 162799,
+          "signedPercent": 3.44439677,
+          "absolutePercent": 3.44439677,
           "status": "OK"
         },
         {
@@ -783,10 +786,10 @@
           "policyYear": 43,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 5013872,
-          "modelRemainingSurrenderValue": 5225069,
-          "dollarError": 211197,
-          "signedPercent": 4.21225352,
-          "absolutePercent": 4.21225352,
+          "modelRemainingSurrenderValue": 5196681,
+          "dollarError": 182809,
+          "signedPercent": 3.64606436,
+          "absolutePercent": 3.64606436,
           "status": "OK"
         },
         {
@@ -800,10 +803,10 @@
           "policyYear": 44,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 5318881,
-          "modelRemainingSurrenderValue": 5542009,
-          "dollarError": 223128,
-          "signedPercent": 4.19501771,
-          "absolutePercent": 4.19501771,
+          "modelRemainingSurrenderValue": 5508925,
+          "dollarError": 190044,
+          "signedPercent": 3.57300718,
+          "absolutePercent": 3.57300718,
           "status": "OK"
         },
         {
@@ -817,10 +820,10 @@
           "policyYear": 45,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 5642158,
-          "modelRemainingSurrenderValue": 5865362,
-          "dollarError": 223204,
-          "signedPercent": 3.95600407,
-          "absolutePercent": 3.95600407,
+          "modelRemainingSurrenderValue": 5826842,
+          "dollarError": 184684,
+          "signedPercent": 3.27328657,
+          "absolutePercent": 3.27328657,
           "status": "OK"
         },
         {
@@ -834,10 +837,10 @@
           "policyYear": 46,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 5984595,
-          "modelRemainingSurrenderValue": 6296999,
-          "dollarError": 312404,
-          "signedPercent": 5.22013603,
-          "absolutePercent": 5.22013603,
+          "modelRemainingSurrenderValue": 6251466,
+          "dollarError": 266871,
+          "signedPercent": 4.45929925,
+          "absolutePercent": 4.45929925,
           "status": "OK"
         },
         {
@@ -851,10 +854,10 @@
           "policyYear": 47,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 6347635,
-          "modelRemainingSurrenderValue": 6738533,
-          "dollarError": 390898,
-          "signedPercent": 6.15816757,
-          "absolutePercent": 6.15816757,
+          "modelRemainingSurrenderValue": 6684861,
+          "dollarError": 337226,
+          "signedPercent": 5.31262431,
+          "absolutePercent": 5.31262431,
           "status": "OK"
         },
         {
@@ -868,10 +871,10 @@
           "policyYear": 48,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 6731687,
-          "modelRemainingSurrenderValue": 7191549,
-          "dollarError": 459862,
-          "signedPercent": 6.83130395,
-          "absolutePercent": 6.83130395,
+          "modelRemainingSurrenderValue": 7128449,
+          "dollarError": 396762,
+          "signedPercent": 5.89394605,
+          "absolutePercent": 5.89394605,
           "status": "OK"
         },
         {
@@ -885,10 +888,10 @@
           "policyYear": 49,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 7139291,
-          "modelRemainingSurrenderValue": 7657839,
-          "dollarError": 518548,
-          "signedPercent": 7.26329827,
-          "absolutePercent": 7.26329827,
+          "modelRemainingSurrenderValue": 7583837,
+          "dollarError": 444546,
+          "signedPercent": 6.22675277,
+          "absolutePercent": 6.22675277,
           "status": "OK"
         },
         {
@@ -902,10 +905,10 @@
           "policyYear": 50,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 7571851,
-          "modelRemainingSurrenderValue": 8139425,
-          "dollarError": 567574,
-          "signedPercent": 7.49584217,
-          "absolutePercent": 7.49584217,
+          "modelRemainingSurrenderValue": 8052840,
+          "dollarError": 480989,
+          "signedPercent": 6.35233049,
+          "absolutePercent": 6.35233049,
           "status": "OK"
         },
         {
@@ -919,10 +922,10 @@
           "policyYear": 51,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 8030687,
-          "modelRemainingSurrenderValue": 8779170,
-          "dollarError": 748483,
-          "signedPercent": 9.32028605,
-          "absolutePercent": 9.32028605,
+          "modelRemainingSurrenderValue": 8676442,
+          "dollarError": 645755,
+          "signedPercent": 8.04109287,
+          "absolutePercent": 8.04109287,
           "status": "OK"
         },
         {
@@ -936,10 +939,10 @@
           "policyYear": 52,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 8515914,
-          "modelRemainingSurrenderValue": 9442277,
-          "dollarError": 926363,
-          "signedPercent": 10.87802202,
-          "absolutePercent": 10.87802202,
+          "modelRemainingSurrenderValue": 9320861,
+          "dollarError": 804947,
+          "signedPercent": 9.45226784,
+          "absolutePercent": 9.45226784,
           "status": "OK"
         },
         {
@@ -953,10 +956,10 @@
           "policyYear": 53,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 9030609,
-          "modelRemainingSurrenderValue": 10132904,
-          "dollarError": 1102295,
-          "signedPercent": 12.20620891,
-          "absolutePercent": 12.20620891,
+          "modelRemainingSurrenderValue": 9990295,
+          "dollarError": 959686,
+          "signedPercent": 10.62703523,
+          "absolutePercent": 10.62703523,
           "status": "OK"
         },
         {
@@ -970,10 +973,10 @@
           "policyYear": 54,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 9575994,
-          "modelRemainingSurrenderValue": 10855184,
-          "dollarError": 1279190,
-          "signedPercent": 13.35829993,
-          "absolutePercent": 13.35829993,
+          "modelRemainingSurrenderValue": 10688585,
+          "dollarError": 1112591,
+          "signedPercent": 11.6185432,
+          "absolutePercent": 11.6185432,
           "status": "OK"
         },
         {
@@ -987,16 +990,16 @@
           "policyYear": 55,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 10154829,
-          "modelRemainingSurrenderValue": 11613776,
-          "dollarError": 1458947,
-          "signedPercent": 14.36702676,
-          "absolutePercent": 14.36702676,
+          "modelRemainingSurrenderValue": 11420062,
+          "dollarError": 1265233,
+          "signedPercent": 12.45942201,
+          "absolutePercent": 12.45942201,
           "status": "OK"
         }
       ],
-      "MAPE": 3.08201872,
-      "maxErrorPercent": 14.36702676,
-      "maxDollarError": 1458947,
+      "MAPE": 2.74767534,
+      "maxErrorPercent": 12.45942201,
+      "maxDollarError": 1265233,
       "worstAge": 100,
       "worstPolicyYear": 55,
       "crossings": {
@@ -1022,7 +1025,7 @@
         "<=0.01%": 10,
         "<=0.02%": 10,
         "<=0.05%": 10,
-        "<=0.10%": 10,
+        "<=0.10%": 11,
         ">0.10%": 55
       }
     },
@@ -1215,10 +1218,10 @@
           "policyYear": 11,
           "withdrawal": 20416,
           "iposRemainingSurrenderValue": 846694,
-          "modelRemainingSurrenderValue": 843655,
-          "dollarError": -3039,
-          "signedPercent": -0.35892542,
-          "absolutePercent": 0.35892542,
+          "modelRemainingSurrenderValue": 842285,
+          "dollarError": -4409,
+          "signedPercent": -0.52073122,
+          "absolutePercent": 0.52073122,
           "status": "OK"
         },
         {
@@ -1232,10 +1235,10 @@
           "policyYear": 12,
           "withdrawal": 21704,
           "iposRemainingSurrenderValue": 883552,
-          "modelRemainingSurrenderValue": 878757,
-          "dollarError": -4795,
-          "signedPercent": -0.54269585,
-          "absolutePercent": 0.54269585,
+          "modelRemainingSurrenderValue": 876536,
+          "dollarError": -7016,
+          "signedPercent": -0.79406758,
+          "absolutePercent": 0.79406758,
           "status": "OK"
         },
         {
@@ -1249,10 +1252,10 @@
           "policyYear": 13,
           "withdrawal": 22984,
           "iposRemainingSurrenderValue": 927200,
-          "modelRemainingSurrenderValue": 922022,
-          "dollarError": -5178,
-          "signedPercent": -0.55845557,
-          "absolutePercent": 0.55845557,
+          "modelRemainingSurrenderValue": 919373,
+          "dollarError": -7827,
+          "signedPercent": -0.84415444,
+          "absolutePercent": 0.84415444,
           "status": "OK"
         },
         {
@@ -1266,10 +1269,10 @@
           "policyYear": 14,
           "withdrawal": 24648,
           "iposRemainingSurrenderValue": 973164,
-          "modelRemainingSurrenderValue": 969095,
-          "dollarError": -4069,
-          "signedPercent": -0.41812069,
-          "absolutePercent": 0.41812069,
+          "modelRemainingSurrenderValue": 966649,
+          "dollarError": -6515,
+          "signedPercent": -0.66946578,
+          "absolutePercent": 0.66946578,
           "status": "OK"
         },
         {
@@ -1283,10 +1286,10 @@
           "policyYear": 15,
           "withdrawal": 26056,
           "iposRemainingSurrenderValue": 1009383,
-          "modelRemainingSurrenderValue": 1019376,
-          "dollarError": 9993,
-          "signedPercent": 0.99001073,
-          "absolutePercent": 0.99001073,
+          "modelRemainingSurrenderValue": 1017746,
+          "dollarError": 8363,
+          "signedPercent": 0.82852594,
+          "absolutePercent": 0.82852594,
           "status": "OK"
         },
         {
@@ -1300,10 +1303,10 @@
           "policyYear": 16,
           "withdrawal": 27608,
           "iposRemainingSurrenderValue": 1047536,
-          "modelRemainingSurrenderValue": 1074229,
-          "dollarError": 26693,
-          "signedPercent": 2.54817018,
-          "absolutePercent": 2.54817018,
+          "modelRemainingSurrenderValue": 1071839,
+          "dollarError": 24303,
+          "signedPercent": 2.32001573,
+          "absolutePercent": 2.32001573,
           "status": "OK"
         },
         {
@@ -1317,10 +1320,10 @@
           "policyYear": 17,
           "withdrawal": 29576,
           "iposRemainingSurrenderValue": 1094824,
-          "modelRemainingSurrenderValue": 1132221,
-          "dollarError": 37397,
-          "signedPercent": 3.41580017,
-          "absolutePercent": 3.41580017,
+          "modelRemainingSurrenderValue": 1128029,
+          "dollarError": 33205,
+          "signedPercent": 3.03290757,
+          "absolutePercent": 3.03290757,
           "status": "OK"
         },
         {
@@ -1334,10 +1337,10 @@
           "policyYear": 18,
           "withdrawal": 32168,
           "iposRemainingSurrenderValue": 1141167,
-          "modelRemainingSurrenderValue": 1192663,
-          "dollarError": 51496,
-          "signedPercent": 4.51257353,
-          "absolutePercent": 4.51257353,
+          "modelRemainingSurrenderValue": 1186713,
+          "dollarError": 45546,
+          "signedPercent": 3.99117745,
+          "absolutePercent": 3.99117745,
           "status": "OK"
         },
         {
@@ -1351,10 +1354,10 @@
           "policyYear": 19,
           "withdrawal": 35128,
           "iposRemainingSurrenderValue": 1196955,
-          "modelRemainingSurrenderValue": 1260604,
-          "dollarError": 63649,
-          "signedPercent": 5.31757668,
-          "absolutePercent": 5.31757668,
+          "modelRemainingSurrenderValue": 1252578,
+          "dollarError": 55623,
+          "signedPercent": 4.64704187,
+          "absolutePercent": 4.64704187,
           "status": "OK"
         },
         {
@@ -1368,10 +1371,10 @@
           "policyYear": 20,
           "withdrawal": 37816,
           "iposRemainingSurrenderValue": 1261742,
-          "modelRemainingSurrenderValue": 1331101,
-          "dollarError": 69359,
-          "signedPercent": 5.4970826,
-          "absolutePercent": 5.4970826,
+          "modelRemainingSurrenderValue": 1320378,
+          "dollarError": 58636,
+          "signedPercent": 4.64722582,
+          "absolutePercent": 4.64722582,
           "status": "OK"
         },
         {
@@ -1385,10 +1388,10 @@
           "policyYear": 21,
           "withdrawal": 41208,
           "iposRemainingSurrenderValue": 1343956,
-          "modelRemainingSurrenderValue": 1412130,
-          "dollarError": 68174,
-          "signedPercent": 5.07263631,
-          "absolutePercent": 5.07263631,
+          "modelRemainingSurrenderValue": 1402175,
+          "dollarError": 58219,
+          "signedPercent": 4.33191265,
+          "absolutePercent": 4.33191265,
           "status": "OK"
         },
         {
@@ -1402,10 +1405,10 @@
           "policyYear": 22,
           "withdrawal": 43576,
           "iposRemainingSurrenderValue": 1394789,
-          "modelRemainingSurrenderValue": 1485997,
-          "dollarError": 91208,
-          "signedPercent": 6.53919697,
-          "absolutePercent": 6.53919697,
+          "modelRemainingSurrenderValue": 1472626,
+          "dollarError": 77837,
+          "signedPercent": 5.58055735,
+          "absolutePercent": 5.58055735,
           "status": "OK"
         },
         {
@@ -1419,10 +1422,10 @@
           "policyYear": 23,
           "withdrawal": 45536,
           "iposRemainingSurrenderValue": 1459031,
-          "modelRemainingSurrenderValue": 1554008,
-          "dollarError": 94977,
-          "signedPercent": 6.50959438,
-          "absolutePercent": 6.50959438,
+          "modelRemainingSurrenderValue": 1537377,
+          "dollarError": 78346,
+          "signedPercent": 5.36972826,
+          "absolutePercent": 5.36972826,
           "status": "OK"
         },
         {
@@ -1436,10 +1439,10 @@
           "policyYear": 24,
           "withdrawal": 47896,
           "iposRemainingSurrenderValue": 1509448,
-          "modelRemainingSurrenderValue": 1619736,
-          "dollarError": 110288,
-          "signedPercent": 7.30651205,
-          "absolutePercent": 7.30651205,
+          "modelRemainingSurrenderValue": 1599921,
+          "dollarError": 90473,
+          "signedPercent": 5.99378051,
+          "absolutePercent": 5.99378051,
           "status": "OK"
         },
         {
@@ -1453,10 +1456,10 @@
           "policyYear": 25,
           "withdrawal": 50328,
           "iposRemainingSurrenderValue": 1579455,
-          "modelRemainingSurrenderValue": 1676402,
-          "dollarError": 96947,
-          "signedPercent": 6.1380033,
-          "absolutePercent": 6.1380033,
+          "modelRemainingSurrenderValue": 1653514,
+          "dollarError": 74059,
+          "signedPercent": 4.68889585,
+          "absolutePercent": 4.68889585,
           "status": "OK"
         },
         {
@@ -1470,10 +1473,10 @@
           "policyYear": 26,
           "withdrawal": 53640,
           "iposRemainingSurrenderValue": 1657333,
-          "modelRemainingSurrenderValue": 1750194,
-          "dollarError": 92861,
-          "signedPercent": 5.60303813,
-          "absolutePercent": 5.60303813,
+          "modelRemainingSurrenderValue": 1723808,
+          "dollarError": 66475,
+          "signedPercent": 4.01096219,
+          "absolutePercent": 4.01096219,
           "status": "OK"
         },
         {
@@ -1487,10 +1490,10 @@
           "policyYear": 27,
           "withdrawal": 56752,
           "iposRemainingSurrenderValue": 1699705,
-          "modelRemainingSurrenderValue": 1818886,
-          "dollarError": 119181,
-          "signedPercent": 7.01186382,
-          "absolutePercent": 7.01186382,
+          "modelRemainingSurrenderValue": 1788677,
+          "dollarError": 88972,
+          "signedPercent": 5.23455541,
+          "absolutePercent": 5.23455541,
           "status": "OK"
         },
         {
@@ -1504,10 +1507,10 @@
           "policyYear": 28,
           "withdrawal": 59280,
           "iposRemainingSurrenderValue": 1742776,
-          "modelRemainingSurrenderValue": 1881724,
-          "dollarError": 138948,
-          "signedPercent": 7.97279742,
-          "absolutePercent": 7.97279742,
+          "modelRemainingSurrenderValue": 1847369,
+          "dollarError": 104593,
+          "signedPercent": 6.00151712,
+          "absolutePercent": 6.00151712,
           "status": "OK"
         },
         {
@@ -1521,10 +1524,10 @@
           "policyYear": 29,
           "withdrawal": 62856,
           "iposRemainingSurrenderValue": 1784418,
-          "modelRemainingSurrenderValue": 1939416,
-          "dollarError": 154998,
-          "signedPercent": 8.68619348,
-          "absolutePercent": 8.68619348,
+          "modelRemainingSurrenderValue": 1900551,
+          "dollarError": 116133,
+          "signedPercent": 6.50817241,
+          "absolutePercent": 6.50817241,
           "status": "OK"
         },
         {
@@ -1538,10 +1541,10 @@
           "policyYear": 30,
           "withdrawal": 66152,
           "iposRemainingSurrenderValue": 1825402,
-          "modelRemainingSurrenderValue": 1991101,
-          "dollarError": 165699,
-          "signedPercent": 9.07739775,
-          "absolutePercent": 9.07739775,
+          "modelRemainingSurrenderValue": 1947376,
+          "dollarError": 121974,
+          "signedPercent": 6.68203497,
+          "absolutePercent": 6.68203497,
           "status": "OK"
         },
         {
@@ -1555,10 +1558,10 @@
           "policyYear": 31,
           "withdrawal": 68992,
           "iposRemainingSurrenderValue": 1877817,
-          "modelRemainingSurrenderValue": 2069238,
-          "dollarError": 191421,
-          "signedPercent": 10.19380483,
-          "absolutePercent": 10.19380483,
+          "modelRemainingSurrenderValue": 2019535,
+          "dollarError": 141718,
+          "signedPercent": 7.54695479,
+          "absolutePercent": 7.54695479,
           "status": "OK"
         },
         {
@@ -1572,10 +1575,10 @@
           "policyYear": 32,
           "withdrawal": 71632,
           "iposRemainingSurrenderValue": 1931403,
-          "modelRemainingSurrenderValue": 2141706,
-          "dollarError": 210303,
-          "signedPercent": 10.8886131,
-          "absolutePercent": 10.8886131,
+          "modelRemainingSurrenderValue": 2085515,
+          "dollarError": 154112,
+          "signedPercent": 7.97927724,
+          "absolutePercent": 7.97927724,
           "status": "OK"
         },
         {
@@ -1589,10 +1592,10 @@
           "policyYear": 33,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 2061674,
-          "modelRemainingSurrenderValue": 2210903,
-          "dollarError": 149229,
-          "signedPercent": 7.23824426,
-          "absolutePercent": 7.23824426,
+          "modelRemainingSurrenderValue": 2148073,
+          "dollarError": 86399,
+          "signedPercent": 4.19072074,
+          "absolutePercent": 4.19072074,
           "status": "OK"
         },
         {
@@ -1606,10 +1609,10 @@
           "policyYear": 34,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 2187050,
-          "modelRemainingSurrenderValue": 2350792,
-          "dollarError": 163742,
-          "signedPercent": 7.48688873,
-          "absolutePercent": 7.48688873,
+          "modelRemainingSurrenderValue": 2277567,
+          "dollarError": 90517,
+          "signedPercent": 4.1387714,
+          "absolutePercent": 4.1387714,
           "status": "OK"
         },
         {
@@ -1623,10 +1626,10 @@
           "policyYear": 35,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 2314178,
-          "modelRemainingSurrenderValue": 2493652,
-          "dollarError": 179474,
-          "signedPercent": 7.75541034,
-          "absolutePercent": 7.75541034,
+          "modelRemainingSurrenderValue": 2408516,
+          "dollarError": 94338,
+          "signedPercent": 4.07652307,
+          "absolutePercent": 4.07652307,
           "status": "OK"
         },
         {
@@ -1640,10 +1643,10 @@
           "policyYear": 36,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 2448402,
-          "modelRemainingSurrenderValue": 2678529,
-          "dollarError": 230127,
-          "signedPercent": 9.39906927,
-          "absolutePercent": 9.39906927,
+          "modelRemainingSurrenderValue": 2578318,
+          "dollarError": 129916,
+          "signedPercent": 5.30615479,
+          "absolutePercent": 5.30615479,
           "status": "OK"
         },
         {
@@ -1657,10 +1660,10 @@
           "policyYear": 37,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 2589737,
-          "modelRemainingSurrenderValue": 2867918,
-          "dollarError": 278181,
-          "signedPercent": 10.74166991,
-          "absolutePercent": 10.74166991,
+          "modelRemainingSurrenderValue": 2750381,
+          "dollarError": 160644,
+          "signedPercent": 6.20310093,
+          "absolutePercent": 6.20310093,
           "status": "OK"
         },
         {
@@ -1674,10 +1677,10 @@
           "policyYear": 38,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 2739360,
-          "modelRemainingSurrenderValue": 3062533,
-          "dollarError": 323173,
-          "signedPercent": 11.79739063,
-          "absolutePercent": 11.79739063,
+          "modelRemainingSurrenderValue": 2925108,
+          "dollarError": 185748,
+          "signedPercent": 6.7807079,
+          "absolutePercent": 6.7807079,
           "status": "OK"
         },
         {
@@ -1691,10 +1694,10 @@
           "policyYear": 39,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 2896821,
-          "modelRemainingSurrenderValue": 3263178,
-          "dollarError": 366357,
-          "signedPercent": 12.64686358,
-          "absolutePercent": 12.64686358,
+          "modelRemainingSurrenderValue": 3102954,
+          "dollarError": 206133,
+          "signedPercent": 7.11583491,
+          "absolutePercent": 7.11583491,
           "status": "OK"
         },
         {
@@ -1708,10 +1711,10 @@
           "policyYear": 40,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 3074158,
-          "modelRemainingSurrenderValue": 3470761,
-          "dollarError": 396603,
-          "signedPercent": 12.90119116,
-          "absolutePercent": 12.90119116,
+          "modelRemainingSurrenderValue": 3284432,
+          "dollarError": 210274,
+          "signedPercent": 6.84005181,
+          "absolutePercent": 6.84005181,
           "status": "OK"
         },
         {
@@ -1725,10 +1728,10 @@
           "policyYear": 41,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 3261143,
-          "modelRemainingSurrenderValue": 3746297,
-          "dollarError": 485154,
-          "signedPercent": 14.87680853,
-          "absolutePercent": 14.87680853,
+          "modelRemainingSurrenderValue": 3526594,
+          "dollarError": 265451,
+          "signedPercent": 8.13981478,
+          "absolutePercent": 8.13981478,
           "status": "OK"
         },
         {
@@ -1742,10 +1745,10 @@
           "policyYear": 42,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 3459862,
-          "modelRemainingSurrenderValue": 4032418,
-          "dollarError": 572556,
-          "signedPercent": 16.5485213,
-          "absolutePercent": 16.5485213,
+          "modelRemainingSurrenderValue": 3774352,
+          "dollarError": 314490,
+          "signedPercent": 9.08966889,
+          "absolutePercent": 9.08966889,
           "status": "OK"
         },
         {
@@ -1759,10 +1762,10 @@
           "policyYear": 43,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 3670232,
-          "modelRemainingSurrenderValue": 4330695,
-          "dollarError": 660463,
-          "signedPercent": 17.99512946,
-          "absolutePercent": 17.99512946,
+          "modelRemainingSurrenderValue": 4028595,
+          "dollarError": 358363,
+          "signedPercent": 9.76404216,
+          "absolutePercent": 9.76404216,
           "status": "OK"
         },
         {
@@ -1776,10 +1779,10 @@
           "policyYear": 44,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 3893503,
-          "modelRemainingSurrenderValue": 4642900,
-          "dollarError": 749397,
-          "signedPercent": 19.24737184,
-          "absolutePercent": 19.24737184,
+          "modelRemainingSurrenderValue": 4290325,
+          "dollarError": 396822,
+          "signedPercent": 10.19190174,
+          "absolutePercent": 10.19190174,
           "status": "OK"
         },
         {
@@ -1793,10 +1796,10 @@
           "policyYear": 45,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 4130146,
-          "modelRemainingSurrenderValue": 4971034,
-          "dollarError": 840888,
-          "signedPercent": 20.35976452,
-          "absolutePercent": 20.35976452,
+          "modelRemainingSurrenderValue": 4560674,
+          "dollarError": 430528,
+          "signedPercent": 10.42403828,
+          "absolutePercent": 10.42403828,
           "status": "OK"
         },
         {
@@ -1810,10 +1813,10 @@
           "policyYear": 46,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 4380816,
-          "modelRemainingSurrenderValue": 5403888,
-          "dollarError": 1023072,
-          "signedPercent": 23.35345744,
-          "absolutePercent": 23.35345744,
+          "modelRemainingSurrenderValue": 4919700,
+          "dollarError": 538884,
+          "signedPercent": 12.30099598,
+          "absolutePercent": 12.30099598,
           "status": "OK"
         },
         {
@@ -1827,10 +1830,10 @@
           "policyYear": 47,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 4646566,
-          "modelRemainingSurrenderValue": 5860922,
-          "dollarError": 1214356,
-          "signedPercent": 26.13448297,
-          "absolutePercent": 26.13448297,
+          "modelRemainingSurrenderValue": 5291882,
+          "dollarError": 645316,
+          "signedPercent": 13.88801967,
+          "absolutePercent": 13.88801967,
           "status": "OK"
         },
         {
@@ -1844,10 +1847,10 @@
           "policyYear": 48,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 4927698,
-          "modelRemainingSurrenderValue": 6345597,
-          "dollarError": 1417899,
-          "signedPercent": 28.77406448,
-          "absolutePercent": 28.77406448,
+          "modelRemainingSurrenderValue": 5679178,
+          "dollarError": 751480,
+          "signedPercent": 15.25012288,
+          "absolutePercent": 15.25012288,
           "status": "OK"
         },
         {
@@ -1861,10 +1864,10 @@
           "policyYear": 49,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 5226071,
-          "modelRemainingSurrenderValue": 6861819,
-          "dollarError": 1635748,
-          "signedPercent": 31.29976611,
-          "absolutePercent": 31.29976611,
+          "modelRemainingSurrenderValue": 6083799,
+          "dollarError": 857728,
+          "signedPercent": 16.41248272,
+          "absolutePercent": 16.41248272,
           "status": "OK"
         },
         {
@@ -1878,10 +1881,10 @@
           "policyYear": 50,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 5542712,
-          "modelRemainingSurrenderValue": 7413995,
-          "dollarError": 1871283,
-          "signedPercent": 33.76114436,
-          "absolutePercent": 33.76114436,
+          "modelRemainingSurrenderValue": 6508241,
+          "dollarError": 965529,
+          "signedPercent": 17.41979378,
+          "absolutePercent": 17.41979378,
           "status": "OK"
         },
         {
@@ -1895,10 +1898,10 @@
           "policyYear": 51,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 5878587,
-          "modelRemainingSurrenderValue": 8137402,
-          "dollarError": 2258815,
-          "signedPercent": 38.42445472,
-          "absolutePercent": 38.42445472,
+          "modelRemainingSurrenderValue": 7068510,
+          "dollarError": 1189923,
+          "signedPercent": 20.24164991,
+          "absolutePercent": 20.24164991,
           "status": "OK"
         },
         {
@@ -1912,10 +1915,10 @@
           "policyYear": 52,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 6233780,
-          "modelRemainingSurrenderValue": 8915231,
-          "dollarError": 2681451,
-          "signedPercent": 43.01484813,
-          "absolutePercent": 43.01484813,
+          "modelRemainingSurrenderValue": 7658877,
+          "dollarError": 1425097,
+          "signedPercent": 22.86088056,
+          "absolutePercent": 22.86088056,
           "status": "OK"
         },
         {
@@ -1929,10 +1932,10 @@
           "policyYear": 53,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 6610545,
-          "modelRemainingSurrenderValue": 9755597,
-          "dollarError": 3145052,
-          "signedPercent": 47.5762891,
-          "absolutePercent": 47.5762891,
+          "modelRemainingSurrenderValue": 8284445,
+          "dollarError": 1673900,
+          "signedPercent": 25.3216641,
+          "absolutePercent": 25.3216641,
           "status": "OK"
         },
         {
@@ -1946,10 +1949,10 @@
           "policyYear": 54,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 7009775,
-          "modelRemainingSurrenderValue": 10667240,
-          "dollarError": 3657465,
-          "signedPercent": 52.17663905,
-          "absolutePercent": 52.17663905,
+          "modelRemainingSurrenderValue": 8950307,
+          "dollarError": 1940532,
+          "signedPercent": 27.68322806,
+          "absolutePercent": 27.68322806,
           "status": "OK"
         },
         {
@@ -1963,16 +1966,16 @@
           "policyYear": 55,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 7433491,
-          "modelRemainingSurrenderValue": 11660022,
-          "dollarError": 4226531,
-          "signedPercent": 56.85795543,
-          "absolutePercent": 56.85795543,
+          "modelRemainingSurrenderValue": 9662212,
+          "dollarError": 2228721,
+          "signedPercent": 29.98215778,
+          "absolutePercent": 29.98215778,
           "status": "OK"
         }
       ],
-      "MAPE": 12.10048489,
-      "maxErrorPercent": 56.85795543,
-      "maxDollarError": 4226531,
+      "MAPE": 7.0153849,
+      "maxErrorPercent": 29.98215778,
+      "maxDollarError": 2228721,
       "worstAge": 100,
       "worstPolicyYear": 55,
       "crossings": {
@@ -2276,10 +2279,10 @@
           "policyYear": 16,
           "withdrawal": 17745,
           "iposRemainingSurrenderValue": 1405846,
-          "modelRemainingSurrenderValue": 1417273,
-          "dollarError": 11427,
-          "signedPercent": 0.81282018,
-          "absolutePercent": 0.81282018,
+          "modelRemainingSurrenderValue": 1405846,
+          "dollarError": 0,
+          "signedPercent": 0.0,
+          "absolutePercent": 0.0,
           "status": "OK"
         },
         {
@@ -2293,10 +2296,10 @@
           "policyYear": 17,
           "withdrawal": 18776,
           "iposRemainingSurrenderValue": 1487384,
-          "modelRemainingSurrenderValue": 1500215,
-          "dollarError": 12831,
-          "signedPercent": 0.86265551,
-          "absolutePercent": 0.86265551,
+          "modelRemainingSurrenderValue": 1488577,
+          "dollarError": 1193,
+          "signedPercent": 0.08020794,
+          "absolutePercent": 0.08020794,
           "status": "OK"
         },
         {
@@ -2310,10 +2313,10 @@
           "policyYear": 18,
           "withdrawal": 20030,
           "iposRemainingSurrenderValue": 1571662,
-          "modelRemainingSurrenderValue": 1585229,
-          "dollarError": 13567,
-          "signedPercent": 0.86322632,
-          "absolutePercent": 0.86322632,
+          "modelRemainingSurrenderValue": 1573790,
+          "dollarError": 2128,
+          "signedPercent": 0.13539807,
+          "absolutePercent": 0.13539807,
           "status": "OK"
         },
         {
@@ -2327,10 +2330,10 @@
           "policyYear": 19,
           "withdrawal": 21090,
           "iposRemainingSurrenderValue": 1673417,
-          "modelRemainingSurrenderValue": 1681548,
-          "dollarError": 8131,
-          "signedPercent": 0.48589204,
-          "absolutePercent": 0.48589204,
+          "modelRemainingSurrenderValue": 1670450,
+          "dollarError": -2967,
+          "signedPercent": -0.17730189,
+          "absolutePercent": 0.17730189,
           "status": "OK"
         },
         {
@@ -2344,10 +2347,10 @@
           "policyYear": 20,
           "withdrawal": 22820,
           "iposRemainingSurrenderValue": 1791789,
-          "modelRemainingSurrenderValue": 1788244,
-          "dollarError": -3545,
-          "signedPercent": -0.19784696,
-          "absolutePercent": 0.19784696,
+          "modelRemainingSurrenderValue": 1777970,
+          "dollarError": -13819,
+          "signedPercent": -0.77124036,
+          "absolutePercent": 0.77124036,
           "status": "OK"
         },
         {
@@ -2361,10 +2364,10 @@
           "policyYear": 21,
           "withdrawal": 23905,
           "iposRemainingSurrenderValue": 1941505,
-          "modelRemainingSurrenderValue": 1926255,
-          "dollarError": -15250,
-          "signedPercent": -0.78547313,
-          "absolutePercent": 0.78547313,
+          "modelRemainingSurrenderValue": 1918957,
+          "dollarError": -22548,
+          "signedPercent": -1.16136708,
+          "absolutePercent": 1.16136708,
           "status": "OK"
         },
         {
@@ -2378,10 +2381,10 @@
           "policyYear": 22,
           "withdrawal": 25137,
           "iposRemainingSurrenderValue": 2052320,
-          "modelRemainingSurrenderValue": 2058748,
-          "dollarError": 6428,
-          "signedPercent": 0.31320652,
-          "absolutePercent": 0.31320652,
+          "modelRemainingSurrenderValue": 2047710,
+          "dollarError": -4610,
+          "signedPercent": -0.22462384,
+          "absolutePercent": 0.22462384,
           "status": "OK"
         },
         {
@@ -2395,10 +2398,10 @@
           "policyYear": 23,
           "withdrawal": 26380,
           "iposRemainingSurrenderValue": 2187088,
-          "modelRemainingSurrenderValue": 2185132,
-          "dollarError": -1956,
-          "signedPercent": -0.08943399,
-          "absolutePercent": 0.08943399,
+          "modelRemainingSurrenderValue": 2170048,
+          "dollarError": -17040,
+          "signedPercent": -0.77911817,
+          "absolutePercent": 0.77911817,
           "status": "OK"
         },
         {
@@ -2412,10 +2415,10 @@
           "policyYear": 24,
           "withdrawal": 27668,
           "iposRemainingSurrenderValue": 2306309,
-          "modelRemainingSurrenderValue": 2304673,
-          "dollarError": -1636,
-          "signedPercent": -0.07093585,
-          "absolutePercent": 0.07093585,
+          "modelRemainingSurrenderValue": 2285204,
+          "dollarError": -21105,
+          "signedPercent": -0.91509854,
+          "absolutePercent": 0.91509854,
           "status": "OK"
         },
         {
@@ -2429,10 +2432,10 @@
           "policyYear": 25,
           "withdrawal": 29329,
           "iposRemainingSurrenderValue": 2460957,
-          "modelRemainingSurrenderValue": 2426053,
-          "dollarError": -34904,
-          "signedPercent": -1.41831003,
-          "absolutePercent": 1.41831003,
+          "modelRemainingSurrenderValue": 2401952,
+          "dollarError": -59005,
+          "signedPercent": -2.39764449,
+          "absolutePercent": 2.39764449,
           "status": "OK"
         },
         {
@@ -2446,10 +2449,10 @@
           "policyYear": 26,
           "withdrawal": 31195,
           "iposRemainingSurrenderValue": 2634682,
-          "modelRemainingSurrenderValue": 2599342,
-          "dollarError": -35340,
-          "signedPercent": -1.34133835,
-          "absolutePercent": 1.34133835,
+          "modelRemainingSurrenderValue": 2570774,
+          "dollarError": -63908,
+          "signedPercent": -2.42564378,
+          "absolutePercent": 2.42564378,
           "status": "OK"
         },
         {
@@ -2463,10 +2466,10 @@
           "policyYear": 27,
           "withdrawal": 33060,
           "iposRemainingSurrenderValue": 2759200,
-          "modelRemainingSurrenderValue": 2744065,
-          "dollarError": -15135,
-          "signedPercent": -0.54852856,
-          "absolutePercent": 0.54852856,
+          "modelRemainingSurrenderValue": 2710779,
+          "dollarError": -48421,
+          "signedPercent": -1.75489272,
+          "absolutePercent": 1.75489272,
           "status": "OK"
         },
         {
@@ -2480,10 +2483,10 @@
           "policyYear": 28,
           "withdrawal": 34924,
           "iposRemainingSurrenderValue": 2890426,
-          "modelRemainingSurrenderValue": 2884547,
-          "dollarError": -5879,
-          "signedPercent": -0.20339562,
-          "absolutePercent": 0.20339562,
+          "modelRemainingSurrenderValue": 2846008,
+          "dollarError": -44418,
+          "signedPercent": -1.5367285,
+          "absolutePercent": 1.5367285,
           "status": "OK"
         },
         {
@@ -2497,10 +2500,10 @@
           "policyYear": 29,
           "withdrawal": 36789,
           "iposRemainingSurrenderValue": 3026949,
-          "modelRemainingSurrenderValue": 3020922,
-          "dollarError": -6027,
-          "signedPercent": -0.19911138,
-          "absolutePercent": 0.19911138,
+          "modelRemainingSurrenderValue": 2976542,
+          "dollarError": -50407,
+          "signedPercent": -1.66527418,
+          "absolutePercent": 1.66527418,
           "status": "OK"
         },
         {
@@ -2514,10 +2517,10 @@
           "policyYear": 30,
           "withdrawal": 38996,
           "iposRemainingSurrenderValue": 3169690,
-          "modelRemainingSurrenderValue": 3153252,
-          "dollarError": -16438,
-          "signedPercent": -0.51859961,
-          "absolutePercent": 0.51859961,
+          "modelRemainingSurrenderValue": 3102385,
+          "dollarError": -67305,
+          "signedPercent": -2.12339377,
+          "absolutePercent": 2.12339377,
           "status": "OK"
         },
         {
@@ -2531,10 +2534,10 @@
           "policyYear": 31,
           "withdrawal": 40878,
           "iposRemainingSurrenderValue": 3339629,
-          "modelRemainingSurrenderValue": 3329488,
-          "dollarError": -10141,
-          "signedPercent": -0.30365648,
-          "absolutePercent": 0.30365648,
+          "modelRemainingSurrenderValue": 3270588,
+          "dollarError": -69041,
+          "signedPercent": -2.06732544,
+          "absolutePercent": 2.06732544,
           "status": "OK"
         },
         {
@@ -2548,10 +2551,10 @@
           "policyYear": 32,
           "withdrawal": 42759,
           "iposRemainingSurrenderValue": 3519564,
-          "modelRemainingSurrenderValue": 3501269,
-          "dollarError": -18295,
-          "signedPercent": -0.5198087,
-          "absolutePercent": 0.5198087,
+          "modelRemainingSurrenderValue": 3433408,
+          "dollarError": -86156,
+          "signedPercent": -2.44791684,
+          "absolutePercent": 2.44791684,
           "status": "OK"
         },
         {
@@ -2565,10 +2568,10 @@
           "policyYear": 33,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 3756956,
-          "modelRemainingSurrenderValue": 3664590,
-          "dollarError": -92366,
-          "signedPercent": -2.45853292,
-          "absolutePercent": 2.45853292,
+          "modelRemainingSurrenderValue": 3586799,
+          "dollarError": -170157,
+          "signedPercent": -4.52911879,
+          "absolutePercent": 4.52911879,
           "status": "OK"
         },
         {
@@ -2582,10 +2585,10 @@
           "policyYear": 34,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 3985426,
-          "modelRemainingSurrenderValue": 3862248,
-          "dollarError": -123178,
-          "signedPercent": -3.09071101,
-          "absolutePercent": 3.09071101,
+          "modelRemainingSurrenderValue": 3771851,
+          "dollarError": -213575,
+          "signedPercent": -5.35890015,
+          "absolutePercent": 5.35890015,
           "status": "OK"
         },
         {
@@ -2599,10 +2602,10 @@
           "policyYear": 35,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 4217089,
-          "modelRemainingSurrenderValue": 4057823,
-          "dollarError": -159266,
-          "signedPercent": -3.77668102,
-          "absolutePercent": 3.77668102,
+          "modelRemainingSurrenderValue": 3952979,
+          "dollarError": -264110,
+          "signedPercent": -6.26285099,
+          "absolutePercent": 6.26285099,
           "status": "OK"
         },
         {
@@ -2616,10 +2619,10 @@
           "policyYear": 36,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 4461684,
-          "modelRemainingSurrenderValue": 4315138,
-          "dollarError": -146546,
-          "signedPercent": -3.28454458,
-          "absolutePercent": 3.28454458,
+          "modelRemainingSurrenderValue": 4191927,
+          "dollarError": -269757,
+          "signedPercent": -6.04608036,
+          "absolutePercent": 6.04608036,
           "status": "OK"
         },
         {
@@ -2633,10 +2636,10 @@
           "policyYear": 37,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 4719237,
-          "modelRemainingSurrenderValue": 4569539,
-          "dollarError": -149698,
-          "signedPercent": -3.17208057,
-          "absolutePercent": 3.17208057,
+          "modelRemainingSurrenderValue": 4425210,
+          "dollarError": -294027,
+          "signedPercent": -6.23039275,
+          "absolutePercent": 6.23039275,
           "status": "OK"
         },
         {
@@ -2650,10 +2653,10 @@
           "policyYear": 38,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 4991892,
-          "modelRemainingSurrenderValue": 4820811,
-          "dollarError": -171081,
-          "signedPercent": -3.42717751,
-          "absolutePercent": 3.42717751,
+          "modelRemainingSurrenderValue": 4652230,
+          "dollarError": -339662,
+          "signedPercent": -6.80427381,
+          "absolutePercent": 6.80427381,
           "status": "OK"
         },
         {
@@ -2667,10 +2670,10 @@
           "policyYear": 39,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 5278831,
-          "modelRemainingSurrenderValue": 5068715,
-          "dollarError": -210116,
-          "signedPercent": -3.98035095,
-          "absolutePercent": 3.98035095,
+          "modelRemainingSurrenderValue": 4872313,
+          "dollarError": -406518,
+          "signedPercent": -7.70090954,
+          "absolutePercent": 7.70090954,
           "status": "OK"
         },
         {
@@ -2684,10 +2687,10 @@
           "policyYear": 40,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 5601988,
-          "modelRemainingSurrenderValue": 5312976,
-          "dollarError": -289012,
-          "signedPercent": -5.15909709,
-          "absolutePercent": 5.15909709,
+          "modelRemainingSurrenderValue": 5084698,
+          "dollarError": -517290,
+          "signedPercent": -9.23404334,
+          "absolutePercent": 9.23404334,
           "status": "OK"
         },
         {
@@ -2701,10 +2704,10 @@
           "policyYear": 41,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 5942729,
-          "modelRemainingSurrenderValue": 5643664,
-          "dollarError": -299065,
-          "signedPercent": -5.03245226,
-          "absolutePercent": 5.03245226,
+          "modelRemainingSurrenderValue": 5374592,
+          "dollarError": -568137,
+          "signedPercent": -9.56020374,
+          "absolutePercent": 9.56020374,
           "status": "OK"
         },
         {
@@ -2718,10 +2721,10 @@
           "policyYear": 42,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 6304851,
-          "modelRemainingSurrenderValue": 5969090,
-          "dollarError": -335761,
-          "signedPercent": -5.32543909,
-          "absolutePercent": 5.32543909,
+          "modelRemainingSurrenderValue": 5653095,
+          "dollarError": -651756,
+          "signedPercent": -10.33737356,
+          "absolutePercent": 10.33737356,
           "status": "OK"
         },
         {
@@ -2735,10 +2738,10 @@
           "policyYear": 43,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 6688204,
-          "modelRemainingSurrenderValue": 6288781,
-          "dollarError": -399423,
-          "signedPercent": -5.97205169,
-          "absolutePercent": 5.97205169,
+          "modelRemainingSurrenderValue": 5918888,
+          "dollarError": -769316,
+          "signedPercent": -11.50257977,
+          "absolutePercent": 11.50257977,
           "status": "OK"
         },
         {
@@ -2752,10 +2755,10 @@
           "policyYear": 44,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 7095068,
-          "modelRemainingSurrenderValue": 6602207,
-          "dollarError": -492861,
-          "signedPercent": -6.94652962,
-          "absolutePercent": 6.94652962,
+          "modelRemainingSurrenderValue": 6170486,
+          "dollarError": -924582,
+          "signedPercent": -13.03133388,
+          "absolutePercent": 13.03133388,
           "status": "OK"
         },
         {
@@ -2769,10 +2772,10 @@
           "policyYear": 45,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 7526299,
-          "modelRemainingSurrenderValue": 6908768,
-          "dollarError": -617531,
-          "signedPercent": -8.20497565,
-          "absolutePercent": 8.20497565,
+          "modelRemainingSurrenderValue": 6406210,
+          "dollarError": -1120089,
+          "signedPercent": -14.8823346,
+          "absolutePercent": 14.8823346,
           "status": "OK"
         },
         {
@@ -2786,10 +2789,10 @@
           "policyYear": 46,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 7983090,
-          "modelRemainingSurrenderValue": 7325088,
-          "dollarError": -658002,
-          "signedPercent": -8.24244747,
-          "absolutePercent": 8.24244747,
+          "modelRemainingSurrenderValue": 6731971,
+          "dollarError": -1251119,
+          "signedPercent": -15.67211443,
+          "absolutePercent": 15.67211443,
           "status": "OK"
         },
         {
@@ -2803,10 +2806,10 @@
           "policyYear": 47,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 8467363,
-          "modelRemainingSurrenderValue": 7731363,
-          "dollarError": -736000,
-          "signedPercent": -8.6921985,
-          "absolutePercent": 8.6921985,
+          "modelRemainingSurrenderValue": 7034086,
+          "dollarError": -1433277,
+          "signedPercent": -16.92707635,
+          "absolutePercent": 16.92707635,
           "status": "OK"
         },
         {
@@ -2820,10 +2823,10 @@
           "policyYear": 48,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 8979665,
-          "modelRemainingSurrenderValue": 8126556,
-          "dollarError": -853109,
-          "signedPercent": -9.50045464,
-          "absolutePercent": 9.50045464,
+          "modelRemainingSurrenderValue": 7309651,
+          "dollarError": -1670014,
+          "signedPercent": -18.59773165,
+          "absolutePercent": 18.59773165,
           "status": "OK"
         },
         {
@@ -2837,10 +2840,10 @@
           "policyYear": 49,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 9523385,
-          "modelRemainingSurrenderValue": 8509494,
-          "dollarError": -1013891,
-          "signedPercent": -10.64633006,
-          "absolutePercent": 10.64633006,
+          "modelRemainingSurrenderValue": 7555388,
+          "dollarError": -1967997,
+          "signedPercent": -20.66488964,
+          "absolutePercent": 20.66488964,
           "status": "OK"
         },
         {
@@ -2854,10 +2857,10 @@
           "policyYear": 50,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 10100395,
-          "modelRemainingSurrenderValue": 8878857,
-          "dollarError": -1221538,
-          "signedPercent": -12.09396266,
-          "absolutePercent": 12.09396266,
+          "modelRemainingSurrenderValue": 7767599,
+          "dollarError": -2332796,
+          "signedPercent": -23.09608684,
+          "absolutePercent": 23.09608684,
           "status": "OK"
         },
         {
@@ -2871,10 +2874,10 @@
           "policyYear": 51,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 10712454,
-          "modelRemainingSurrenderValue": 9383417,
-          "dollarError": -1329037,
-          "signedPercent": -12.40646634,
-          "absolutePercent": 12.40646634,
+          "modelRemainingSurrenderValue": 8071362,
+          "dollarError": -2641092,
+          "signedPercent": -24.65440692,
+          "absolutePercent": 24.65440692,
           "status": "OK"
         },
         {
@@ -2888,10 +2891,10 @@
           "policyYear": 52,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 11359718,
-          "modelRemainingSurrenderValue": 9867919,
-          "dollarError": -1491799,
-          "signedPercent": -13.13235945,
-          "absolutePercent": 13.13235945,
+          "modelRemainingSurrenderValue": 8324959,
+          "dollarError": -3034759,
+          "signedPercent": -26.71509099,
+          "absolutePercent": 26.71509099,
           "status": "OK"
         },
         {
@@ -2905,10 +2908,10 @@
           "policyYear": 53,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 12046290,
-          "modelRemainingSurrenderValue": 10330956,
-          "dollarError": -1715334,
-          "signedPercent": -14.23952105,
-          "absolutePercent": 14.23952105,
+          "modelRemainingSurrenderValue": 8523396,
+          "dollarError": -3522894,
+          "signedPercent": -29.24463881,
+          "absolutePercent": 29.24463881,
           "status": "OK"
         },
         {
@@ -2922,10 +2925,10 @@
           "policyYear": 54,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 12773800,
-          "modelRemainingSurrenderValue": 10770195,
-          "dollarError": -2003605,
-          "signedPercent": -15.68526985,
-          "absolutePercent": 15.68526985,
+          "modelRemainingSurrenderValue": 8659839,
+          "dollarError": -4113961,
+          "signedPercent": -32.20624247,
+          "absolutePercent": 32.20624247,
           "status": "OK"
         },
         {
@@ -2939,16 +2942,16 @@
           "policyYear": 55,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 13545931,
-          "modelRemainingSurrenderValue": 11183003,
-          "dollarError": -2362928,
-          "signedPercent": -17.44382132,
-          "absolutePercent": 17.44382132,
+          "modelRemainingSurrenderValue": 8726577,
+          "dollarError": -4819354,
+          "signedPercent": -35.57787206,
+          "absolutePercent": 35.57787206,
           "status": "OK"
         }
       ],
-      "MAPE": 3.50464271,
-      "maxErrorPercent": 17.44382132,
-      "maxDollarError": 2362928,
+      "MAPE": 6.85104319,
+      "maxErrorPercent": 35.57787206,
+      "maxDollarError": 4819354,
       "worstAge": 100,
       "worstPolicyYear": 55,
       "crossings": {
@@ -2970,10 +2973,10 @@
         }
       },
       "distribution": {
-        "<=0.005%": 13,
-        "<=0.01%": 13,
-        "<=0.02%": 13,
-        "<=0.05%": 13,
+        "<=0.005%": 14,
+        "<=0.01%": 14,
+        "<=0.02%": 14,
+        "<=0.05%": 14,
         "<=0.10%": 15,
         ">0.10%": 55
       }
@@ -3252,10 +3255,10 @@
           "policyYear": 16,
           "withdrawal": 27608,
           "iposRemainingSurrenderValue": 1876330,
-          "modelRemainingSurrenderValue": 1914536,
-          "dollarError": 38206,
-          "signedPercent": 2.03620898,
-          "absolutePercent": 2.03620898,
+          "modelRemainingSurrenderValue": 1876330,
+          "dollarError": 0,
+          "signedPercent": 0.0,
+          "absolutePercent": 0.0,
           "status": "OK"
         },
         {
@@ -3269,10 +3272,10 @@
           "policyYear": 17,
           "withdrawal": 29576,
           "iposRemainingSurrenderValue": 1980705,
-          "modelRemainingSurrenderValue": 2030031,
-          "dollarError": 49326,
-          "signedPercent": 2.49032541,
-          "absolutePercent": 2.49032541,
+          "modelRemainingSurrenderValue": 1997123,
+          "dollarError": 16418,
+          "signedPercent": 0.82889678,
+          "absolutePercent": 0.82889678,
           "status": "OK"
         },
         {
@@ -3286,10 +3289,10 @@
           "policyYear": 18,
           "withdrawal": 32168,
           "iposRemainingSurrenderValue": 2087574,
-          "modelRemainingSurrenderValue": 2143215,
-          "dollarError": 55641,
-          "signedPercent": 2.66534264,
-          "absolutePercent": 2.66534264,
+          "modelRemainingSurrenderValue": 2116264,
+          "dollarError": 28690,
+          "signedPercent": 1.37432254,
+          "absolutePercent": 1.37432254,
           "status": "OK"
         },
         {
@@ -3303,10 +3306,10 @@
           "policyYear": 19,
           "withdrawal": 35128,
           "iposRemainingSurrenderValue": 2215862,
-          "modelRemainingSurrenderValue": 2254198,
-          "dollarError": 38336,
-          "signedPercent": 1.73007164,
-          "absolutePercent": 1.73007164,
+          "modelRemainingSurrenderValue": 2233782,
+          "dollarError": 17920,
+          "signedPercent": 0.80871462,
+          "absolutePercent": 0.80871462,
           "status": "OK"
         },
         {
@@ -3320,10 +3323,10 @@
           "policyYear": 20,
           "withdrawal": 37816,
           "iposRemainingSurrenderValue": 2365413,
-          "modelRemainingSurrenderValue": 2363857,
-          "dollarError": -1556,
-          "signedPercent": -0.06578132,
-          "absolutePercent": 0.06578132,
+          "modelRemainingSurrenderValue": 2350314,
+          "dollarError": -15099,
+          "signedPercent": -0.63832405,
+          "absolutePercent": 0.63832405,
           "status": "OK"
         },
         {
@@ -3337,10 +3340,10 @@
           "policyYear": 21,
           "withdrawal": 41208,
           "iposRemainingSurrenderValue": 2553889,
-          "modelRemainingSurrenderValue": 2531783,
-          "dollarError": -22106,
-          "signedPercent": -0.86558186,
-          "absolutePercent": 0.86558186,
+          "modelRemainingSurrenderValue": 2515469,
+          "dollarError": -38420,
+          "signedPercent": -1.50437235,
+          "absolutePercent": 1.50437235,
           "status": "OK"
         },
         {
@@ -3354,10 +3357,10 @@
           "policyYear": 22,
           "withdrawal": 43756,
           "iposRemainingSurrenderValue": 2689173,
-          "modelRemainingSurrenderValue": 2688346,
-          "dollarError": -827,
-          "signedPercent": -0.03075295,
-          "absolutePercent": 0.03075295,
+          "modelRemainingSurrenderValue": 2668899,
+          "dollarError": -20274,
+          "signedPercent": -0.75391208,
+          "absolutePercent": 0.75391208,
           "status": "OK"
         },
         {
@@ -3371,10 +3374,10 @@
           "policyYear": 23,
           "withdrawal": 45536,
           "iposRemainingSurrenderValue": 2855095,
-          "modelRemainingSurrenderValue": 2849178,
-          "dollarError": -5917,
-          "signedPercent": -0.20724354,
-          "absolutePercent": 0.20724354,
+          "modelRemainingSurrenderValue": 2826287,
+          "dollarError": -28808,
+          "signedPercent": -1.0090032,
+          "absolutePercent": 1.0090032,
           "status": "OK"
         },
         {
@@ -3388,10 +3391,10 @@
           "policyYear": 24,
           "withdrawal": 47896,
           "iposRemainingSurrenderValue": 2999583,
-          "modelRemainingSurrenderValue": 3040514,
-          "dollarError": 40931,
-          "signedPercent": 1.36455634,
-          "absolutePercent": 1.36455634,
+          "modelRemainingSurrenderValue": 3013301,
+          "dollarError": 13718,
+          "signedPercent": 0.45733024,
+          "absolutePercent": 0.45733024,
           "status": "OK"
         },
         {
@@ -3405,10 +3408,10 @@
           "policyYear": 25,
           "withdrawal": 50328,
           "iposRemainingSurrenderValue": 3188384,
-          "modelRemainingSurrenderValue": 3185482,
-          "dollarError": -2902,
-          "signedPercent": -0.09101789,
-          "absolutePercent": 0.09101789,
+          "modelRemainingSurrenderValue": 3153836,
+          "dollarError": -34548,
+          "signedPercent": -1.08355832,
+          "absolutePercent": 1.08355832,
           "status": "OK"
         },
         {
@@ -3422,10 +3425,10 @@
           "policyYear": 26,
           "withdrawal": 53640,
           "iposRemainingSurrenderValue": 3400236,
-          "modelRemainingSurrenderValue": 3365303,
-          "dollarError": -34933,
-          "signedPercent": -1.02736986,
-          "absolutePercent": 1.02736986,
+          "modelRemainingSurrenderValue": 3328302,
+          "dollarError": -71934,
+          "signedPercent": -2.11555904,
+          "absolutePercent": 2.11555904,
           "status": "OK"
         },
         {
@@ -3439,10 +3442,10 @@
           "policyYear": 27,
           "withdrawal": 56752,
           "iposRemainingSurrenderValue": 3546849,
-          "modelRemainingSurrenderValue": 3538813,
-          "dollarError": -8036,
-          "signedPercent": -0.2265673,
-          "absolutePercent": 0.2265673,
+          "modelRemainingSurrenderValue": 3495858,
+          "dollarError": -50991,
+          "signedPercent": -1.43764226,
+          "absolutePercent": 1.43764226,
           "status": "OK"
         },
         {
@@ -3456,10 +3459,10 @@
           "policyYear": 28,
           "withdrawal": 59280,
           "iposRemainingSurrenderValue": 3701148,
-          "modelRemainingSurrenderValue": 3705282,
-          "dollarError": 4134,
-          "signedPercent": 0.11169507,
-          "absolutePercent": 0.11169507,
+          "modelRemainingSurrenderValue": 3655736,
+          "dollarError": -45412,
+          "signedPercent": -1.22697066,
+          "absolutePercent": 1.22697066,
           "status": "OK"
         },
         {
@@ -3473,10 +3476,10 @@
           "policyYear": 29,
           "withdrawal": 62856,
           "iposRemainingSurrenderValue": 3860216,
-          "modelRemainingSurrenderValue": 3865379,
-          "dollarError": 5163,
-          "signedPercent": 0.13374899,
-          "absolutePercent": 0.13374899,
+          "modelRemainingSurrenderValue": 3808526,
+          "dollarError": -51690,
+          "signedPercent": -1.33904424,
+          "absolutePercent": 1.33904424,
           "status": "OK"
         },
         {
@@ -3490,10 +3493,10 @@
           "policyYear": 30,
           "withdrawal": 66152,
           "iposRemainingSurrenderValue": 4025830,
-          "modelRemainingSurrenderValue": 4018280,
-          "dollarError": -7550,
-          "signedPercent": -0.18753897,
-          "absolutePercent": 0.18753897,
+          "modelRemainingSurrenderValue": 3953366,
+          "dollarError": -72464,
+          "signedPercent": -1.79997665,
+          "absolutePercent": 1.79997665,
           "status": "OK"
         },
         {
@@ -3507,10 +3510,10 @@
           "policyYear": 31,
           "withdrawal": 68992,
           "iposRemainingSurrenderValue": 4224596,
-          "modelRemainingSurrenderValue": 4225677,
-          "dollarError": 1081,
-          "signedPercent": 0.02558825,
-          "absolutePercent": 0.02558825,
+          "modelRemainingSurrenderValue": 4150801,
+          "dollarError": -73795,
+          "signedPercent": -1.74679425,
+          "absolutePercent": 1.74679425,
           "status": "OK"
         },
         {
@@ -3524,10 +3527,10 @@
           "policyYear": 32,
           "withdrawal": 71632,
           "iposRemainingSurrenderValue": 4434671,
-          "modelRemainingSurrenderValue": 4425855,
-          "dollarError": -8816,
-          "signedPercent": -0.19879716,
-          "absolutePercent": 0.19879716,
+          "modelRemainingSurrenderValue": 4339918,
+          "dollarError": -94753,
+          "signedPercent": -2.13664103,
+          "absolutePercent": 2.13664103,
           "status": "OK"
         },
         {
@@ -3541,10 +3544,10 @@
           "policyYear": 33,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 4733786,
-          "modelRemainingSurrenderValue": 4615603,
-          "dollarError": -118183,
-          "signedPercent": -2.49658519,
-          "absolutePercent": 2.49658519,
+          "modelRemainingSurrenderValue": 4517594,
+          "dollarError": -216192,
+          "signedPercent": -4.56699986,
+          "absolutePercent": 4.56699986,
           "status": "OK"
         },
         {
@@ -3558,10 +3561,10 @@
           "policyYear": 34,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 5021659,
-          "modelRemainingSurrenderValue": 4864332,
-          "dollarError": -157327,
-          "signedPercent": -3.13296861,
-          "absolutePercent": 3.13296861,
+          "modelRemainingSurrenderValue": 4750421,
+          "dollarError": -271238,
+          "signedPercent": -5.40136238,
+          "absolutePercent": 5.40136238,
           "status": "OK"
         },
         {
@@ -3575,10 +3578,10 @@
           "policyYear": 35,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 5313556,
-          "modelRemainingSurrenderValue": 5110387,
-          "dollarError": -203169,
-          "signedPercent": -3.82359761,
-          "absolutePercent": 3.82359761,
+          "modelRemainingSurrenderValue": 4978251,
+          "dollarError": -335305,
+          "signedPercent": -6.31036918,
+          "absolutePercent": 6.31036918,
           "status": "OK"
         },
         {
@@ -3592,10 +3595,10 @@
           "policyYear": 36,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 5621747,
-          "modelRemainingSurrenderValue": 5434135,
-          "dollarError": -187612,
-          "signedPercent": -3.33725442,
-          "absolutePercent": 3.33725442,
+          "modelRemainingSurrenderValue": 5278830,
+          "dollarError": -342917,
+          "signedPercent": -6.09982982,
+          "absolutePercent": 6.09982982,
           "status": "OK"
         },
         {
@@ -3609,10 +3612,10 @@
           "policyYear": 37,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 5946265,
-          "modelRemainingSurrenderValue": 5754139,
-          "dollarError": -192126,
-          "signedPercent": -3.23103663,
-          "absolutePercent": 3.23103663,
+          "modelRemainingSurrenderValue": 5572192,
+          "dollarError": -374073,
+          "signedPercent": -6.29089016,
+          "absolutePercent": 6.29089016,
           "status": "OK"
         },
         {
@@ -3626,10 +3629,10 @@
           "policyYear": 38,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 6289812,
-          "modelRemainingSurrenderValue": 6070120,
-          "dollarError": -219692,
-          "signedPercent": -3.492823,
-          "absolutePercent": 3.492823,
+          "modelRemainingSurrenderValue": 5857575,
+          "dollarError": -432237,
+          "signedPercent": -6.8720178,
+          "absolutePercent": 6.8720178,
           "status": "OK"
         },
         {
@@ -3643,10 +3646,10 @@
           "policyYear": 39,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 6651357,
-          "modelRemainingSurrenderValue": 6381763,
-          "dollarError": -269594,
-          "signedPercent": -4.05321801,
-          "absolutePercent": 4.05321801,
+          "modelRemainingSurrenderValue": 6134115,
+          "dollarError": -517242,
+          "signedPercent": -7.77648832,
+          "absolutePercent": 7.77648832,
           "status": "OK"
         },
         {
@@ -3660,10 +3663,10 @@
           "policyYear": 40,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 7058537,
-          "modelRemainingSurrenderValue": 6688711,
-          "dollarError": -369826,
-          "signedPercent": -5.23941434,
-          "absolutePercent": 5.23941434,
+          "modelRemainingSurrenderValue": 6400841,
+          "dollarError": -657696,
+          "signedPercent": -9.31773822,
+          "absolutePercent": 9.31773822,
           "status": "OK"
         },
         {
@@ -3677,10 +3680,10 @@
           "policyYear": 41,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 7487872,
-          "modelRemainingSurrenderValue": 7104329,
-          "dollarError": -383543,
-          "signedPercent": -5.12218959,
-          "absolutePercent": 5.12218959,
+          "modelRemainingSurrenderValue": 6764988,
+          "dollarError": -722884,
+          "signedPercent": -9.6540646,
+          "absolutePercent": 9.6540646,
           "status": "OK"
         },
         {
@@ -3694,10 +3697,10 @@
           "policyYear": 42,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 7944148,
-          "modelRemainingSurrenderValue": 7513157,
-          "dollarError": -430991,
-          "signedPercent": -5.42526398,
-          "absolutePercent": 5.42526398,
+          "modelRemainingSurrenderValue": 7114608,
+          "dollarError": -829540,
+          "signedPercent": -10.44215188,
+          "absolutePercent": 10.44215188,
           "status": "OK"
         },
         {
@@ -3711,10 +3714,10 @@
           "policyYear": 43,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 8427175,
-          "modelRemainingSurrenderValue": 7914579,
-          "dollarError": -512596,
-          "signedPercent": -6.08265522,
-          "absolutePercent": 6.08265522,
+          "modelRemainingSurrenderValue": 7448017,
+          "dollarError": -979158,
+          "signedPercent": -11.61905383,
+          "absolutePercent": 11.61905383,
           "status": "OK"
         },
         {
@@ -3728,10 +3731,10 @@
           "policyYear": 44,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 8939826,
-          "modelRemainingSurrenderValue": 8307901,
-          "dollarError": -631925,
-          "signedPercent": -7.06864988,
-          "absolutePercent": 7.06864988,
+          "modelRemainingSurrenderValue": 7763317,
+          "dollarError": -1176509,
+          "signedPercent": -13.16031207,
+          "absolutePercent": 13.16031207,
           "status": "OK"
         },
         {
@@ -3745,10 +3748,10 @@
           "policyYear": 45,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 9483180,
-          "modelRemainingSurrenderValue": 8692339,
-          "dollarError": -790841,
-          "signedPercent": -8.33940725,
-          "absolutePercent": 8.33940725,
+          "modelRemainingSurrenderValue": 8058362,
+          "dollarError": -1424818,
+          "signedPercent": -15.02468581,
+          "absolutePercent": 15.02468581,
           "status": "OK"
         },
         {
@@ -3762,10 +3765,10 @@
           "policyYear": 46,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 10058738,
-          "modelRemainingSurrenderValue": 9214568,
-          "dollarError": -844170,
-          "signedPercent": -8.39240469,
-          "absolutePercent": 8.39240469,
+          "modelRemainingSurrenderValue": 8466311,
+          "dollarError": -1592427,
+          "signedPercent": -15.83128023,
+          "absolutePercent": 15.83128023,
           "status": "OK"
         },
         {
@@ -3779,10 +3782,10 @@
           "policyYear": 47,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 10668926,
-          "modelRemainingSurrenderValue": 9723787,
-          "dollarError": -945139,
-          "signedPercent": -8.85880172,
-          "absolutePercent": 8.85880172,
+          "modelRemainingSurrenderValue": 8844084,
+          "dollarError": -1824842,
+          "signedPercent": -17.10427085,
+          "absolutePercent": 17.10427085,
           "status": "OK"
         },
         {
@@ -3796,10 +3799,10 @@
           "policyYear": 48,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 11314429,
-          "modelRemainingSurrenderValue": 10218642,
-          "dollarError": -1095787,
-          "signedPercent": -9.68486346,
-          "absolutePercent": 9.68486346,
+          "modelRemainingSurrenderValue": 9187969,
+          "dollarError": -2126460,
+          "signedPercent": -18.79423168,
+          "absolutePercent": 18.79423168,
           "status": "OK"
         },
         {
@@ -3813,10 +3816,10 @@
           "policyYear": 49,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 11999519,
-          "modelRemainingSurrenderValue": 10697603,
-          "dollarError": -1301916,
-          "signedPercent": -10.84973489,
-          "absolutePercent": 10.84973489,
+          "modelRemainingSurrenderValue": 9493779,
+          "dollarError": -2505740,
+          "signedPercent": -20.88200369,
+          "absolutePercent": 20.88200369,
           "status": "OK"
         },
         {
@@ -3830,10 +3833,10 @@
           "policyYear": 50,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 12726555,
-          "modelRemainingSurrenderValue": 11158944,
-          "dollarError": -1567611,
-          "signedPercent": -12.3176382,
-          "absolutePercent": 12.3176382,
+          "modelRemainingSurrenderValue": 9756786,
+          "dollarError": -2969769,
+          "signedPercent": -23.33521523,
+          "absolutePercent": 23.33521523,
           "status": "OK"
         },
         {
@@ -3847,10 +3850,10 @@
           "policyYear": 51,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 13497753,
-          "modelRemainingSurrenderValue": 11789512,
-          "dollarError": -1708241,
-          "signedPercent": -12.65574352,
-          "absolutePercent": 12.65574352,
+          "modelRemainingSurrenderValue": 10133939,
+          "dollarError": -3363814,
+          "signedPercent": -24.92128875,
+          "absolutePercent": 24.92128875,
           "status": "OK"
         },
         {
@@ -3864,10 +3867,10 @@
           "policyYear": 52,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 14313309,
-          "modelRemainingSurrenderValue": 12394029,
-          "dollarError": -1919280,
-          "signedPercent": -13.40905866,
-          "absolutePercent": 13.40905866,
+          "modelRemainingSurrenderValue": 10447041,
+          "dollarError": -3866268,
+          "signedPercent": -27.01169939,
+          "absolutePercent": 27.01169939,
           "status": "OK"
         },
         {
@@ -3881,10 +3884,10 @@
           "policyYear": 53,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 15178394,
-          "modelRemainingSurrenderValue": 12970619,
-          "dollarError": -2207775,
-          "signedPercent": -14.5455112,
-          "absolutePercent": 14.5455112,
+          "modelRemainingSurrenderValue": 10689681,
+          "dollarError": -4488713,
+          "signedPercent": -29.5730431,
+          "absolutePercent": 29.5730431,
           "status": "OK"
         },
         {
@@ -3898,10 +3901,10 @@
           "policyYear": 54,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 16095061,
-          "modelRemainingSurrenderValue": 13516221,
-          "dollarError": -2578840,
-          "signedPercent": -16.02255499,
-          "absolutePercent": 16.02255499,
+          "modelRemainingSurrenderValue": 10853121,
+          "dollarError": -5241940,
+          "signedPercent": -32.56862462,
+          "absolutePercent": 32.56862462,
           "status": "OK"
         },
         {
@@ -3915,42 +3918,42 @@
           "policyYear": 55,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 17067951,
-          "modelRemainingSurrenderValue": 14027383,
-          "dollarError": -3040568,
-          "signedPercent": -17.81448752,
-          "absolutePercent": 17.81448752,
+          "modelRemainingSurrenderValue": 10927498,
+          "dollarError": -6140453,
+          "signedPercent": -35.97650942,
+          "absolutePercent": 35.97650942,
           "status": "OK"
         }
       ],
-      "MAPE": 3.61553918,
-      "maxErrorPercent": 17.81448752,
-      "maxDollarError": 3040568,
+      "MAPE": 6.88719632,
+      "maxErrorPercent": 35.97650942,
+      "maxDollarError": 6140453,
       "worstAge": 100,
       "worstPolicyYear": 55,
       "crossings": {
         ">0.01%": {
-          "age": 61,
-          "policyYear": 16
+          "age": 62,
+          "policyYear": 17
         },
         ">0.02%": {
-          "age": 61,
-          "policyYear": 16
+          "age": 62,
+          "policyYear": 17
         },
         ">0.05%": {
-          "age": 61,
-          "policyYear": 16
+          "age": 62,
+          "policyYear": 17
         },
         ">0.10%": {
-          "age": 61,
-          "policyYear": 16
+          "age": 62,
+          "policyYear": 17
         }
       },
       "distribution": {
-        "<=0.005%": 15,
-        "<=0.01%": 15,
-        "<=0.02%": 15,
-        "<=0.05%": 17,
-        "<=0.10%": 19,
+        "<=0.005%": 16,
+        "<=0.01%": 16,
+        "<=0.02%": 16,
+        "<=0.05%": 16,
+        "<=0.10%": 16,
         ">0.10%": 55
       }
     },
@@ -4160,10 +4163,10 @@
           "policyYear": 12,
           "withdrawal": 29576,
           "iposRemainingSurrenderValue": 889076,
-          "modelRemainingSurrenderValue": 886031,
-          "dollarError": -3045,
-          "signedPercent": -0.34249041,
-          "absolutePercent": 0.34249041,
+          "modelRemainingSurrenderValue": 884299,
+          "dollarError": -4777,
+          "signedPercent": -0.5372994,
+          "absolutePercent": 0.5372994,
           "status": "OK"
         },
         {
@@ -4177,10 +4180,10 @@
           "policyYear": 13,
           "withdrawal": 32168,
           "iposRemainingSurrenderValue": 923818,
-          "modelRemainingSurrenderValue": 919317,
-          "dollarError": -4501,
-          "signedPercent": -0.48721718,
-          "absolutePercent": 0.48721718,
+          "modelRemainingSurrenderValue": 916744,
+          "dollarError": -7074,
+          "signedPercent": -0.76573524,
+          "absolutePercent": 0.76573524,
           "status": "OK"
         },
         {
@@ -4194,10 +4197,10 @@
           "policyYear": 14,
           "withdrawal": 35128,
           "iposRemainingSurrenderValue": 959126,
-          "modelRemainingSurrenderValue": 953791,
-          "dollarError": -5335,
-          "signedPercent": -0.55623557,
-          "absolutePercent": 0.55623557,
+          "modelRemainingSurrenderValue": 951455,
+          "dollarError": -7671,
+          "signedPercent": -0.79979064,
+          "absolutePercent": 0.79979064,
           "status": "OK"
         },
         {
@@ -4211,10 +4214,10 @@
           "policyYear": 15,
           "withdrawal": 37816,
           "iposRemainingSurrenderValue": 982861,
-          "modelRemainingSurrenderValue": 1013483,
-          "dollarError": 30622,
-          "signedPercent": 3.11559824,
-          "absolutePercent": 3.11559824,
+          "modelRemainingSurrenderValue": 1011675,
+          "dollarError": 28814,
+          "signedPercent": 2.93164547,
+          "absolutePercent": 2.93164547,
           "status": "OK"
         },
         {
@@ -4228,10 +4231,10 @@
           "policyYear": 16,
           "withdrawal": 41208,
           "iposRemainingSurrenderValue": 1005686,
-          "modelRemainingSurrenderValue": 1049500,
-          "dollarError": 43814,
-          "signedPercent": 4.35662821,
-          "absolutePercent": 4.35662821,
+          "modelRemainingSurrenderValue": 1043872,
+          "dollarError": 38186,
+          "signedPercent": 3.7970102,
+          "absolutePercent": 3.7970102,
           "status": "OK"
         },
         {
@@ -4245,10 +4248,10 @@
           "policyYear": 17,
           "withdrawal": 43576,
           "iposRemainingSurrenderValue": 1035903,
-          "modelRemainingSurrenderValue": 1097032,
-          "dollarError": 61129,
-          "signedPercent": 5.90103514,
-          "absolutePercent": 5.90103514,
+          "modelRemainingSurrenderValue": 1087263,
+          "dollarError": 51360,
+          "signedPercent": 4.95799317,
+          "absolutePercent": 4.95799317,
           "status": "OK"
         },
         {
@@ -4262,10 +4265,10 @@
           "policyYear": 18,
           "withdrawal": 45536,
           "iposRemainingSurrenderValue": 1064653,
-          "modelRemainingSurrenderValue": 1146155,
-          "dollarError": 81502,
-          "signedPercent": 7.6552642,
-          "absolutePercent": 7.6552642,
+          "modelRemainingSurrenderValue": 1132061,
+          "dollarError": 67408,
+          "signedPercent": 6.3314526,
+          "absolutePercent": 6.3314526,
           "status": "OK"
         },
         {
@@ -4279,10 +4282,10 @@
           "policyYear": 19,
           "withdrawal": 47896,
           "iposRemainingSurrenderValue": 1101577,
-          "modelRemainingSurrenderValue": 1198714,
-          "dollarError": 97137,
-          "signedPercent": 8.81799457,
-          "absolutePercent": 8.81799457,
+          "modelRemainingSurrenderValue": 1180296,
+          "dollarError": 78719,
+          "signedPercent": 7.14602792,
+          "absolutePercent": 7.14602792,
           "status": "OK"
         },
         {
@@ -4296,10 +4299,10 @@
           "policyYear": 20,
           "withdrawal": 50328,
           "iposRemainingSurrenderValue": 1145676,
-          "modelRemainingSurrenderValue": 1248202,
-          "dollarError": 102526,
-          "signedPercent": 8.94895241,
-          "absolutePercent": 8.94895241,
+          "modelRemainingSurrenderValue": 1225362,
+          "dollarError": 79686,
+          "signedPercent": 6.95536958,
+          "absolutePercent": 6.95536958,
           "status": "OK"
         },
         {
@@ -4313,10 +4316,10 @@
           "policyYear": 21,
           "withdrawal": 53640,
           "iposRemainingSurrenderValue": 1204105,
-          "modelRemainingSurrenderValue": 1309462,
-          "dollarError": 105357,
-          "signedPercent": 8.74981833,
-          "absolutePercent": 8.74981833,
+          "modelRemainingSurrenderValue": 1283505,
+          "dollarError": 79400,
+          "signedPercent": 6.59410932,
+          "absolutePercent": 6.59410932,
           "status": "OK"
         },
         {
@@ -4330,10 +4333,10 @@
           "policyYear": 22,
           "withdrawal": 56752,
           "iposRemainingSurrenderValue": 1231938,
-          "modelRemainingSurrenderValue": 1362396,
-          "dollarError": 130458,
-          "signedPercent": 10.5896563,
-          "absolutePercent": 10.5896563,
+          "modelRemainingSurrenderValue": 1331720,
+          "dollarError": 99782,
+          "signedPercent": 8.09959592,
+          "absolutePercent": 8.09959592,
           "status": "OK"
         },
         {
@@ -4347,10 +4350,10 @@
           "policyYear": 23,
           "withdrawal": 59280,
           "iposRemainingSurrenderValue": 1269618,
-          "modelRemainingSurrenderValue": 1407677,
-          "dollarError": 138059,
-          "signedPercent": 10.87405818,
-          "absolutePercent": 10.87405818,
+          "modelRemainingSurrenderValue": 1372584,
+          "dollarError": 102966,
+          "signedPercent": 8.10999844,
+          "absolutePercent": 8.10999844,
           "status": "OK"
         },
         {
@@ -4364,10 +4367,10 @@
           "policyYear": 24,
           "withdrawal": 62856,
           "iposRemainingSurrenderValue": 1292313,
-          "modelRemainingSurrenderValue": 1449964,
-          "dollarError": 157651,
-          "signedPercent": 12.19913442,
-          "absolutePercent": 12.19913442,
+          "modelRemainingSurrenderValue": 1410056,
+          "dollarError": 117743,
+          "signedPercent": 9.11102806,
+          "absolutePercent": 9.11102806,
           "status": "OK"
         },
         {
@@ -4381,10 +4384,10 @@
           "policyYear": 25,
           "withdrawal": 66152,
           "iposRemainingSurrenderValue": 1329185,
-          "modelRemainingSurrenderValue": 1479630,
-          "dollarError": 150445,
-          "signedPercent": 11.31858996,
-          "absolutePercent": 11.31858996,
+          "modelRemainingSurrenderValue": 1434697,
+          "dollarError": 105512,
+          "signedPercent": 7.93809741,
+          "absolutePercent": 7.93809741,
           "status": "OK"
         },
         {
@@ -4398,10 +4401,10 @@
           "policyYear": 26,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 1439864,
-          "modelRemainingSurrenderValue": 1527012,
-          "dollarError": 87148,
-          "signedPercent": 6.05251607,
-          "absolutePercent": 6.05251607,
+          "modelRemainingSurrenderValue": 1476465,
+          "dollarError": 36601,
+          "signedPercent": 2.54197619,
+          "absolutePercent": 2.54197619,
           "status": "OK"
         },
         {
@@ -4415,10 +4418,10 @@
           "policyYear": 27,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 1525989,
-          "modelRemainingSurrenderValue": 1637807,
-          "dollarError": 111818,
-          "signedPercent": 7.32757576,
-          "absolutePercent": 7.32757576,
+          "modelRemainingSurrenderValue": 1577886,
+          "dollarError": 51897,
+          "signedPercent": 3.40087642,
+          "absolutePercent": 3.40087642,
           "status": "OK"
         },
         {
@@ -4432,10 +4435,10 @@
           "policyYear": 28,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 1617898,
-          "modelRemainingSurrenderValue": 1749998,
-          "dollarError": 132100,
-          "signedPercent": 8.16491522,
-          "absolutePercent": 8.16491522,
+          "modelRemainingSurrenderValue": 1679265,
+          "dollarError": 61367,
+          "signedPercent": 3.79300796,
+          "absolutePercent": 3.79300796,
           "status": "OK"
         },
         {
@@ -4449,10 +4452,10 @@
           "policyYear": 29,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 1714941,
-          "modelRemainingSurrenderValue": 1863838,
-          "dollarError": 148897,
-          "signedPercent": 8.68233951,
-          "absolutePercent": 8.68233951,
+          "modelRemainingSurrenderValue": 1780659,
+          "dollarError": 65718,
+          "signedPercent": 3.83208519,
+          "absolutePercent": 3.83208519,
           "status": "OK"
         },
         {
@@ -4466,10 +4469,10 @@
           "policyYear": 30,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 1817952,
-          "modelRemainingSurrenderValue": 1979616,
-          "dollarError": 161664,
-          "signedPercent": 8.89264403,
-          "absolutePercent": 8.89264403,
+          "modelRemainingSurrenderValue": 1882131,
+          "dollarError": 64179,
+          "signedPercent": 3.53029123,
+          "absolutePercent": 3.53029123,
           "status": "OK"
         },
         {
@@ -4483,10 +4486,10 @@
           "policyYear": 31,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 1938922,
-          "modelRemainingSurrenderValue": 2129773,
-          "dollarError": 190851,
-          "signedPercent": 9.84314996,
-          "absolutePercent": 9.84314996,
+          "modelRemainingSurrenderValue": 2014125,
+          "dollarError": 75203,
+          "signedPercent": 3.87859852,
+          "absolutePercent": 3.87859852,
           "status": "OK"
         },
         {
@@ -4500,10 +4503,10 @@
           "policyYear": 32,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 2068292,
-          "modelRemainingSurrenderValue": 2282908,
-          "dollarError": 214616,
-          "signedPercent": 10.37648456,
-          "absolutePercent": 10.37648456,
+          "modelRemainingSurrenderValue": 2146322,
+          "dollarError": 78030,
+          "signedPercent": 3.77267813,
+          "absolutePercent": 3.77267813,
           "status": "OK"
         },
         {
@@ -4517,10 +4520,10 @@
           "policyYear": 33,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 2207901,
-          "modelRemainingSurrenderValue": 2439511,
-          "dollarError": 231610,
-          "signedPercent": 10.49005368,
-          "absolutePercent": 10.49005368,
+          "modelRemainingSurrenderValue": 2278829,
+          "dollarError": 70928,
+          "signedPercent": 3.21246288,
+          "absolutePercent": 3.21246288,
           "status": "OK"
         },
         {
@@ -4534,10 +4537,10 @@
           "policyYear": 34,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 2342293,
-          "modelRemainingSurrenderValue": 2600133,
-          "dollarError": 257840,
-          "signedPercent": 11.0080165,
-          "absolutePercent": 11.0080165,
+          "modelRemainingSurrenderValue": 2411768,
+          "dollarError": 69475,
+          "signedPercent": 2.96611056,
+          "absolutePercent": 2.96611056,
           "status": "OK"
         },
         {
@@ -4551,10 +4554,10 @@
           "policyYear": 35,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 2478585,
-          "modelRemainingSurrenderValue": 2765401,
-          "dollarError": 286816,
-          "signedPercent": 11.57176373,
-          "absolutePercent": 11.57176373,
+          "modelRemainingSurrenderValue": 2545275,
+          "dollarError": 66690,
+          "signedPercent": 2.69064809,
+          "absolutePercent": 2.69064809,
           "status": "OK"
         },
         {
@@ -4568,10 +4571,10 @@
           "policyYear": 36,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 2622500,
-          "modelRemainingSurrenderValue": 2978914,
-          "dollarError": 356414,
-          "signedPercent": 13.59061964,
-          "absolutePercent": 13.59061964,
+          "modelRemainingSurrenderValue": 2718657,
+          "dollarError": 96157,
+          "signedPercent": 3.66661582,
+          "absolutePercent": 3.66661582,
           "status": "OK"
         },
         {
@@ -4585,10 +4588,10 @@
           "policyYear": 37,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 2774056,
-          "modelRemainingSurrenderValue": 3199429,
-          "dollarError": 425373,
-          "signedPercent": 15.33397307,
-          "absolutePercent": 15.33397307,
+          "modelRemainingSurrenderValue": 2892992,
+          "dollarError": 118936,
+          "signedPercent": 4.28744048,
+          "absolutePercent": 4.28744048,
           "status": "OK"
         },
         {
@@ -4602,10 +4605,10 @@
           "policyYear": 38,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 2934517,
-          "modelRemainingSurrenderValue": 3428004,
-          "dollarError": 493487,
-          "signedPercent": 16.81663456,
-          "absolutePercent": 16.81663456,
+          "modelRemainingSurrenderValue": 3068512,
+          "dollarError": 133995,
+          "signedPercent": 4.56616881,
+          "absolutePercent": 4.56616881,
           "status": "OK"
         },
         {
@@ -4619,10 +4622,10 @@
           "policyYear": 39,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 3103405,
-          "modelRemainingSurrenderValue": 3665833,
-          "dollarError": 562428,
-          "signedPercent": 18.12293271,
-          "absolutePercent": 18.12293271,
+          "modelRemainingSurrenderValue": 3245481,
+          "dollarError": 142076,
+          "signedPercent": 4.57806828,
+          "absolutePercent": 4.57806828,
           "status": "OK"
         },
         {
@@ -4636,10 +4639,10 @@
           "policyYear": 40,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 3293295,
-          "modelRemainingSurrenderValue": 3914264,
-          "dollarError": 620969,
-          "signedPercent": 18.85555348,
-          "absolutePercent": 18.85555348,
+          "modelRemainingSurrenderValue": 3424195,
+          "dollarError": 130900,
+          "signedPercent": 3.97474262,
+          "absolutePercent": 3.97474262,
           "status": "OK"
         },
         {
@@ -4653,10 +4656,10 @@
           "policyYear": 41,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 3493516,
-          "modelRemainingSurrenderValue": 4242755,
-          "dollarError": 749239,
-          "signedPercent": 21.44655986,
-          "absolutePercent": 21.44655986,
+          "modelRemainingSurrenderValue": 3663653,
+          "dollarError": 170137,
+          "signedPercent": 4.87007931,
+          "absolutePercent": 4.87007931,
           "status": "OK"
         },
         {
@@ -4670,10 +4673,10 @@
           "policyYear": 42,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 3706302,
-          "modelRemainingSurrenderValue": 4587363,
-          "dollarError": 881061,
-          "signedPercent": 23.77197001,
-          "absolutePercent": 23.77197001,
+          "modelRemainingSurrenderValue": 3905869,
+          "dollarError": 199567,
+          "signedPercent": 5.38453154,
+          "absolutePercent": 5.38453154,
           "status": "OK"
         },
         {
@@ -4687,10 +4690,10 @@
           "policyYear": 43,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 3931564,
-          "modelRemainingSurrenderValue": 4950416,
-          "dollarError": 1018852,
-          "signedPercent": 25.91467416,
-          "absolutePercent": 25.91467416,
+          "modelRemainingSurrenderValue": 4151355,
+          "dollarError": 219791,
+          "signedPercent": 5.59042152,
+          "absolutePercent": 5.59042152,
           "status": "OK"
         },
         {
@@ -4704,10 +4707,10 @@
           "policyYear": 44,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 4170641,
-          "modelRemainingSurrenderValue": 5334547,
-          "dollarError": 1163906,
-          "signedPercent": 27.90712507,
-          "absolutePercent": 27.90712507,
+          "modelRemainingSurrenderValue": 4400689,
+          "dollarError": 230048,
+          "signedPercent": 5.51589072,
+          "absolutePercent": 5.51589072,
           "status": "OK"
         },
         {
@@ -4721,10 +4724,10 @@
           "policyYear": 45,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 4424037,
-          "modelRemainingSurrenderValue": 5742722,
-          "dollarError": 1318685,
-          "signedPercent": 29.80727783,
-          "absolutePercent": 29.80727783,
+          "modelRemainingSurrenderValue": 4654523,
+          "dollarError": 230486,
+          "signedPercent": 5.20985697,
+          "absolutePercent": 5.20985697,
           "status": "OK"
         },
         {
@@ -4738,10 +4741,10 @@
           "policyYear": 46,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 4692451,
-          "modelRemainingSurrenderValue": 6279183,
-          "dollarError": 1586732,
-          "signedPercent": 33.81456727,
-          "absolutePercent": 33.81456727,
+          "modelRemainingSurrenderValue": 4994114,
+          "dollarError": 301663,
+          "signedPercent": 6.42868727,
+          "absolutePercent": 6.42868727,
           "status": "OK"
         },
         {
@@ -4755,10 +4758,10 @@
           "policyYear": 47,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 4977014,
-          "modelRemainingSurrenderValue": 6852523,
-          "dollarError": 1875509,
-          "signedPercent": 37.68341821,
-          "absolutePercent": 37.68341821,
+          "modelRemainingSurrenderValue": 5341386,
+          "dollarError": 364372,
+          "signedPercent": 7.32109655,
+          "absolutePercent": 7.32109655,
           "status": "OK"
         },
         {
@@ -4772,10 +4775,10 @@
           "policyYear": 48,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 5278050,
-          "modelRemainingSurrenderValue": 7467995,
-          "dollarError": 2189945,
-          "signedPercent": 41.49155465,
-          "absolutePercent": 41.49155465,
+          "modelRemainingSurrenderValue": 5697659,
+          "dollarError": 419609,
+          "signedPercent": 7.95007626,
+          "absolutePercent": 7.95007626,
           "status": "OK"
         },
         {
@@ -4789,10 +4792,10 @@
           "policyYear": 49,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 5597546,
-          "modelRemainingSurrenderValue": 8131528,
-          "dollarError": 2533982,
-          "signedPercent": 45.26951632,
-          "absolutePercent": 45.26951632,
+          "modelRemainingSurrenderValue": 6064420,
+          "dollarError": 466874,
+          "signedPercent": 8.34069072,
+          "absolutePercent": 8.34069072,
           "status": "OK"
         },
         {
@@ -4806,18 +4809,18 @@
           "policyYear": 50,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 5936604,
-          "modelRemainingSurrenderValue": 8849703,
-          "dollarError": 2913099,
-          "signedPercent": 49.07012494,
-          "absolutePercent": 49.07012494,
+          "modelRemainingSurrenderValue": 6443243,
+          "dollarError": 506639,
+          "signedPercent": 8.53415522,
+          "absolutePercent": 8.53415522,
           "status": "OK"
         }
       ],
-      "MAPE": 12.10437629,
-      "maxErrorPercent": 49.07012494,
-      "maxDollarError": 2913099,
-      "worstAge": 100,
-      "worstPolicyYear": 50,
+      "MAPE": 3.87825183,
+      "maxErrorPercent": 9.11102806,
+      "maxDollarError": 506639,
+      "worstAge": 74,
+      "worstPolicyYear": 24,
       "crossings": {
         ">0.01%": {
           "age": 62,
@@ -5119,10 +5122,10 @@
           "policyYear": 16,
           "withdrawal": 20440,
           "iposRemainingSurrenderValue": 641879,
-          "modelRemainingSurrenderValue": 655170,
-          "dollarError": 13291,
-          "signedPercent": 2.07063948,
-          "absolutePercent": 2.07063948,
+          "modelRemainingSurrenderValue": 641880,
+          "dollarError": 1,
+          "signedPercent": 0.00015579,
+          "absolutePercent": 0.00015579,
           "status": "OK"
         },
         {
@@ -5136,10 +5139,10 @@
           "policyYear": 17,
           "withdrawal": 21896,
           "iposRemainingSurrenderValue": 665993,
-          "modelRemainingSurrenderValue": 683222,
-          "dollarError": 17229,
-          "signedPercent": 2.58696413,
-          "absolutePercent": 2.58696413,
+          "modelRemainingSurrenderValue": 671339,
+          "dollarError": 5346,
+          "signedPercent": 0.80271114,
+          "absolutePercent": 0.80271114,
           "status": "OK"
         },
         {
@@ -5153,10 +5156,10 @@
           "policyYear": 18,
           "withdrawal": 23816,
           "iposRemainingSurrenderValue": 689283,
-          "modelRemainingSurrenderValue": 709501,
-          "dollarError": 20218,
-          "signedPercent": 2.9331929,
-          "absolutePercent": 2.9331929,
+          "modelRemainingSurrenderValue": 699634,
+          "dollarError": 10351,
+          "signedPercent": 1.5017054,
+          "absolutePercent": 1.5017054,
           "status": "OK"
         },
         {
@@ -5170,10 +5173,10 @@
           "policyYear": 19,
           "withdrawal": 26008,
           "iposRemainingSurrenderValue": 717870,
-          "modelRemainingSurrenderValue": 738063,
-          "dollarError": 20193,
-          "signedPercent": 2.81290484,
-          "absolutePercent": 2.81290484,
+          "modelRemainingSurrenderValue": 730884,
+          "dollarError": 13014,
+          "signedPercent": 1.81286305,
+          "absolutePercent": 1.81286305,
           "status": "OK"
         },
         {
@@ -5187,10 +5190,10 @@
           "policyYear": 20,
           "withdrawal": 28000,
           "iposRemainingSurrenderValue": 751406,
-          "modelRemainingSurrenderValue": 780429,
-          "dollarError": 29023,
-          "signedPercent": 3.86249245,
-          "absolutePercent": 3.86249245,
+          "modelRemainingSurrenderValue": 775860,
+          "dollarError": 24454,
+          "signedPercent": 3.25443236,
+          "absolutePercent": 3.25443236,
           "status": "OK"
         },
         {
@@ -5204,10 +5207,10 @@
           "policyYear": 21,
           "withdrawal": 30512,
           "iposRemainingSurrenderValue": 794396,
-          "modelRemainingSurrenderValue": 820734,
-          "dollarError": 26338,
-          "signedPercent": 3.3154749,
-          "absolutePercent": 3.3154749,
+          "modelRemainingSurrenderValue": 815317,
+          "dollarError": 20921,
+          "signedPercent": 2.63357318,
+          "absolutePercent": 2.63357318,
           "status": "OK"
         },
         {
@@ -5221,10 +5224,10 @@
           "policyYear": 22,
           "withdrawal": 32264,
           "iposRemainingSurrenderValue": 817936,
-          "modelRemainingSurrenderValue": 855473,
-          "dollarError": 37537,
-          "signedPercent": 4.58923437,
-          "absolutePercent": 4.58923437,
+          "modelRemainingSurrenderValue": 849117,
+          "dollarError": 31181,
+          "signedPercent": 3.81215645,
+          "absolutePercent": 3.81215645,
           "status": "OK"
         },
         {
@@ -5238,10 +5241,10 @@
           "policyYear": 23,
           "withdrawal": 33712,
           "iposRemainingSurrenderValue": 848600,
-          "modelRemainingSurrenderValue": 885563,
-          "dollarError": 36963,
-          "signedPercent": 4.35576243,
-          "absolutePercent": 4.35576243,
+          "modelRemainingSurrenderValue": 878198,
+          "dollarError": 29598,
+          "signedPercent": 3.48786236,
+          "absolutePercent": 3.48786236,
           "status": "OK"
         },
         {
@@ -5255,10 +5258,10 @@
           "policyYear": 24,
           "withdrawal": 35464,
           "iposRemainingSurrenderValue": 870317,
-          "modelRemainingSurrenderValue": 913604,
-          "dollarError": 43287,
-          "signedPercent": 4.97370498,
-          "absolutePercent": 4.97370498,
+          "modelRemainingSurrenderValue": 905128,
+          "dollarError": 34811,
+          "signedPercent": 3.99980697,
+          "absolutePercent": 3.99980697,
           "status": "OK"
         },
         {
@@ -5272,10 +5275,10 @@
           "policyYear": 25,
           "withdrawal": 37264,
           "iposRemainingSurrenderValue": 902435,
-          "modelRemainingSurrenderValue": 934541,
-          "dollarError": 32106,
-          "signedPercent": 3.55770776,
-          "absolutePercent": 3.55770776,
+          "modelRemainingSurrenderValue": 924909,
+          "dollarError": 22474,
+          "signedPercent": 2.49037327,
+          "absolutePercent": 2.49037327,
           "status": "OK"
         },
         {
@@ -5289,10 +5292,10 @@
           "policyYear": 26,
           "withdrawal": 39712,
           "iposRemainingSurrenderValue": 937868,
-          "modelRemainingSurrenderValue": 963814,
-          "dollarError": 25946,
-          "signedPercent": 2.76648739,
-          "absolutePercent": 2.76648739,
+          "modelRemainingSurrenderValue": 952807,
+          "dollarError": 14939,
+          "signedPercent": 1.59286808,
+          "absolutePercent": 1.59286808,
           "status": "OK"
         },
         {
@@ -5306,10 +5309,10 @@
           "policyYear": 27,
           "withdrawal": 42016,
           "iposRemainingSurrenderValue": 951945,
-          "modelRemainingSurrenderValue": 988763,
-          "dollarError": 36818,
-          "signedPercent": 3.86766042,
-          "absolutePercent": 3.86766042,
+          "modelRemainingSurrenderValue": 976284,
+          "dollarError": 24339,
+          "signedPercent": 2.55676536,
+          "absolutePercent": 2.55676536,
           "status": "OK"
         },
         {
@@ -5323,10 +5326,10 @@
           "policyYear": 28,
           "withdrawal": 43888,
           "iposRemainingSurrenderValue": 965380,
-          "modelRemainingSurrenderValue": 1008781,
-          "dollarError": 43401,
-          "signedPercent": 4.49574261,
-          "absolutePercent": 4.49574261,
+          "modelRemainingSurrenderValue": 994744,
+          "dollarError": 29364,
+          "signedPercent": 3.04170379,
+          "absolutePercent": 3.04170379,
           "status": "OK"
         },
         {
@@ -5340,10 +5343,10 @@
           "policyYear": 29,
           "withdrawal": 46536,
           "iposRemainingSurrenderValue": 976729,
-          "modelRemainingSurrenderValue": 1024310,
-          "dollarError": 47581,
-          "signedPercent": 4.87146383,
-          "absolutePercent": 4.87146383,
+          "modelRemainingSurrenderValue": 1008616,
+          "dollarError": 31887,
+          "signedPercent": 3.26467219,
+          "absolutePercent": 3.26467219,
           "status": "OK"
         },
         {
@@ -5357,10 +5360,10 @@
           "policyYear": 30,
           "withdrawal": 48976,
           "iposRemainingSurrenderValue": 986395,
-          "modelRemainingSurrenderValue": 1034679,
-          "dollarError": 48284,
-          "signedPercent": 4.89499643,
-          "absolutePercent": 4.89499643,
+          "modelRemainingSurrenderValue": 1017251,
+          "dollarError": 30856,
+          "signedPercent": 3.1281586,
+          "absolutePercent": 3.1281586,
           "status": "OK"
         },
         {
@@ -5374,10 +5377,10 @@
           "policyYear": 31,
           "withdrawal": 51080,
           "iposRemainingSurrenderValue": 1000920,
-          "modelRemainingSurrenderValue": 1056674,
-          "dollarError": 55754,
-          "signedPercent": 5.57027535,
-          "absolutePercent": 5.57027535,
+          "modelRemainingSurrenderValue": 1037145,
+          "dollarError": 36225,
+          "signedPercent": 3.61917036,
+          "absolutePercent": 3.61917036,
           "status": "OK"
         },
         {
@@ -5391,10 +5394,10 @@
           "policyYear": 32,
           "withdrawal": 53032,
           "iposRemainingSurrenderValue": 1014632,
-          "modelRemainingSurrenderValue": 1073409,
-          "dollarError": 58777,
-          "signedPercent": 5.79293774,
-          "absolutePercent": 5.79293774,
+          "modelRemainingSurrenderValue": 1051667,
+          "dollarError": 37035,
+          "signedPercent": 3.65009186,
+          "absolutePercent": 3.65009186,
           "status": "OK"
         },
         {
@@ -5408,10 +5411,10 @@
           "policyYear": 33,
           "withdrawal": 54640,
           "iposRemainingSurrenderValue": 1028428,
-          "modelRemainingSurrenderValue": 1085016,
-          "dollarError": 56588,
-          "signedPercent": 5.50237839,
-          "absolutePercent": 5.50237839,
+          "modelRemainingSurrenderValue": 1060952,
+          "dollarError": 32524,
+          "signedPercent": 3.16249655,
+          "absolutePercent": 3.16249655,
           "status": "OK"
         },
         {
@@ -5425,10 +5428,10 @@
           "policyYear": 34,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 1090962,
-          "modelRemainingSurrenderValue": 1095263,
-          "dollarError": 4301,
-          "signedPercent": 0.39423921,
-          "absolutePercent": 0.39423921,
+          "modelRemainingSurrenderValue": 1069087,
+          "dollarError": -21875,
+          "signedPercent": -2.00511109,
+          "absolutePercent": 2.00511109,
           "status": "OK"
         },
         {
@@ -5442,10 +5445,10 @@
           "policyYear": 35,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 1154368,
-          "modelRemainingSurrenderValue": 1154486,
-          "dollarError": 118,
-          "signedPercent": 0.01022204,
-          "absolutePercent": 0.01022204,
+          "modelRemainingSurrenderValue": 1124122,
+          "dollarError": -30246,
+          "signedPercent": -2.620135,
+          "absolutePercent": 2.620135,
           "status": "OK"
         },
         {
@@ -5459,10 +5462,10 @@
           "policyYear": 36,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 1221314,
-          "modelRemainingSurrenderValue": 1231490,
-          "dollarError": 10176,
-          "signedPercent": 0.83320096,
-          "absolutePercent": 0.83320096,
+          "modelRemainingSurrenderValue": 1195820,
+          "dollarError": -25494,
+          "signedPercent": -2.08742387,
+          "absolutePercent": 2.08742387,
           "status": "OK"
         },
         {
@@ -5476,10 +5479,10 @@
           "policyYear": 37,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 1291804,
-          "modelRemainingSurrenderValue": 1308558,
-          "dollarError": 16754,
-          "signedPercent": 1.29694598,
-          "absolutePercent": 1.29694598,
+          "modelRemainingSurrenderValue": 1266790,
+          "dollarError": -25014,
+          "signedPercent": -1.93636186,
+          "absolutePercent": 1.93636186,
           "status": "OK"
         },
         {
@@ -5493,10 +5496,10 @@
           "policyYear": 38,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 1366427,
-          "modelRemainingSurrenderValue": 1385750,
-          "dollarError": 19323,
-          "signedPercent": 1.41412604,
-          "absolutePercent": 1.41412604,
+          "modelRemainingSurrenderValue": 1336982,
+          "dollarError": -29445,
+          "signedPercent": -2.15489009,
+          "absolutePercent": 2.15489009,
           "status": "OK"
         },
         {
@@ -5510,10 +5513,10 @@
           "policyYear": 39,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 1444958,
-          "modelRemainingSurrenderValue": 1463132,
-          "dollarError": 18174,
-          "signedPercent": 1.25775282,
-          "absolutePercent": 1.25775282,
+          "modelRemainingSurrenderValue": 1406337,
+          "dollarError": -38621,
+          "signedPercent": -2.67281125,
+          "absolutePercent": 2.67281125,
           "status": "OK"
         },
         {
@@ -5527,10 +5530,10 @@
           "policyYear": 40,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 1533420,
-          "modelRemainingSurrenderValue": 1540780,
-          "dollarError": 7360,
-          "signedPercent": 0.47997287,
-          "absolutePercent": 0.47997287,
+          "modelRemainingSurrenderValue": 1474790,
+          "dollarError": -58630,
+          "signedPercent": -3.82347954,
+          "absolutePercent": 3.82347954,
           "status": "OK"
         },
         {
@@ -5544,10 +5547,10 @@
           "policyYear": 41,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 1626696,
-          "modelRemainingSurrenderValue": 1645121,
-          "dollarError": 18425,
-          "signedPercent": 1.132664,
-          "absolutePercent": 1.132664,
+          "modelRemainingSurrenderValue": 1567367,
+          "dollarError": -59329,
+          "signedPercent": -3.64720882,
+          "absolutePercent": 3.64720882,
           "status": "OK"
         },
         {
@@ -5561,10 +5564,10 @@
           "policyYear": 42,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 1725825,
-          "modelRemainingSurrenderValue": 1749924,
-          "dollarError": 24099,
-          "signedPercent": 1.39637565,
-          "absolutePercent": 1.39637565,
+          "modelRemainingSurrenderValue": 1658643,
+          "dollarError": -67182,
+          "signedPercent": -3.89274695,
+          "absolutePercent": 3.89274695,
           "status": "OK"
         },
         {
@@ -5578,10 +5581,10 @@
           "policyYear": 43,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 1830766,
-          "modelRemainingSurrenderValue": 1855318,
-          "dollarError": 24552,
-          "signedPercent": 1.341078,
-          "absolutePercent": 1.341078,
+          "modelRemainingSurrenderValue": 1748506,
+          "dollarError": -82260,
+          "signedPercent": -4.49320121,
+          "absolutePercent": 4.49320121,
           "status": "OK"
         },
         {
@@ -5595,10 +5598,10 @@
           "policyYear": 44,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 1942142,
-          "modelRemainingSurrenderValue": 1961451,
-          "dollarError": 19309,
-          "signedPercent": 0.99421155,
-          "absolutePercent": 0.99421155,
+          "modelRemainingSurrenderValue": 1836827,
+          "dollarError": -105315,
+          "signedPercent": -5.422621,
+          "absolutePercent": 5.422621,
           "status": "OK"
         },
         {
@@ -5612,10 +5615,10 @@
           "policyYear": 45,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 2060189,
-          "modelRemainingSurrenderValue": 2068487,
-          "dollarError": 8298,
-          "signedPercent": 0.40277858,
-          "absolutePercent": 0.40277858,
+          "modelRemainingSurrenderValue": 1923464,
+          "dollarError": -136725,
+          "signedPercent": -6.63652704,
+          "absolutePercent": 6.63652704,
           "status": "OK"
         },
         {
@@ -5629,10 +5632,10 @@
           "policyYear": 46,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 2185233,
-          "modelRemainingSurrenderValue": 2212035,
-          "dollarError": 26802,
-          "signedPercent": 1.22650537,
-          "absolutePercent": 1.22650537,
+          "modelRemainingSurrenderValue": 2040935,
+          "dollarError": -144298,
+          "signedPercent": -6.60332331,
+          "absolutePercent": 6.60332331,
           "status": "OK"
         },
         {
@@ -5646,10 +5649,10 @@
           "policyYear": 47,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 2317800,
-          "modelRemainingSurrenderValue": 2357028,
-          "dollarError": 39228,
-          "signedPercent": 1.69246699,
-          "absolutePercent": 1.69246699,
+          "modelRemainingSurrenderValue": 2155944,
+          "dollarError": -161856,
+          "signedPercent": -6.9831737,
+          "absolutePercent": 6.9831737,
           "status": "OK"
         },
         {
@@ -5663,10 +5666,10 @@
           "policyYear": 48,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 2458040,
-          "modelRemainingSurrenderValue": 2503751,
-          "dollarError": 45711,
-          "signedPercent": 1.85965241,
-          "absolutePercent": 1.85965241,
+          "modelRemainingSurrenderValue": 2268243,
+          "dollarError": -189797,
+          "signedPercent": -7.72147727,
+          "absolutePercent": 7.72147727,
           "status": "OK"
         },
         {
@@ -5680,10 +5683,10 @@
           "policyYear": 49,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 2606880,
-          "modelRemainingSurrenderValue": 2652529,
-          "dollarError": 45649,
-          "signedPercent": 1.7510971,
-          "absolutePercent": 1.7510971,
+          "modelRemainingSurrenderValue": 2377550,
+          "dollarError": -229330,
+          "signedPercent": -8.79710612,
+          "absolutePercent": 8.79710612,
           "status": "OK"
         },
         {
@@ -5697,10 +5700,10 @@
           "policyYear": 50,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 2764833,
-          "modelRemainingSurrenderValue": 2803723,
-          "dollarError": 38890,
-          "signedPercent": 1.4065949,
-          "absolutePercent": 1.4065949,
+          "modelRemainingSurrenderValue": 2483546,
+          "dollarError": -281287,
+          "signedPercent": -10.17374286,
+          "absolutePercent": 10.17374286,
           "status": "OK"
         },
         {
@@ -5714,10 +5717,10 @@
           "policyYear": 51,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 2932381,
-          "modelRemainingSurrenderValue": 3005879,
-          "dollarError": 73498,
-          "signedPercent": 2.50642737,
-          "absolutePercent": 2.50642737,
+          "modelRemainingSurrenderValue": 2627958,
+          "dollarError": -304423,
+          "signedPercent": -10.38142724,
+          "absolutePercent": 10.38142724,
           "status": "OK"
         },
         {
@@ -5731,10 +5734,10 @@
           "policyYear": 52,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 3109565,
-          "modelRemainingSurrenderValue": 3211791,
-          "dollarError": 102226,
-          "signedPercent": 3.28746947,
-          "absolutePercent": 3.28746947,
+          "modelRemainingSurrenderValue": 2767485,
+          "dollarError": -342080,
+          "signedPercent": -11.00089562,
+          "absolutePercent": 11.00089562,
           "status": "OK"
         },
         {
@@ -5748,10 +5751,10 @@
           "policyYear": 53,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 3297510,
-          "modelRemainingSurrenderValue": 3422088,
-          "dollarError": 124578,
-          "signedPercent": 3.77794154,
-          "absolutePercent": 3.77794154,
+          "modelRemainingSurrenderValue": 2901579,
+          "dollarError": -395931,
+          "signedPercent": -12.00696889,
+          "absolutePercent": 12.00696889,
           "status": "OK"
         },
         {
@@ -5765,10 +5768,10 @@
           "policyYear": 54,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 3496662,
-          "modelRemainingSurrenderValue": 3637736,
-          "dollarError": 141074,
-          "signedPercent": 4.03453351,
-          "absolutePercent": 4.03453351,
+          "modelRemainingSurrenderValue": 3030028,
+          "dollarError": -466634,
+          "signedPercent": -13.34512744,
+          "absolutePercent": 13.34512744,
           "status": "OK"
         },
         {
@@ -5782,39 +5785,39 @@
           "policyYear": 55,
           "withdrawal": 0,
           "iposRemainingSurrenderValue": 3708028,
-          "modelRemainingSurrenderValue": 3859604,
-          "dollarError": 151576,
-          "signedPercent": 4.08777927,
-          "absolutePercent": 4.08777927,
+          "modelRemainingSurrenderValue": 3152241,
+          "dollarError": -555787,
+          "signedPercent": -14.98874874,
+          "absolutePercent": 14.98874874,
           "status": "OK"
         }
       ],
-      "MAPE": 1.98924014,
-      "maxErrorPercent": 5.79293774,
-      "maxDollarError": 151576,
-      "worstAge": 77,
-      "worstPolicyYear": 32,
+      "MAPE": 3.47654959,
+      "maxErrorPercent": 14.98874874,
+      "maxDollarError": 555787,
+      "worstAge": 100,
+      "worstPolicyYear": 55,
       "crossings": {
         ">0.01%": {
-          "age": 61,
-          "policyYear": 16
+          "age": 62,
+          "policyYear": 17
         },
         ">0.02%": {
-          "age": 61,
-          "policyYear": 16
+          "age": 62,
+          "policyYear": 17
         },
         ">0.05%": {
-          "age": 61,
-          "policyYear": 16
+          "age": 62,
+          "policyYear": 17
         },
         ">0.10%": {
-          "age": 61,
-          "policyYear": 16
+          "age": 62,
+          "policyYear": 17
         }
       },
       "distribution": {
-        "<=0.005%": 15,
-        "<=0.01%": 15,
+        "<=0.005%": 16,
+        "<=0.01%": 16,
         "<=0.02%": 16,
         "<=0.05%": 16,
         "<=0.10%": 16,
@@ -5861,12 +5864,12 @@
   ],
   "finalStatus": "NOT_READY_FOR_INTEGRATION",
   "diagnosis": {
-    "worstCase": "45yrs_5pay_130k_avpu_55yr",
+    "worstCase": "5pay_avpu_200k",
     "primaryObservedFactors": [
-      "late-PY transition instability",
-      "Basic Amount reduction / GCV-funded switch approximation",
-      "long-horizon terminal-dividend recovery"
+      "first-withdrawal base-curve interpolation for non-anchor Policy Years",
+      "terminal-dividend behavior after a correct first withdrawal",
+      "remaining long-horizon transition behavior"
     ],
-    "evidenceBoundary": "First withdrawal arithmetic is separately enforced where proposal evidence supports it; later rows use the fitted transition model."
+    "evidenceBoundary": "Calibration-only first-withdrawal component reconstruction is used for base curves; holdout first-withdrawal rows remain validation-only. Later rows use the fitted transition model."
   }
 }

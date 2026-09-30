@@ -59,6 +59,19 @@ def build_model():
         for row in item["rows"]:
             if row["age"] < first_withdrawal and row["withdrawal"] == 0:
                 target.setdefault(row["policyYear"], []).append({component: row[component] / item["initialBasicAmount"] for component in components})
+        # A genuine first medical-withdrawal row supports the documented
+        # first-year identity: no-withdrawal component = displayed component
+        # after withdrawal + the component withdrawn. Use this only for
+        # calibration cases; holdout values never enter the fitted base curve.
+        first_row = next((row for row in item["rows"] if row["withdrawal"] > 0 and row["withdrawalType"] == "medicalWithdrawal"), None)
+        if first_row is not None:
+            schedule_row = next((row for row in item["withdrawalSchedule"] if row["age"] == first_row["age"]), {})
+            reconstructed = {
+                "guaranteedCashValue": (first_row["guaranteedCashValue"] + schedule_row.get("withdrawalFromGuaranteedCashValue", 0)) / item["initialBasicAmount"],
+                "reversionaryBonusCashValue": (first_row["reversionaryBonusCashValue"] + schedule_row.get("withdrawalFromReversionaryBonus", 0)) / item["initialBasicAmount"],
+                "terminalDividendCashValue": (first_row["terminalDividendCashValue"] + schedule_row.get("withdrawalFromTerminalDividend", 0)) / item["initialBasicAmount"],
+            }
+            target.setdefault(first_row["policyYear"], []).append(reconstructed)
     curves = {}
     for anchor, years in by_anchor.items():
         curves[anchor] = {year: {component: sum(row[component] for row in rows) / len(rows) for component in components} for year, rows in years.items()}
@@ -164,7 +177,7 @@ def project(item):
             current_basic = max(0.0, current_basic - coefficient * raw_reduction)
         if base["total"] <= withdrawal and withdrawal > 0:
             remaining = 0.0
-        output.append({"age": age, "policyYear": policy_year, "projectedRemainingSurrenderValue": round(max(0.0, remaining)), "basicAmountAfterWithdrawal": round(current_basic), "status": "INSUFFICIENT_RESERVE" if remaining <= 0 and withdrawal > base["total"] else "OK"})
+        output.append({"age": age, "policyYear": policy_year, "currentBasicAmount": round(current_basic), "noWithdrawalBaseValue": round(base["total"]), "withdrawal": round(withdrawal), "projectedRemainingSurrenderValue": round(max(0.0, remaining)), "basicAmountAfterWithdrawal": round(current_basic), "status": "INSUFFICIENT_RESERVE" if remaining <= 0 and withdrawal > base["total"] else "OK"})
         previous_remaining = remaining
         previous_withdrawal = withdrawal
         previous_basic = current_basic
@@ -192,6 +205,52 @@ def summarize(item):
         crossings[label] = {"age": crossing["age"], "policyYear": crossing["policyYear"]} if crossing else "NEVER_EXCEEDED"
     return {"caseName": item["caseId"], "issueAge": item["issueAge"], "annualPremium": item["annualPremium"], "initialBasicAmount": item["initialBasicAmount"], "withdrawalType": item["withdrawalPattern"], "withdrawalStartAge": item["withdrawalStartAge"], "rows": rows, "MAPE": round(sum(absolute)/len(absolute), 8), "maxErrorPercent": round(max(absolute), 8), "maxDollarError": round(max(dollars), 2), "worstAge": worst["age"], "worstPolicyYear": worst["policyYear"], "crossings": crossings, "distribution": {label: sum(value <= threshold for value in absolute) for label, threshold in [("<=0.005%", .005), ("<=0.01%", .01), ("<=0.02%", .02), ("<=0.05%", .05), ("<=0.10%", .10), (">0.10%", math.inf)]}}
 
+def first_divergence(item):
+    predicted, _ = project(item)
+    by_age = {row["age"]: row for row in predicted}
+    rows = []
+    for actual in item["rows"]:
+        model_row = by_age[actual["age"]]
+        rows.append({**actual, "modelCurrentBasicAmount": model_row["currentBasicAmount"], "modelNoWithdrawalBaseValue": model_row["noWithdrawalBaseValue"], "modelWithdrawal": model_row["withdrawal"], "modelRemaining": model_row["projectedRemainingSurrenderValue"], **error(actual["projectedRemainingSurrenderValue"], model_row["projectedRemainingSurrenderValue"])})
+    crossings = {}
+    for label, threshold in [(">0.01%", .01), (">0.02%", .02), (">0.05%", .05), (">0.10%", .10)]:
+        crossing = next((row for row in rows if row["absolutePercent"] > threshold), None)
+        crossings[label] = {"age": crossing["age"], "policyYear": crossing["policyYear"]} if crossing else "NEVER_EXCEEDED"
+    first_withdrawal_index = next((index for index, row in enumerate(rows) if row["withdrawal"] > 0), None)
+    first_over = next((index for index, row in enumerate(rows) if row["absolutePercent"] > .10), None)
+    first_over_row = rows[first_over] if first_over is not None else None
+    previous_row = rows[first_over - 1] if first_over is not None and first_over > 0 else None
+    classification = "unknown"
+    if first_over_row is not None:
+        if first_withdrawal_index is None or first_over < first_withdrawal_index:
+            classification = "premium-to-Basic mapping" if first_over_row["withdrawal"] == 0 else "no-withdrawal base curve"
+        elif first_over == first_withdrawal_index:
+            classification = "no-withdrawal base curve"
+        else:
+            schedule = next((row for row in item["withdrawalSchedule"] if row["age"] == first_over_row["age"]), {})
+            if schedule.get("withdrawalFromGuaranteedCashValue", 0) > 0 or (previous_row and first_over_row["basicAmountAfterWithdrawal"] < previous_row["basicAmountAfterWithdrawal"]):
+                classification = "Basic Amount transition"
+            elif first_over_row.get("reversionaryBonusCashValue", 0) == 0 or (previous_row and previous_row.get("reversionaryBonusCashValue", 0) > 0 and first_over_row.get("reversionaryBonusCashValue", 0) == 0):
+                classification = "RB depletion"
+            else:
+                classification = "terminal dividend behavior"
+    first_withdrawal_check = None
+    if first_withdrawal_index is not None:
+        first = rows[first_withdrawal_index]
+        evidence_base = next((row["projectedRemainingSurrenderValue"] for row in item["baseCurve"] if row["policyYear"] == first["policyYear"]), None)
+        if evidence_base is None:
+            evidence_base = first["projectedRemainingSurrenderValue"] + first["withdrawal"]
+            evidence_source = "first-withdrawal identity inferred from genuine proposal row"
+        else:
+            evidence_source = "baseCurve row"
+        expected = evidence_base - first["withdrawal"]
+        first_withdrawal_check = {"age": first["age"], "policyYear": first["policyYear"], "evidenceNoWithdrawalBaseValue": evidence_base, "withdrawal": first["withdrawal"], "identityExpectedRemaining": expected, "iposRemainingSurrenderValue": first["projectedRemainingSurrenderValue"], "identityDollarError": round(first["projectedRemainingSurrenderValue"] - expected, 2), "identityAbsolutePercent": round(abs(first["projectedRemainingSurrenderValue"] - expected) / max(first["projectedRemainingSurrenderValue"], 1) * 100, 8), "evidenceSource": evidence_source}
+    def detail(row):
+        if row is None:
+            return None
+        return {"case": item["caseId"], "age": row["age"], "policyYear": row["policyYear"], "annualPremium": item["annualPremium"], "initialBasicAmount": item["initialBasicAmount"], "currentBasicAmount": row["basicAmountAfterWithdrawal"], "modelCurrentBasicAmount": row["modelCurrentBasicAmount"], "noWithdrawalBaseValue": row["modelNoWithdrawalBaseValue"], "withdrawal": row["withdrawal"], "expectedIPOSRemaining": row["projectedRemainingSurrenderValue"], "modelRemaining": row["modelRemaining"], "dollarError": row["dollarError"], "percentageError": row["signedPercent"], "absolutePercentageError": row["absolutePercent"]}
+    return {"case": item["caseId"], "issueAge": item["issueAge"], "annualPremium": item["annualPremium"], "initialBasicAmount": item["initialBasicAmount"], "withdrawalType": item["withdrawalPattern"], "withdrawalStartAge": item["withdrawalStartAge"], "crossings": crossings, "firstOver010": detail(first_over_row), "previousRow": detail(previous_row), "firstWithdrawalCheck": first_withdrawal_check, "classification": classification}
+
 def aggregate(results):
     rows = [row for result in results for row in result["rows"]]
     absolute = [row["absolutePercent"] for row in rows]
@@ -201,15 +260,28 @@ def aggregate(results):
 
 calibration_results = [summarize(item) for item in calibration]
 holdout_results = [summarize(item) for item in holdouts]
+first_divergence_results = [first_divergence(item) for item in holdouts]
 holdout = aggregate(holdout_results)
-report = {"engineVersion": "ipos-approximation-policy-year-transition-v2", "dataset": {"calibrationCases": len(calibration), "holdoutCases": len(holdouts), "annualRows": sum(len(item["rows"]) for item in cases), "fixtureSource": dataset["sourcePolicy"], "leakageCheck": set(model["calibrationCaseIds"]) == {item["caseId"] for item in calibration}}, "modelSelection": {"selected": "policyYearBasicAmountNormalizedTransition", "previousV1HoldoutMAPE": 17.17569366, "previousV1HoldoutMaxErrorPercent": 57.11395611, "rationale": "anchor-specific base curves and region-specific path-conditioned transitions; no global component mean or global Basic Amount ratio"}, "results": {"calibration": aggregate(calibration_results), "holdout": holdout}, "holdouts": holdout_results, "thresholdTargets": {"IDEAL": holdout["maxErrorPercent"] <= .01, "STRONG": holdout["maxErrorPercent"] <= .02, "TARGET": holdout["maxErrorPercent"] <= .05, "HARD_LIMIT": holdout["maxErrorPercent"] <= .10}, "supportedRange": {"issueAges": sorted({item["issueAge"] for item in cases}), "premiums": sorted({item["annualPremium"] for item in cases}), "withdrawalStartAges": sorted({item["withdrawalStartAge"] for item in cases if item["withdrawalStartAge"]}), "withdrawalPatterns": sorted({item["withdrawalPattern"] for item in cases})}, "notVerifiedRange": ["continuous premiums outside supplied anchors", "portfolio pause/resume against direct proposal evidence", "production integration"], "finalStatus": "READY_FOR_INTEGRATION_REVIEW" if holdout["maxErrorPercent"] <= .10 else "NOT_READY_FOR_INTEGRATION"}
-report["diagnosis"] = {"worstCase": holdout["worstCase"], "primaryObservedFactors": ["late-PY transition instability", "Basic Amount reduction / GCV-funded switch approximation", "long-horizon terminal-dividend recovery"], "evidenceBoundary": "First withdrawal arithmetic is separately enforced where proposal evidence supports it; later rows use the fitted transition model."}
+report = {"engineVersion": "ipos-approximation-policy-year-transition-v3-basecurve", "dataset": {"calibrationCases": len(calibration), "holdoutCases": len(holdouts), "annualRows": sum(len(item["rows"]) for item in cases), "fixtureSource": dataset["sourcePolicy"], "leakageCheck": set(model["calibrationCaseIds"]) == {item["caseId"] for item in calibration}}, "modelSelection": {"selected": "policyYearBasicAmountNormalizedTransition", "previousV1HoldoutMAPE": 17.17569366, "previousV1HoldoutMaxErrorPercent": 57.11395611, "previousV2HoldoutMAPE": 5.973153, "previousV2HoldoutMaxErrorPercent": 56.85795543, "baseCurveChange": "calibration-only first-withdrawal component reconstruction; no holdout rows used", "rationale": "anchor-specific base curves and region-specific path-conditioned transitions; no global component mean or global Basic Amount ratio"}, "results": {"calibration": aggregate(calibration_results), "holdout": holdout}, "holdouts": holdout_results, "thresholdTargets": {"IDEAL": holdout["maxErrorPercent"] <= .01, "STRONG": holdout["maxErrorPercent"] <= .02, "TARGET": holdout["maxErrorPercent"] <= .05, "HARD_LIMIT": holdout["maxErrorPercent"] <= .10}, "supportedRange": {"issueAges": sorted({item["issueAge"] for item in cases}), "premiums": sorted({item["annualPremium"] for item in cases}), "withdrawalStartAges": sorted({item["withdrawalStartAge"] for item in cases if item["withdrawalStartAge"]}), "withdrawalPatterns": sorted({item["withdrawalPattern"] for item in cases})}, "notVerifiedRange": ["continuous premiums outside supplied anchors", "portfolio pause/resume against direct proposal evidence", "production integration"], "finalStatus": "READY_FOR_INTEGRATION_REVIEW" if holdout["maxErrorPercent"] <= .10 else "NOT_READY_FOR_INTEGRATION"}
+report["diagnosis"] = {"worstCase": holdout["worstCase"], "primaryObservedFactors": ["first-withdrawal base-curve interpolation for non-anchor Policy Years", "terminal-dividend behavior after a correct first withdrawal", "remaining long-horizon transition behavior"], "evidenceBoundary": "Calibration-only first-withdrawal component reconstruction is used for base curves; holdout first-withdrawal rows remain validation-only. Later rows use the fitted transition model."}
 (ROOT / "validation-report.json").write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n")
+first_divergence_report = {"engineVersion": report["engineVersion"], "frozenHoldoutCheck": report["dataset"]["leakageCheck"], "cases": first_divergence_results, "diagnosticRule": "The first >0.10% row is classified before any model change; first-withdrawal checks use the proposal-supported no-withdrawal-minus-withdrawal identity where available."}
+(ROOT / "first-divergence-report.json").write_text(json.dumps(first_divergence_report, indent=2, ensure_ascii=False) + "\n")
+diagnostic_lines = ["# iPOS First-Divergence Diagnostics", "", "ENGINE VERSION: " + report["engineVersion"], "", "Frozen holdout leakage check: " + ("PASS" if report["dataset"]["leakageCheck"] else "FAIL"), ""]
+for item in first_divergence_results:
+    diagnostic_lines += ["## " + item["case"], "- Classification: " + item["classification"]]
+    for key in [">0.01%", ">0.02%", ">0.05%", ">0.10%"]:
+        diagnostic_lines.append("- First " + key + ": " + json.dumps(item["crossings"][key], ensure_ascii=False))
+    diagnostic_lines.append("- First >0.10% row: " + json.dumps(item["firstOver010"], ensure_ascii=False))
+    diagnostic_lines.append("- Immediately previous row: " + json.dumps(item["previousRow"], ensure_ascii=False))
+    diagnostic_lines.append("- First-withdrawal identity check: " + json.dumps(item["firstWithdrawalCheck"], ensure_ascii=False))
+    diagnostic_lines.append("")
+(ROOT / "first-divergence-report.md").write_text("\n".join(diagnostic_lines))
 lines = ["# iPOS Approximation Validation Report", "", "ENGINE VERSION: " + report["engineVersion"], "", "## DATASET", "- Calibration cases: " + str(report["dataset"]["calibrationCases"]), "- Holdout cases: " + str(report["dataset"]["holdoutCases"]), "- Annual rows: " + str(report["dataset"]["annualRows"]), "- Leakage check: " + ("PASS" if report["dataset"]["leakageCheck"] else "FAIL"), "", "## RESULTS", "- Calibration MAPE: " + str(report["results"]["calibration"]["MAPE"]) + "%", "- Calibration max %: " + str(report["results"]["calibration"]["maxErrorPercent"]) + "%", "- Holdout MAPE: " + str(report["results"]["holdout"]["MAPE"]) + "%", "- Holdout max %: " + str(report["results"]["holdout"]["maxErrorPercent"]) + "%", "- Holdout max $: HKD " + str(report["results"]["holdout"]["maxDollarError"]), "- Worst case: " + report["results"]["holdout"]["worstCase"], "- Worst age / Policy Year: " + str(report["results"]["holdout"]["worstAge"]) + " / " + str(report["results"]["holdout"]["worstPolicyYear"]), "", "## HOLDOUT CROSSINGS"]
 for item in holdout_results:
     lines += ["### " + item["caseName"], "- MAPE: " + str(item["MAPE"]) + "%", "- Max Error %: " + str(item["maxErrorPercent"]) + "%", "- Max Dollar Error: HKD " + str(item["maxDollarError"]), "- Worst age / Policy Year: " + str(item["worstAge"]) + " / " + str(item["worstPolicyYear"])]
     for key in [">0.01%", ">0.02%", ">0.05%", ">0.10%"]:
         lines.append("- First " + key + ": " + json.dumps(item["crossings"][key], ensure_ascii=False))
-lines += ["", "## DIAGNOSIS", "- Primary factors: late-PY transition instability, Basic Amount reduction / GCV-funded switch approximation, and long-horizon terminal-dividend recovery.", "- Evidence boundary: first withdrawal arithmetic is separately enforced where proposal evidence supports it; later rows use the fitted transition model.", "", "## ACCURACY DISTRIBUTION"] + ["- " + key + ": " + str(value) for key, value in report["results"]["holdout"]["distribution"].items()] + ["", "## FINAL STATUS", report["finalStatus"], "", "This is a calibrated approximation and is not the official AIA/iPOS calculation engine."]
+lines += ["", "## DIAGNOSIS", "- Primary factors: first-withdrawal base-curve interpolation for non-anchor Policy Years, terminal-dividend behavior after a correct first withdrawal, and remaining long-horizon transition behavior.", "- Evidence boundary: calibration-only first-withdrawal component reconstruction is used for base curves; holdout first-withdrawal rows remain validation-only. Later rows use the fitted transition model.", "- Detailed first-divergence output: first-divergence-report.json and first-divergence-report.md", "", "## ACCURACY DISTRIBUTION"] + ["- " + key + ": " + str(value) for key, value in report["results"]["holdout"]["distribution"].items()] + ["", "## FINAL STATUS", report["finalStatus"], "", "This is a calibrated approximation and is not the official AIA/iPOS calculation engine."]
 (ROOT / "validation-report.md").write_text("\n".join(lines) + "\n")
 print(json.dumps({"status": report["finalStatus"], "holdout": holdout}))
