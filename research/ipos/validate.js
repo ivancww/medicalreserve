@@ -36,9 +36,9 @@ const calibrationResults = calibration.map(summarize);
 const holdoutResults = holdouts.map(summarize);
 const holdout = aggregate(holdoutResults);
 const report = {
-  engineVersion: 'ipos-approximation-component-state-v1',
+  engineVersion: 'ipos-approximation-policy-year-transition-v2',
   dataset: { calibrationCases: calibration.length, holdoutCases: holdouts.length, annualRows: cases.reduce((sum, item) => sum + item.rows.length, 0), fixtureSource: dataset.sourcePolicy, leakageCheck: model.calibrationCaseIds.every(id => calibration.some(item => item.caseId === id)) },
-  modelSelection: { selected: 'componentState', benchmarkCandidates: ['directPremiumScaling', 'basicAmountNormalized', 'aggregateStateRatio', 'componentState'], rationale: 'single explainable engine with premium-to-Basic-Amount mapping and persistent component depletion' },
+  modelSelection: { selected: 'policyYearBasicAmountNormalizedTransition', benchmarkCandidates: ['directPremiumScaling', 'basicAmountNormalized', 'aggregateStateRatio', 'componentState', 'policyYearBasicAmountNormalizedTransition'], previousV1HoldoutMAPE: 17.17569366, previousV1HoldoutMaxErrorPercent: 57.11395611, rationale: 'anchor-specific policy-year base curves and region-specific path-conditioned transitions; no global component mean or global Basic Amount ratio' },
   results: { calibration: aggregate(calibrationResults), holdout },
   holdouts: holdoutResults,
   thresholdTargets: { IDEAL: holdout.maxErrorPercent <= 0.01, STRONG: holdout.maxErrorPercent <= 0.02, TARGET: holdout.maxErrorPercent <= 0.05, HARD_LIMIT: holdout.maxErrorPercent <= 0.10 },
@@ -46,7 +46,7 @@ const report = {
   notVerifiedRange: ['continuous premiums outside supplied anchors', 'portfolio pause/resume against direct proposal evidence', 'production integration'],
   finalStatus: holdout.maxErrorPercent <= 0.10 ? 'READY_FOR_INTEGRATION_REVIEW' : 'NOT_READY_FOR_INTEGRATION'
 };
-report.diagnosis = { worstCase: report.results.holdout.worstCase, primaryObservedFactors: ['persistent component-state approximation after withdrawal', 'long-horizon bonus / terminal-dividend recovery', 'withdrawal allocation and Basic Amount transition approximation'], evidenceBoundary: 'Age-55 first-year arithmetic matches when the proposal withdrawal schedule is supplied; divergence begins in subsequent persistent-state rows.' };
+report.diagnosis = { worstCase: report.results.holdout.worstCase, primaryObservedFactors: ['late-PY transition instability', 'Basic Amount reduction / GCV-funded switch approximation', 'long-horizon terminal-dividend recovery'], evidenceBoundary: 'First withdrawal arithmetic is separately enforced where proposal evidence supports it; later rows use the fitted transition model.' };
 fs.writeFileSync(new URL('./validation-report.json', import.meta.url), JSON.stringify(report, null, 2) + '\n');
 const lines = ['# iPOS Approximation Validation Report', '', 'ENGINE VERSION: ' + report.engineVersion, '', '## DATASET', '- Calibration cases: ' + report.dataset.calibrationCases, '- Holdout cases: ' + report.dataset.holdoutCases, '- Annual rows: ' + report.dataset.annualRows, '- Leakage check: ' + (report.dataset.leakageCheck ? 'PASS' : 'FAIL'), '', '## RESULTS', '- Calibration MAPE: ' + report.results.calibration.MAPE + '%', '- Calibration max %: ' + report.results.calibration.maxErrorPercent + '%', '- Holdout MAPE: ' + report.results.holdout.MAPE + '%', '- Holdout max %: ' + report.results.holdout.maxErrorPercent + '%', '- Holdout max $: HKD ' + report.results.holdout.maxDollarError, '- Worst case: ' + report.results.holdout.worstCase, '- Worst age / Policy Year: ' + report.results.holdout.worstAge + ' / ' + report.results.holdout.worstPolicyYear, '', '## HOLDOUT CROSSINGS'];
 holdoutResults.forEach(item => {
