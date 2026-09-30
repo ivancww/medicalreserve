@@ -244,7 +244,7 @@ def summarize(item):
     for label, threshold in [(">0.01%", .01), (">0.02%", .02), (">0.05%", .05), (">0.10%", .10)]:
         crossing = next((row for row in rows if row["absolutePercent"] > threshold), None)
         crossings[label] = {"age": crossing["age"], "policyYear": crossing["policyYear"]} if crossing else "NEVER_EXCEEDED"
-    return {"caseName": item["caseId"], "issueAge": item["issueAge"], "annualPremium": item["annualPremium"], "initialBasicAmount": item["initialBasicAmount"], "withdrawalType": item["withdrawalPattern"], "withdrawalStartAge": item["withdrawalStartAge"], "rows": rows, "MAPE": round(sum(absolute)/len(absolute), 8), "maxErrorPercent": round(max(absolute), 8), "maxDollarError": round(max(dollars), 2), "worstAge": worst["age"], "worstPolicyYear": worst["policyYear"], "crossings": crossings, "distribution": {label: sum(value <= threshold for value in absolute) for label, threshold in [("<=0.005%", .005), ("<=0.01%", .01), ("<=0.02%", .02), ("<=0.05%", .05), ("<=0.10%", .10), (">0.10%", math.inf)]}}
+    return {"caseName": item["caseId"], "issueAge": item["issueAge"], "annualPremium": item["annualPremium"], "initialBasicAmount": item["initialBasicAmount"], "withdrawalType": item["withdrawalPattern"], "withdrawalStartAge": item["withdrawalStartAge"], "rows": rows, "MAPE": round(sum(absolute)/len(absolute), 8), "maxErrorPercent": round(max(absolute), 8), "maxDollarError": round(max(dollars), 2), "worstAge": worst["age"], "worstPolicyYear": worst["policyYear"], "crossings": crossings, "distribution": {label: sum((value > .10 if label == ">0.10%" else value <= threshold) for value in absolute) for label, threshold in [("<=0.005%", .005), ("<=0.01%", .01), ("<=0.02%", .02), ("<=0.05%", .05), ("<=0.10%", .10), (">0.10%", math.inf)]}}
 
 def first_divergence(item):
     predicted, _ = project(item)
@@ -355,7 +355,7 @@ def aggregate(results):
     absolute = [row["absolutePercent"] for row in rows]
     dollars = [abs(row["dollarError"]) for row in rows]
     worst = max(rows, key=lambda row: row["absolutePercent"])
-    return {"MAPE": round(sum(absolute)/len(absolute), 8), "maxErrorPercent": round(max(absolute), 8), "maxDollarError": round(max(dollars), 2), "worstCase": worst["caseName"], "worstAge": worst["age"], "worstPolicyYear": worst["policyYear"], "annualRows": len(rows), "distribution": {label: sum(value <= threshold for value in absolute) for label, threshold in [("<=0.005%", .005), ("<=0.01%", .01), ("<=0.02%", .02), ("<=0.05%", .05), ("<=0.10%", .10), (">0.10%", math.inf)]}}
+    return {"MAPE": round(sum(absolute)/len(absolute), 8), "maxErrorPercent": round(max(absolute), 8), "maxDollarError": round(max(dollars), 2), "worstCase": worst["caseName"], "worstAge": worst["age"], "worstPolicyYear": worst["policyYear"], "annualRows": len(rows), "distribution": {label: sum((value > .10 if label == ">0.10%" else value <= threshold) for value in absolute) for label, threshold in [("<=0.005%", .005), ("<=0.01%", .01), ("<=0.02%", .02), ("<=0.05%", .05), ("<=0.10%", .10), (">0.10%", math.inf)]}}
 
 calibration_results = [summarize(item) for item in calibration]
 holdout_results = [summarize(item) for item in holdouts]

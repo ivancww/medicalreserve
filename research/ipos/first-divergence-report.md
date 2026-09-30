@@ -25,7 +25,7 @@ Frozen holdout leakage check: PASS
 - First-withdrawal identity check: {"age": 55, "policyYear": 10, "evidenceNoWithdrawalBaseValue": 828920, "withdrawal": 19128, "identityExpectedRemaining": 809792, "iposRemainingSurrenderValue": 809792, "identityDollarError": 0, "identityAbsolutePercent": 0.0, "evidenceSource": "baseCurve row"}
 
 ## 5pay_avf_150k
-- Classification: premium-to-Basic mapping
+- Classification: no-withdrawal base/display rounding (Basic Amount mapping matches)
 - First >0.01%: {"age": 46, "policyYear": 1}
 - First >0.02%: {"age": 46, "policyYear": 1}
 - First >0.05%: {"age": 46, "policyYear": 1}
@@ -63,3 +63,29 @@ Frozen holdout leakage check: PASS
 - First >0.10% row: {"case": "70k_original", "age": 62, "policyYear": 17, "annualPremium": 70000, "initialBasicAmount": 710660, "currentBasicAmount": 710660, "modelCurrentBasicAmount": 710660, "noWithdrawalBaseValue": 718250, "withdrawal": 21896, "expectedIPOSRemaining": 665993, "modelRemaining": 680643, "dollarError": 14650, "percentageError": 2.19972282, "absolutePercentageError": 2.19972282}
 - Immediately previous row: {"case": "70k_original", "age": 61, "policyYear": 16, "annualPremium": 70000, "initialBasicAmount": 710660, "currentBasicAmount": 710660, "modelCurrentBasicAmount": 710660, "noWithdrawalBaseValue": 662320, "withdrawal": 20440, "expectedIPOSRemaining": 641879, "modelRemaining": 641880, "dollarError": 1, "percentageError": 0.00015579, "absolutePercentageError": 0.00015579}
 - First-withdrawal identity check: {"age": 61, "policyYear": 16, "evidenceNoWithdrawalBaseValue": 662319, "withdrawal": 20440, "identityExpectedRemaining": 641879, "iposRemainingSurrenderValue": 641879, "identityDollarError": 0, "identityAbsolutePercent": 0.0, "evidenceSource": "first-withdrawal identity inferred from genuine proposal row"}
+
+## Bounded TD continuation
+
+Retained model: v4 unchanged. Three candidates rejected at the immediate-row gate; no additional candidate full holdout runs.
+The legacy aggregate ratio also supplies non-TD state; exact-TD replacement alone leaves material non-TD residuals before GCV tapping. No unrelated layer is redesigned in this cycle.
+
+## Frozen holdout summary
+
+Leakage: PASS; MAPE: 2.29650947%; maximum annual error: 11.80075621%; rows >0.10%: 247; max dollar error: HKD 457617.
+
+| Case | MAPE % | Max % | Max HKD | Worst age / PY | First >0.01% | >0.02% | >0.05% | >0.10% |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 45yrs_5pay_130k_avf_55 | 1.94118998 | 6.2919885 | 281724 | 63 / 18 | 56 / 11 | 56 / 11 | 56 / 11 | 56 / 11 |
+| 45yrs_5pay_130k_avpu_55yr | 3.72725523 | 9.31646292 | 273481 | 67 / 22 | 56 / 11 | 56 / 11 | 56 / 11 | 56 / 11 |
+| 5pay_avf_150k | 1.24168125 | 3.47225634 | 383896 | 73 / 28 | 46 / 1 | 46 / 1 | 46 / 1 | 46 / 1 |
+| 5pay_avpu_200k | 1.43531869 | 5.84407899 | 457617 | 69 / 24 | 62 / 17 | 62 / 17 | 62 / 17 | 62 / 17 |
+| 50yrs_5pay_130k_avpu | 3.19598594 | 11.80075621 | 151508 | 72 / 22 | 62 / 12 | 62 / 12 | 62 / 12 | 62 / 12 |
+| 70k_original | 2.31939632 | 6.31105662 | 108324 | 77 / 32 | 62 / 17 | 62 / 17 | 62 / 17 | 62 / 17 |
+
+Further proposal evidence is listed in td-transition-research.md. No production engine or Customer Flow change.
+
+## Verification
+
+Node regression tests: PASS. Syntax: PASS. Python syntax: PASS. Schema: PASS. Fixture schedule consistency: FAIL.
+Three age-100 rows say zero withdrawal but their schedule has HKD 85, 8 and 2 respectively. The frozen fixture is preserved; genuine proposals must be checked before correction.
+Browser / physical-device UI verification: NOT VERIFIED; no production/UI changes. This research result does not certify Platform integration.

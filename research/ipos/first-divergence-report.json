@@ -56,8 +56,8 @@
         "expectedIPOSRemaining": 814889,
         "modelRemaining": 814889,
         "dollarError": 0,
-        "percentageError": 0.0,
-        "absolutePercentageError": 0.0
+        "percentageError": 0,
+        "absolutePercentageError": 0
       },
       "firstWithdrawalCheck": {
         "age": 55,
@@ -67,7 +67,7 @@
         "identityExpectedRemaining": 814889,
         "iposRemainingSurrenderValue": 814889,
         "identityDollarError": 0,
-        "identityAbsolutePercent": 0.0,
+        "identityAbsolutePercent": 0,
         "evidenceSource": "baseCurve row"
       },
       "classification": "terminal dividend behavior"
@@ -126,8 +126,8 @@
         "expectedIPOSRemaining": 809792,
         "modelRemaining": 809792,
         "dollarError": 0,
-        "percentageError": 0.0,
-        "absolutePercentageError": 0.0
+        "percentageError": 0,
+        "absolutePercentageError": 0
       },
       "firstWithdrawalCheck": {
         "age": 55,
@@ -137,7 +137,7 @@
         "identityExpectedRemaining": 809792,
         "iposRemainingSurrenderValue": 809792,
         "identityDollarError": 0,
-        "identityAbsolutePercent": 0.0,
+        "identityAbsolutePercent": 0,
         "evidenceSource": "baseCurve row"
       },
       "classification": "terminal dividend behavior"
@@ -192,10 +192,10 @@
         "identityExpectedRemaining": 1405846,
         "iposRemainingSurrenderValue": 1405846,
         "identityDollarError": 0,
-        "identityAbsolutePercent": 0.0,
+        "identityAbsolutePercent": 0,
         "evidenceSource": "first-withdrawal identity inferred from genuine proposal row"
       },
-      "classification": "premium-to-Basic mapping"
+      "classification": "no-withdrawal base/display rounding (Basic Amount mapping matches)"
     },
     {
       "case": "5pay_avpu_200k",
@@ -251,8 +251,8 @@
         "expectedIPOSRemaining": 1876330,
         "modelRemaining": 1876330,
         "dollarError": 0,
-        "percentageError": 0.0,
-        "absolutePercentageError": 0.0
+        "percentageError": 0,
+        "absolutePercentageError": 0
       },
       "firstWithdrawalCheck": {
         "age": 61,
@@ -262,7 +262,7 @@
         "identityExpectedRemaining": 1876330,
         "iposRemainingSurrenderValue": 1876330,
         "identityDollarError": 0,
-        "identityAbsolutePercent": 0.0,
+        "identityAbsolutePercent": 0,
         "evidenceSource": "first-withdrawal identity inferred from genuine proposal row"
       },
       "classification": "terminal dividend behavior"
@@ -321,8 +321,8 @@
         "expectedIPOSRemaining": 859507,
         "modelRemaining": 859507,
         "dollarError": 0,
-        "percentageError": 0.0,
-        "absolutePercentageError": 0.0
+        "percentageError": 0,
+        "absolutePercentageError": 0
       },
       "firstWithdrawalCheck": {
         "age": 61,
@@ -332,7 +332,7 @@
         "identityExpectedRemaining": 859507,
         "iposRemainingSurrenderValue": 859507,
         "identityDollarError": 0,
-        "identityAbsolutePercent": 0.0,
+        "identityAbsolutePercent": 0,
         "evidenceSource": "first-withdrawal identity inferred from genuine proposal row"
       },
       "classification": "terminal dividend behavior"
@@ -402,11 +402,436 @@
         "identityExpectedRemaining": 641879,
         "iposRemainingSurrenderValue": 641879,
         "identityDollarError": 0,
-        "identityAbsolutePercent": 0.0,
+        "identityAbsolutePercent": 0,
         "evidenceSource": "first-withdrawal identity inferred from genuine proposal row"
       },
       "classification": "terminal dividend behavior"
     }
   ],
-  "diagnosticRule": "The first >0.10% row is classified before any model change; first-withdrawal checks use the proposal-supported no-withdrawal-minus-withdrawal identity where available."
+  "diagnosticRule": "The first >0.10% row is classified before any model change; first-withdrawal checks use the proposal-supported no-withdrawal-minus-withdrawal identity where available.",
+  "frozenHoldoutSummary": {
+    "engineVersion": "ipos-approximation-terminal-dividend-transition-v4",
+    "leakageStatus": "PASS",
+    "aggregate": {
+      "MAPE": 2.29650947,
+      "maxErrorPercent": 11.80075621,
+      "maxDollarError": 457617,
+      "worstCase": "50yrs_5pay_130k_avpu",
+      "worstAge": 72,
+      "worstPolicyYear": 22,
+      "annualRows": 325,
+      "distribution": {
+        "<=0.005%": 77,
+        "<=0.01%": 77,
+        "<=0.02%": 77,
+        "<=0.05%": 77,
+        "<=0.10%": 78,
+        ">0.10%": 247
+      }
+    },
+    "holdouts": [
+      {
+        "caseName": "45yrs_5pay_130k_avf_55",
+        "issueAge": 45,
+        "annualPremium": 130000,
+        "initialBasicAmount": 1323829,
+        "withdrawalType": "AVF",
+        "withdrawalStartAge": 55,
+        "MAPE": 1.94118998,
+        "maxErrorPercent": 6.2919885,
+        "maxDollarError": 281724,
+        "worstAge": 63,
+        "worstPolicyYear": 18,
+        "crossings": {
+          ">0.01%": {
+            "age": 56,
+            "policyYear": 11
+          },
+          ">0.02%": {
+            "age": 56,
+            "policyYear": 11
+          },
+          ">0.05%": {
+            "age": 56,
+            "policyYear": 11
+          },
+          ">0.10%": {
+            "age": 56,
+            "policyYear": 11
+          }
+        },
+        "distribution": {
+          "<=0.005%": 10,
+          "<=0.01%": 10,
+          "<=0.02%": 10,
+          "<=0.05%": 10,
+          "<=0.10%": 11,
+          ">0.10%": 44
+        }
+      },
+      {
+        "caseName": "45yrs_5pay_130k_avpu_55yr",
+        "issueAge": 45,
+        "annualPremium": 130000,
+        "initialBasicAmount": 1323829,
+        "withdrawalType": "AVPU",
+        "withdrawalStartAge": 55,
+        "MAPE": 3.72725523,
+        "maxErrorPercent": 9.31646292,
+        "maxDollarError": 273481,
+        "worstAge": 67,
+        "worstPolicyYear": 22,
+        "crossings": {
+          ">0.01%": {
+            "age": 56,
+            "policyYear": 11
+          },
+          ">0.02%": {
+            "age": 56,
+            "policyYear": 11
+          },
+          ">0.05%": {
+            "age": 56,
+            "policyYear": 11
+          },
+          ">0.10%": {
+            "age": 56,
+            "policyYear": 11
+          }
+        },
+        "distribution": {
+          "<=0.005%": 10,
+          "<=0.01%": 10,
+          "<=0.02%": 10,
+          "<=0.05%": 10,
+          "<=0.10%": 10,
+          ">0.10%": 45
+        }
+      },
+      {
+        "caseName": "5pay_avf_150k",
+        "issueAge": 45,
+        "annualPremium": 150000,
+        "initialBasicAmount": 1527495,
+        "withdrawalType": "AVF",
+        "withdrawalStartAge": 61,
+        "MAPE": 1.24168125,
+        "maxErrorPercent": 3.47225634,
+        "maxDollarError": 383896,
+        "worstAge": 73,
+        "worstPolicyYear": 28,
+        "crossings": {
+          ">0.01%": {
+            "age": 46,
+            "policyYear": 1
+          },
+          ">0.02%": {
+            "age": 46,
+            "policyYear": 1
+          },
+          ">0.05%": {
+            "age": 46,
+            "policyYear": 1
+          },
+          ">0.10%": {
+            "age": 46,
+            "policyYear": 1
+          }
+        },
+        "distribution": {
+          "<=0.005%": 14,
+          "<=0.01%": 14,
+          "<=0.02%": 14,
+          "<=0.05%": 14,
+          "<=0.10%": 14,
+          ">0.10%": 41
+        }
+      },
+      {
+        "caseName": "5pay_avpu_200k",
+        "issueAge": 45,
+        "annualPremium": 200000,
+        "initialBasicAmount": 2042901,
+        "withdrawalType": "AVPU",
+        "withdrawalStartAge": 61,
+        "MAPE": 1.43531869,
+        "maxErrorPercent": 5.84407899,
+        "maxDollarError": 457617,
+        "worstAge": 69,
+        "worstPolicyYear": 24,
+        "crossings": {
+          ">0.01%": {
+            "age": 62,
+            "policyYear": 17
+          },
+          ">0.02%": {
+            "age": 62,
+            "policyYear": 17
+          },
+          ">0.05%": {
+            "age": 62,
+            "policyYear": 17
+          },
+          ">0.10%": {
+            "age": 62,
+            "policyYear": 17
+          }
+        },
+        "distribution": {
+          "<=0.005%": 16,
+          "<=0.01%": 16,
+          "<=0.02%": 16,
+          "<=0.05%": 16,
+          "<=0.10%": 16,
+          ">0.10%": 39
+        }
+      },
+      {
+        "caseName": "50yrs_5pay_130k_avpu",
+        "issueAge": 50,
+        "annualPremium": 130000,
+        "initialBasicAmount": 1323829,
+        "withdrawalType": "AVPU",
+        "withdrawalStartAge": 61,
+        "MAPE": 3.19598594,
+        "maxErrorPercent": 11.80075621,
+        "maxDollarError": 151508,
+        "worstAge": 72,
+        "worstPolicyYear": 22,
+        "crossings": {
+          ">0.01%": {
+            "age": 62,
+            "policyYear": 12
+          },
+          ">0.02%": {
+            "age": 62,
+            "policyYear": 12
+          },
+          ">0.05%": {
+            "age": 62,
+            "policyYear": 12
+          },
+          ">0.10%": {
+            "age": 62,
+            "policyYear": 12
+          }
+        },
+        "distribution": {
+          "<=0.005%": 11,
+          "<=0.01%": 11,
+          "<=0.02%": 11,
+          "<=0.05%": 11,
+          "<=0.10%": 11,
+          ">0.10%": 39
+        }
+      },
+      {
+        "caseName": "70k_original",
+        "issueAge": 45,
+        "annualPremium": 70000,
+        "initialBasicAmount": 710660,
+        "withdrawalType": "Original",
+        "withdrawalStartAge": 61,
+        "MAPE": 2.31939632,
+        "maxErrorPercent": 6.31105662,
+        "maxDollarError": 108324,
+        "worstAge": 77,
+        "worstPolicyYear": 32,
+        "crossings": {
+          ">0.01%": {
+            "age": 62,
+            "policyYear": 17
+          },
+          ">0.02%": {
+            "age": 62,
+            "policyYear": 17
+          },
+          ">0.05%": {
+            "age": 62,
+            "policyYear": 17
+          },
+          ">0.10%": {
+            "age": 62,
+            "policyYear": 17
+          }
+        },
+        "distribution": {
+          "<=0.005%": 16,
+          "<=0.01%": 16,
+          "<=0.02%": 16,
+          "<=0.05%": 16,
+          "<=0.10%": 16,
+          ">0.10%": 39
+        }
+      }
+    ]
+  },
+  "tdTransitionResearch": {
+    "iterations": 3,
+    "retainedModel": "v4 unchanged",
+    "iterationOutcomes": [
+      {
+        "iteration": 1,
+        "hypothesis": "A_deficitPersistence",
+        "decision": "REJECTED_RETAIN_V4",
+        "targetedGate": "REJECTED",
+        "fullHoldoutExecuted": false
+      },
+      {
+        "iteration": 2,
+        "hypothesis": "B_deficitAndAssociatedShock",
+        "decision": "REJECTED_RETAIN_V4",
+        "targetedGate": "REJECTED",
+        "fullHoldoutExecuted": false
+      },
+      {
+        "iteration": 3,
+        "hypothesis": "C_deficitAndRBDepletion",
+        "decision": "REJECTED_RETAIN_V4",
+        "targetedGate": "REJECTED",
+        "fullHoldoutExecuted": false
+      }
+    ],
+    "structuralLimit": "The legacy aggregate ratio also supplies non-TD state; exact-TD replacement alone leaves material non-TD residuals before GCV tapping. No unrelated layer is redesigned in this cycle.",
+    "requiredEvidence": [
+      "Matched annual no-withdrawal GCV/RB/TD tables (not only five-year checkpoints) for calibration premiums 70k, 100k, 130k, 180k, 200k through PY10–30.",
+      "Matched same-policy consecutive annual post-withdrawal component rows and RB/associated-TD withdrawal allocations; vary withdrawal amount and start Policy Year independently.",
+      "Genuine zero-withdrawal pause/resume proposals with affected TD/RB states before, during and after the pause; no pause/resume accuracy claim is made.",
+      "Structural explanation or proposal evidence connecting RB remaining, associated TD cash withdrawal and next-year TD entitlement; isolate this from Basic Amount/GCV reduction."
+    ]
+  },
+  "verification": {
+    "verifiedAtUTC": "2026-09-30T17:16:47.789411+00:00",
+    "startingHead": "1a3e2e18ceedf9f25ac98476aae12e3ec82a0597",
+    "nodeTests": {
+      "command": [
+        "npm",
+        "test"
+      ],
+      "exitCode": 0,
+      "status": "PASS"
+    },
+    "syntax": {
+      "command": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "exitCode": 0,
+      "status": "PASS"
+    },
+    "fixtureValidation": {
+      "command": [
+        "npm",
+        "run",
+        "validate:fixtures"
+      ],
+      "exitCode": 1,
+      "status": "FAIL"
+    },
+    "pythonSyntax": {
+      "command": [
+        "python3",
+        "-m",
+        "py_compile",
+        "research/ipos/validate_offline.py",
+        "research/ipos/validate_fixtures.py",
+        "research/ipos/verify_research.py"
+      ],
+      "exitCode": 0,
+      "status": "PASS"
+    },
+    "diffWhitespace": {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "status": "PASS"
+    },
+    "productionDiff": {
+      "command": [
+        "git",
+        "diff",
+        "--exit-code",
+        "1a3e2e18ceedf9f25ac98476aae12e3ec82a0597",
+        "--",
+        "app.js",
+        "domain.js",
+        "admin.js",
+        "gas",
+        "index.html",
+        "styles.css",
+        "sw.js",
+        "manifest.webmanifest",
+        "icon.svg"
+      ],
+      "exitCode": 0,
+      "status": "PASS"
+    },
+    "frozenFixtureDiff": {
+      "command": [
+        "git",
+        "diff",
+        "--exit-code",
+        "1a3e2e18ceedf9f25ac98476aae12e3ec82a0597",
+        "--",
+        "research/ipos/fixtures/dataset.json"
+      ],
+      "exitCode": 0,
+      "status": "PASS"
+    },
+    "browserPhysicalDeviceQA": {
+      "status": "NOT VERIFIED",
+      "reason": "Research-only change; production UI/deployment unchanged. No integration readiness certification."
+    }
+  },
+  "exactTDComponentEvaluation": [
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 56,
+      "policyYear": 11,
+      "remainingWithExactTDOnly": 863683,
+      "nonTDResidualDollars": 5643,
+      "nonTDResidualPercent": 0.6576616474756422,
+      "interpretation": "Evaluation-only exact TD replacement leaves the frozen aggregate-derived GCV+RB contribution intact."
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 56,
+      "policyYear": 11,
+      "remainingWithExactTDOnly": 855292,
+      "nonTDResidualDollars": 8598,
+      "nonTDResidualPercent": 1.0154790278424082,
+      "interpretation": "Evaluation-only exact TD replacement leaves the frozen aggregate-derived GCV+RB contribution intact."
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 62,
+      "policyYear": 17,
+      "remainingWithExactTDOnly": 1993748,
+      "nonTDResidualDollars": 13043,
+      "nonTDResidualPercent": 0.6585029067932883,
+      "interpretation": "Evaluation-only exact TD replacement leaves the frozen aggregate-derived GCV+RB contribution intact."
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 62,
+      "policyYear": 12,
+      "remainingWithExactTDOnly": 901947,
+      "nonTDResidualDollars": 12871,
+      "nonTDResidualPercent": 1.4476827627784352,
+      "interpretation": "Evaluation-only exact TD replacement leaves the frozen aggregate-derived GCV+RB contribution intact."
+    },
+    {
+      "caseId": "70k_original",
+      "age": 62,
+      "policyYear": 17,
+      "remainingWithExactTDOnly": 675569,
+      "nonTDResidualDollars": 9576,
+      "nonTDResidualPercent": 1.4378529504063855,
+      "interpretation": "Evaluation-only exact TD replacement leaves the frozen aggregate-derived GCV+RB contribution intact."
+    }
+  ]
 }

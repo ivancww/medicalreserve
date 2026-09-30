@@ -59,6 +59,7 @@ function terminalFeatureVector(policyYear, previousRatio, withdrawalRatio, previ
 function normalizeCase(item) {
   if (!item || item.product !== 'AIA 環宇盈活儲蓄保險計劃' || item.currency !== 'HKD' || item.paymentTerm !== 5) throw new Error('Unsupported product, currency, or payment term');
   if (!Number.isInteger(item.issueAge) || item.issueAge < 0) throw new Error('Invalid issue age');
+  if (item.withdrawalStartAge != null && (!Number.isInteger(item.withdrawalStartAge) || item.withdrawalStartAge <= item.issueAge)) throw new Error('Invalid withdrawal start age');
   if (!finite(item.annualPremium) || item.annualPremium <= 0 || !finite(item.initialBasicAmount) || item.initialBasicAmount <= 0) throw new Error('Invalid premium or Basic Amount');
   if (!['Original', 'AVF', 'AVPU'].includes(item.withdrawalPattern)) throw new Error('Unsupported withdrawal pattern');
   return item;
@@ -167,7 +168,7 @@ export function buildCalibrationModel(cases) {
   return Object.freeze({ anchors, curves, baseAt, transitions, terminalTransitions, reductionCoefficients: Object.fromEntries(Object.entries(reductionRows).map(([name, rows]) => [name, median(rows)])), calibrationCaseIds: calibration.map(item => item.caseId) });
 }
 
-export function projectPolicy(input, model) {
+export function projectPolicy(input, model, researchOptions = {}) {
   const policy = normalizeCase(input);
   const endAge = Number(input.endAge ?? policy.issueAge + 60);
   if (!Number.isInteger(endAge) || endAge < policy.issueAge) throw new Error('Invalid projection end age');
@@ -199,6 +200,10 @@ export function projectPolicy(input, model) {
       const terminalFeatures = terminalFeatureVector(policyYear, previousTerminalRatio, tdWithdrawal / Math.max(base.terminalDividendCashValue, 1), previousTerminalWithdrawal / Math.max(previousTerminalBase, 1), currentBasic / policy.initialBasicAmount, timeSince);
       const terminalRatio = Math.max(0, Math.min(1.5, model.terminalTransitions[region(policyYear)].reduce((sum, coefficient, index) => sum + coefficient * terminalFeatures[index], 0)));
       terminalState = base.terminalDividendCashValue * terminalRatio - tdWithdrawal;
+      // Explicit research-only injection; normal projections keep the frozen v4 transition.
+      if (researchOptions.terminalTransition && gcvTap === 0 && currentBasic === mappedBasic) {
+        terminalState = researchOptions.terminalTransition({ base, previousBase: prevBase, previousTerminal, previousAssociated: previousTerminalWithdrawal, previousRemaining, basic: currentBasic, policyYear }) - tdWithdrawal;
+      }
       remaining += terminalState - base.terminalDividendCashValue * ratio;
     }
     if (withdrawal > 0 && !firstWithdrawalSeen) {
@@ -213,7 +218,7 @@ export function projectPolicy(input, model) {
     }
     const insufficient = base.total <= withdrawal && withdrawal > 0;
     if (insufficient) remaining = 0;
-    rows.push({ age, policyYear, withdrawal: Math.round(withdrawal), withdrawalType: withdrawal > 0 ? 'medicalWithdrawal' : 'zeroWithdrawal', basicAmountAfterWithdrawal: Math.round(currentBasic), projectedRemainingSurrenderValue: Math.round(Math.max(0, remaining)), status: insufficient ? 'INSUFFICIENT_RESERVE' : 'OK', calibrationStatus: currentBasicRange ? 'IN_CALIBRATION_RANGE' : 'OUT_OF_CALIBRATION_RANGE' });
+    rows.push({ age, policyYear, withdrawal: Math.round(withdrawal), withdrawalType: withdrawal > 0 ? 'medicalWithdrawal' : 'zeroWithdrawal', basicAmountAfterWithdrawal: Math.round(currentBasic), projectedRemainingSurrenderValue: Math.round(Math.max(0, remaining)), terminalDividendState: Math.round(terminalState), noWithdrawalBaseValue: Math.round(base.total), status: insufficient ? 'INSUFFICIENT_RESERVE' : 'OK', calibrationStatus: currentBasicRange ? 'IN_CALIBRATION_RANGE' : 'OUT_OF_CALIBRATION_RANGE' });
     previousRemaining = remaining;
     previousWithdrawal = withdrawal;
     previousBasic = currentBasic;

@@ -113,3 +113,29 @@ ROWS >0.10%: 247
 - {"case": "50yrs_5pay_130k_avpu", "withdrawalPattern": "AVPU", "age": 70, "policyYear": 20, "annualPremium": 130000, "initialBasicAmount": 1323829, "expectedIPOSRemaining": 1145676, "modelRemaining": 1266220, "dollarError": 120544, "percentageError": 10.52164835, "absolutePercentageError": 10.52164835, "noWithdrawalBase": 1359922, "currentWithdrawal": 50328, "previousWithdrawal": 47896, "RBWithdrawal": 432, "GCVWithdrawal": 18557, "TDWithdrawal": 31339, "expectedDisplayedBasicAmount": 1034657, "modelBasicAmount": 1047950, "RBState": 0, "GCVState": 428659, "TDState": 717018, "modelTDState": 767914, "modelTDCorrection": 15378.49, "previousTDCorrection": 8044.19, "yearsSinceFirstWithdrawal": 9, "consecutiveWithdrawalCount": 10, "GCVCurrentlyTapped": true, "GCVWasTappedPreviously": true, "BasicAmountChangedThisYear": true, "BasicAmountReducedPreviously": true, "WithdrawalResumedAfterZero": false}
 - {"case": "50yrs_5pay_130k_avpu", "withdrawalPattern": "AVPU", "age": 71, "policyYear": 21, "annualPremium": 130000, "initialBasicAmount": 1323829, "expectedIPOSRemaining": 1204105, "modelRemaining": 1330315, "dollarError": 126210, "percentageError": 10.48164404, "absolutePercentageError": 10.48164404, "noWithdrawalBase": 1426346, "currentWithdrawal": 53640, "previousWithdrawal": 50328, "RBWithdrawal": 414, "GCVWithdrawal": 18632, "TDWithdrawal": 34594, "expectedDisplayedBasicAmount": 991114, "modelBasicAmount": 1004598, "RBState": 0, "GCVState": 424098, "TDState": 780007, "modelTDState": 828078, "modelTDCorrection": -544.86, "previousTDCorrection": 15378.49, "yearsSinceFirstWithdrawal": 10, "consecutiveWithdrawalCount": 11, "GCVCurrentlyTapped": true, "GCVWasTappedPreviously": true, "BasicAmountChangedThisYear": true, "BasicAmountReducedPreviously": true, "WithdrawalResumedAfterZero": false}
 - {"case": "50yrs_5pay_130k_avpu", "withdrawalPattern": "AVPU", "age": 72, "policyYear": 22, "annualPremium": 130000, "initialBasicAmount": 1323829, "expectedIPOSRemaining": 1231938, "modelRemaining": 1377316, "dollarError": 145378, "percentageError": 11.80075621, "absolutePercentageError": 11.80075621, "noWithdrawalBase": 1480878, "currentWithdrawal": 56752, "previousWithdrawal": 53640, "RBWithdrawal": 396, "GCVWithdrawal": 19031, "TDWithdrawal": 37325, "expectedDisplayedBasicAmount": 948009, "modelBasicAmount": 961777, "RBState": 0, "GCVState": 418546, "TDState": 813392, "modelTDState": 878436, "modelTDCorrection": -8105.79, "previousTDCorrection": -544.86, "yearsSinceFirstWithdrawal": 11, "consecutiveWithdrawalCount": 12, "GCVCurrentlyTapped": true, "GCVWasTappedPreviously": true, "BasicAmountChangedThisYear": true, "BasicAmountReducedPreviously": true, "WithdrawalResumedAfterZero": false}
+
+## Bounded TD continuation
+
+Retained model: v4 unchanged. Three candidates rejected at the immediate-row gate; no additional candidate full holdout runs.
+The legacy aggregate ratio also supplies non-TD state; exact-TD replacement alone leaves material non-TD residuals before GCV tapping. No unrelated layer is redesigned in this cycle.
+
+## Frozen holdout summary
+
+Leakage: PASS; MAPE: 2.29650947%; maximum annual error: 11.80075621%; rows >0.10%: 247; max dollar error: HKD 457617.
+
+| Case | MAPE % | Max % | Max HKD | Worst age / PY | First >0.01% | >0.02% | >0.05% | >0.10% |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 45yrs_5pay_130k_avf_55 | 1.94118998 | 6.2919885 | 281724 | 63 / 18 | 56 / 11 | 56 / 11 | 56 / 11 | 56 / 11 |
+| 45yrs_5pay_130k_avpu_55yr | 3.72725523 | 9.31646292 | 273481 | 67 / 22 | 56 / 11 | 56 / 11 | 56 / 11 | 56 / 11 |
+| 5pay_avf_150k | 1.24168125 | 3.47225634 | 383896 | 73 / 28 | 46 / 1 | 46 / 1 | 46 / 1 | 46 / 1 |
+| 5pay_avpu_200k | 1.43531869 | 5.84407899 | 457617 | 69 / 24 | 62 / 17 | 62 / 17 | 62 / 17 | 62 / 17 |
+| 50yrs_5pay_130k_avpu | 3.19598594 | 11.80075621 | 151508 | 72 / 22 | 62 / 12 | 62 / 12 | 62 / 12 | 62 / 12 |
+| 70k_original | 2.31939632 | 6.31105662 | 108324 | 77 / 32 | 62 / 17 | 62 / 17 | 62 / 17 | 62 / 17 |
+
+Further proposal evidence is listed in td-transition-research.md. No production engine or Customer Flow change.
+
+## Verification
+
+Node regression tests: PASS. Syntax: PASS. Python syntax: PASS. Schema: PASS. Fixture schedule consistency: FAIL.
+Three age-100 rows say zero withdrawal but their schedule has HKD 85, 8 and 2 respectively. The frozen fixture is preserved; genuine proposals must be checked before correction.
+Browser / physical-device UI verification: NOT VERIFIED; no production/UI changes. This research result does not certify Platform integration.

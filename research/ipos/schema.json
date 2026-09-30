@@ -8,6 +8,7 @@
   "properties": {
     "datasetVersion": { "const": "ipos-approximation-dataset-v1" },
     "product": { "const": "AIA 環宇盈活儲蓄保險計劃" },
+    "sourcePolicy": { "type": "string", "minLength": 1 },
     "cases": {
       "type": "array",
       "items": { "$ref": "#/$defs/case" }

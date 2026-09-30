@@ -3,5 +3,11 @@
   "version": "1.0.1",
   "private": true,
   "type": "module",
-  "scripts": { "test": "node --test", "check": "node --check app.js && node --check domain.js && node --check research/ipos/engine.js && node --check research/ipos/validate.js", "validate:ipos": "node research/ipos/validate.js" }
+  "scripts": {
+    "test": "node --test",
+    "check": "node --check app.js && node --check domain.js && node --check research/ipos/engine.js && node --check research/ipos/validate.js && node --check research/ipos/td-transition.js && node --check research/ipos/td-transition-research.js && node --check research/ipos/sync-reports.js",
+    "validate:ipos": "python3 research/ipos/validate_offline.py && node research/ipos/validate.js && node research/ipos/sync-reports.js",
+    "research:td": "node research/ipos/td-transition-research.js",
+    "validate:fixtures": "python3 research/ipos/validate_fixtures.py"
+  }
 }

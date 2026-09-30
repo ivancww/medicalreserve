@@ -69,3 +69,35 @@ test('anchor premiums, interpolation, exhaustion, and deterministic repeat are c
   const input = { ...dataset.cases[0], withdrawalStartAge: 61, endAge: 70 };
   assert.deepEqual(projectPolicy(input, model), projectPolicy(input, model));
 });
+
+test('proposal-supported first-withdrawal anchors remain exact in frozen holdouts', () => {
+  for (const id of ['45yrs_5pay_130k_avf_55', '45yrs_5pay_130k_avpu_55yr', '5pay_avpu_200k', '50yrs_5pay_130k_avpu', '70k_original']) {
+    const item = dataset.cases.find(c => c.caseId === id);
+    const actual = item.rows.find(r => r.withdrawal > 0);
+    const predicted = projectPolicy({ ...item, endAge: actual.age }, model).rows.at(-1);
+    assert.ok(Math.abs(predicted.projectedRemainingSurrenderValue - actual.projectedRemainingSurrenderValue) <= 1, id);
+  }
+});
+
+test('affected zero-withdrawal continuation does not reset to unaffected base', () => {
+  const item = dataset.cases.find(c => c.caseId === '45yrs_5pay_130k_avf');
+  const withdrawalSchedule = item.withdrawalSchedule.map(r => r.age === 62 ? { ...r, withdrawal: 0, withdrawalFromGuaranteedCashValue: 0, withdrawalFromReversionaryBonus: 0, withdrawalFromTerminalDividend: 0 } : r);
+  const row = projectPolicy({ ...item, withdrawalSchedule, endAge: 62 }, model).rows.at(-1);
+  assert.notEqual(row.projectedRemainingSurrenderValue, Math.round(model.baseAt(row.policyYear, item.initialBasicAmount).total));
+  // A state regression check, not genuine-proposal certification of pause/resume accuracy.
+});
+
+test('v4 predictions reproduce the frozen best holdout metrics', () => {
+  const errors = [], dollars = [];
+  for (const item of dataset.cases.filter(c => c.role === 'holdout')) {
+    const predicted = new Map(projectPolicy(item, model).rows.map(r => [r.age, r]));
+    for (const row of item.rows) {
+      const dollar = Math.abs(predicted.get(row.age).projectedRemainingSurrenderValue - row.projectedRemainingSurrenderValue);
+      dollars.push(dollar); errors.push(dollar / row.projectedRemainingSurrenderValue * 100);
+    }
+  }
+  assert.equal(Number((errors.reduce((a,b)=>a+b,0)/errors.length).toFixed(8)), 2.29650947);
+  assert.equal(Number(Math.max(...errors).toFixed(8)), 11.80075621);
+  assert.equal(errors.filter(e => e > .10).length, 247);
+  assert.equal(Math.max(...dollars), 457617);
+});

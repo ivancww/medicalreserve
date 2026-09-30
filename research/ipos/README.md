@@ -60,3 +60,48 @@ Do not provide personal information. Raw PDFs must remain outside Git; commit on
 ## Import contract
 
 Use `schema.json` for the deterministic manifest and yearly-row shape. Reject a case when metadata does not match the requested product, current proposal version/date family, HKD, or 5 Pay scope. Do not infer missing values, filename metadata, scenario type, or component values.
+
+## Bounded TD continuation (PR #2)
+
+Continue the frozen v4 baseline; `engine.js` does not select any rejected TD model.
+`td-transition.js` and `td-transition-research.js` are isolated calibration-only
+experiments. The optional third argument to `projectPolicy` is a research test
+hook used only by this harness; normal calls use v4. No production module imports
+this engine or the harness.
+
+Three meaningful iterations were completed: deficit persistence, persistence
+plus associated TD shock, and persistence plus RB depletion. Each failed the
+five immediate second-withdrawal gates, so no candidate full holdout was run or
+retained. The v4 full frozen holdout was regenerated and remains unchanged.
+The TD dataset contains 206 consecutive pairs; only 27 pre-GCV pairs have exact
+year base component evidence. Estimated/interpolated base fields are marked and
+excluded from fitting. Case-held-out CV excludes the withheld case's annual base
+sources. There is no genuine pause/resume accuracy certification.
+
+Reproduction (Node/npm and Python 3 required):
+
+```sh
+python3 -m pip install -r research/ipos/requirements.txt
+npm run research:td
+python3 research/ipos/verify_research.py
+npm run validate:ipos
+```
+
+Do not use repeated experiment runs as additional optimization cycles.
+`verify_research.py` records actual command exits and returns FAIL for the three
+existing final-year schedule/row inconsistencies. Run report regeneration even
+when that check fails so the failure remains explicit in every report. No frozen
+fixture values are corrected without checking the genuine proposals.
+
+The schema now recognizes the already-existing `sourcePolicy` provenance field.
+The Python report generator's `>0.10%` distribution count now correctly counts
+247 failing holdout rows, rather than incorrectly counting all 325 rows.
+The existing invalid-withdrawal-start-age regression is fixed in the research
+engine. Valid-input v4 results and production files remain unchanged.
+
+Current diagnosis: a near-correct TD component alone still leaves a material
+aggregate-derived GCV/RB residual. Matched **annual** no-withdrawal and affected
+GCV/RB/TD component tables, with controlled withdrawal amount/start-year changes,
+are needed to identify the RB/associated-TD carryover relationship. No Basic
+Amount, GCV reduction, portfolio, production calculation, or Customer Flow
+redesign is made in this cycle.
