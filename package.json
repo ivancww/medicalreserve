@@ -3,5 +3,5 @@
   "version": "1.0.1",
   "private": true,
   "type": "module",
-  "scripts": { "test": "node --test", "check": "node --check app.js && node --check domain.js" }
+  "scripts": { "test": "node --test", "check": "node --check app.js && node --check domain.js && node --check research/ipos/engine.js && node --check research/ipos/validate.js", "validate:ipos": "node research/ipos/validate.js" }
 }

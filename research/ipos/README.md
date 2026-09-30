@@ -2,9 +2,17 @@
 
 This directory is intentionally separate from the production Medical Reserve flow and from PR #1. It is the input boundary for the AIA 環宇盈活儲蓄保險計劃 approximation research phase.
 
+## Dataset status
+
+The validated Google Drive proposal corpus has been normalized into [fixtures/dataset.json](fixtures/dataset.json). Raw PDFs are not committed. The fixture contains current projected, HKD, 5 Pay rows only, with provenance IDs, metadata validation fields, base curves, withdrawal schedules, component values, and frozen calibration/holdout roles.
+
+The fixture split is frozen before fitting. Holdouts cover early withdrawal, premium interpolation, issue-age generalization, Original intensity, and AVPU/premium strength dimensions. Holdout results are generated in `validation-report.json` and `validation-report.md`.
+
+The withdrawal schedule is an exogenous input to the state engine, representing Medical Premium / Medical Reserve Support after normalization. It is not used as a surrender-value target. The blind fit excludes all holdout cases when learning Basic Amount anchors, base curves, component depletion, and Basic Amount transition behavior.
+
 ## DATASET_INPUT_REQUIRED
 
-No genuine iPOS proposal PDFs or de-identified numeric proposal tables are present in this repository. Validation must not start until the following current projected-illustration, HKD, 5 Pay inputs are supplied and their internal metadata is verified:
+This status applies only when the de-identified fixture corpus is absent. Do not substitute raw PDFs or filename assumptions for the fixture schema below.
 
 ### Required source cases
 
@@ -52,4 +60,3 @@ Do not provide personal information. Raw PDFs must remain outside Git; commit on
 ## Import contract
 
 Use `schema.json` for the deterministic manifest and yearly-row shape. Reject a case when metadata does not match the requested product, current proposal version/date family, HKD, or 5 Pay scope. Do not infer missing values, filename metadata, scenario type, or component values.
-

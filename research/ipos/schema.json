@@ -38,11 +38,46 @@
         "scenarioType": { "const": "currentProjected" },
         "role": { "enum": ["calibration", "holdout", "regression"] },
         "sourceHash": { "type": ["string", "null"] },
+        "sourceFileId": { "type": ["string", "null"] },
+        "baseCurve": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/basePoint" }
+        },
+        "withdrawalSchedule": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/withdrawalPoint" }
+        },
         "rows": {
           "type": "array",
           "minItems": 1,
           "items": { "$ref": "#/$defs/row" }
         }
+      }
+    },
+    "basePoint": {
+      "type": "object",
+      "required": ["policyYear", "paidPremiumTotal", "guaranteedCashValue", "reversionaryBonusCashValue", "terminalDividendCashValue", "projectedRemainingSurrenderValue"],
+      "additionalProperties": false,
+      "properties": {
+        "policyYear": { "type": "integer", "minimum": 0 },
+        "paidPremiumTotal": { "type": "number", "minimum": 0 },
+        "guaranteedCashValue": { "type": "number", "minimum": 0 },
+        "reversionaryBonusCashValue": { "type": "number", "minimum": 0 },
+        "terminalDividendCashValue": { "type": "number", "minimum": 0 },
+        "projectedRemainingSurrenderValue": { "type": "number", "minimum": 0 }
+      }
+    },
+    "withdrawalPoint": {
+      "type": "object",
+      "required": ["age", "policyYear", "withdrawal"],
+      "additionalProperties": false,
+      "properties": {
+        "age": { "type": "integer", "minimum": 0 },
+        "policyYear": { "type": "integer", "minimum": 0 },
+        "withdrawal": { "type": "number", "minimum": 0 },
+        "withdrawalFromReversionaryBonus": { "type": "number", "minimum": 0 },
+        "withdrawalFromGuaranteedCashValue": { "type": "number", "minimum": 0 },
+        "withdrawalFromTerminalDividend": { "type": "number", "minimum": 0 }
       }
     },
     "row": {
