@@ -47,6 +47,9 @@ def solve(matrix, vector, ridge=1e-6):
 def feature_vector(policy_year, previous_ratio, withdrawal_ratio, previous_withdrawal_ratio, gcv_ratio, gcv_tapped, basic_ratio, time_since):
     return [1.0, previous_ratio, policy_year / 60.0, withdrawal_ratio, previous_withdrawal_ratio, gcv_ratio, 1.0 if gcv_tapped else 0.0, basic_ratio, min(time_since, 20) / 20.0]
 
+def terminal_feature_vector(policy_year, previous_ratio, withdrawal_ratio, previous_withdrawal_ratio, basic_ratio, time_since):
+    return [1.0, previous_ratio, policy_year / 60.0, withdrawal_ratio, previous_withdrawal_ratio, basic_ratio, min(time_since, 20) / 20.0]
+
 def build_model():
     anchors = sorted({(item["annualPremium"], item["initialBasicAmount"]) for item in calibration})
     by_anchor = {}
@@ -86,10 +89,13 @@ def build_model():
         values["total"] = sum(values[component] for component in components)
         return values
     feature_rows = {"early": [], "middle": [], "late": []}
+    terminal_rows = {"early": [], "middle": [], "late": []}
     reduction_rows = {"early": [], "middle": [], "late": []}
     for item in calibration:
         schedule = {row["age"]: row for row in item["withdrawalSchedule"]}
         previous = None
+        previous_terminal = None
+        previous_terminal_withdrawal = 0.0
         previous_basic = item["initialBasicAmount"]
         last_withdrawal_age = None
         for actual in item["rows"]:
@@ -109,14 +115,22 @@ def build_model():
             gcv_tap = float(schedule.get(actual["age"], {}).get("withdrawalFromGuaranteedCashValue", 0))
             gcv_ratio = gcv_tap / max(current_base["guaranteedCashValue"], 1.0)
             gcv_tapped = gcv_tap > 0
+            td_withdrawal = float(schedule.get(actual["age"], {}).get("withdrawalFromTerminalDividend", 0))
+            previous_terminal_base = previous_base["terminalDividendCashValue"] if previous is not None else current_base["terminalDividendCashValue"]
+            previous_terminal_ratio = (previous_terminal / max(previous_terminal_base, 1.0)) if previous_terminal is not None else 1.0
+            td_withdrawal_ratio = td_withdrawal / max(current_base["terminalDividendCashValue"], 1.0)
+            previous_td_withdrawal_ratio = previous_terminal_withdrawal / max(previous_terminal_base, 1.0)
             time_since = 20 if last_withdrawal_age is None else actual["age"] - last_withdrawal_age
             if withdrawal > 0:
                 last_withdrawal_age = actual["age"]
             feature_rows[region(actual["policyYear"])].append((feature_vector(actual["policyYear"], previous_ratio, withdrawal_ratio, previous_withdrawal_ratio, gcv_ratio, gcv_tapped, current_basic / item["initialBasicAmount"], time_since), actual["projectedRemainingSurrenderValue"] / max(current_base["total"], 1.0)))
+            terminal_rows[region(actual["policyYear"])].append((terminal_feature_vector(actual["policyYear"], previous_terminal_ratio, td_withdrawal_ratio, previous_td_withdrawal_ratio, current_basic / item["initialBasicAmount"], time_since), (float(actual["terminalDividendCashValue"]) + td_withdrawal) / max(current_base["terminalDividendCashValue"], 1.0)))
             if gcv_tap > 0 and current_basic < previous_basic:
                 raw_reduction = gcv_tap / max(previous_base["guaranteedCashValue"] / max(previous_basic, 1.0), 1e-9)
                 reduction_rows[region(actual["policyYear"])].append((previous_basic - current_basic) / raw_reduction)
             previous = actual
+            previous_terminal = float(actual["terminalDividendCashValue"])
+            previous_terminal_withdrawal = td_withdrawal
             previous_basic = current_basic
     transitions = {}
     for name, rows in feature_rows.items():
@@ -128,8 +142,18 @@ def build_model():
                 for j in range(9):
                     matrix[i][j] += features[i] * features[j]
         transitions[name] = solve(matrix, vector)
+    terminal_transitions = {}
+    for name, rows in terminal_rows.items():
+        matrix = [[0.0] * 7 for _ in range(7)]
+        vector = [0.0] * 7
+        for features, target in rows:
+            for i in range(7):
+                vector[i] += features[i] * target
+                for j in range(7):
+                    matrix[i][j] += features[i] * features[j]
+        terminal_transitions[name] = solve(matrix, vector)
     reduction_coefficients = {name: (median(values) if values else 0.0) for name, values in reduction_rows.items()}
-    return {"anchors": anchors, "curves": curves, "base_at": base_at, "transitions": transitions, "reduction_coefficients": reduction_coefficients, "calibrationCaseIds": [item["caseId"] for item in calibration]}
+    return {"anchors": anchors, "curves": curves, "base_at": base_at, "transitions": transitions, "terminal_transitions": terminal_transitions, "reduction_coefficients": reduction_coefficients, "calibrationCaseIds": [item["caseId"] for item in calibration]}
 
 model = build_model()
 
@@ -142,6 +166,8 @@ def project(item):
     previous_basic = current_basic
     previous_withdrawal = 0.0
     previous_base = None
+    previous_terminal = None
+    previous_terminal_withdrawal = 0.0
     last_withdrawal_age = None
     first_withdrawal_seen = False
     output = []
@@ -152,6 +178,8 @@ def project(item):
         point = schedule.get(age, {})
         withdrawal = float(point.get("withdrawal", 0)) if age >= (item.get("withdrawalStartAge") or 10**9) else 0.0
         gcv_tap = float(point.get("withdrawalFromGuaranteedCashValue", 0)) if withdrawal else 0.0
+        td_withdrawal = float(point.get("withdrawalFromTerminalDividend", 0)) if withdrawal else 0.0
+        terminal_state = base["terminalDividendCashValue"]
         if previous_remaining is None:
             remaining = base["total"]
         elif not first_withdrawal_seen:
@@ -165,9 +193,18 @@ def project(item):
             time_since = 20 if last_withdrawal_age is None else age - last_withdrawal_age
             features = feature_vector(policy_year, previous_ratio, withdrawal_ratio, previous_withdrawal_ratio, gcv_ratio, gcv_tap > 0, current_basic / item["initialBasicAmount"], time_since)
             ratio = sum(a * b for a, b in zip(model["transitions"][region(policy_year)], features))
+            ratio = max(0.0, min(1.5, ratio))
+            previous_terminal_base = previous_base["terminalDividendCashValue"] if previous_terminal is not None else base["terminalDividendCashValue"]
+            previous_terminal_ratio = previous_terminal / max(previous_terminal_base, 1.0) if previous_terminal is not None else 1.0
+            terminal_features = terminal_feature_vector(policy_year, previous_terminal_ratio, td_withdrawal / max(base["terminalDividendCashValue"], 1.0), previous_terminal_withdrawal / max(previous_terminal_base, 1.0), current_basic / item["initialBasicAmount"], time_since)
+            terminal_ratio = sum(a * b for a, b in zip(model["terminal_transitions"][region(policy_year)], terminal_features))
+            terminal_ratio = max(0.0, min(1.5, terminal_ratio))
             remaining = base["total"] * max(0.0, min(1.5, ratio))
+            terminal_state = base["terminalDividendCashValue"] * terminal_ratio - td_withdrawal
+            remaining += terminal_state - base["terminalDividendCashValue"] * ratio
         if withdrawal > 0 and not first_withdrawal_seen:
             remaining = max(0.0, base["total"] - withdrawal)
+            terminal_state = base["terminalDividendCashValue"] - td_withdrawal
         if withdrawal > 0:
             first_withdrawal_seen = True
             last_withdrawal_age = age
@@ -182,6 +219,8 @@ def project(item):
         previous_withdrawal = withdrawal
         previous_basic = current_basic
         previous_base = base
+        previous_terminal = terminal_state if not (withdrawal > 0 and first_withdrawal_seen is False) else previous_terminal
+        previous_terminal_withdrawal = td_withdrawal
     return output, in_range
 
 def error(actual, predicted):
@@ -262,7 +301,7 @@ calibration_results = [summarize(item) for item in calibration]
 holdout_results = [summarize(item) for item in holdouts]
 first_divergence_results = [first_divergence(item) for item in holdouts]
 holdout = aggregate(holdout_results)
-report = {"engineVersion": "ipos-approximation-policy-year-transition-v3-basecurve", "dataset": {"calibrationCases": len(calibration), "holdoutCases": len(holdouts), "annualRows": sum(len(item["rows"]) for item in cases), "fixtureSource": dataset["sourcePolicy"], "leakageCheck": set(model["calibrationCaseIds"]) == {item["caseId"] for item in calibration}}, "modelSelection": {"selected": "policyYearBasicAmountNormalizedTransition", "previousV1HoldoutMAPE": 17.17569366, "previousV1HoldoutMaxErrorPercent": 57.11395611, "previousV2HoldoutMAPE": 5.973153, "previousV2HoldoutMaxErrorPercent": 56.85795543, "baseCurveChange": "calibration-only first-withdrawal component reconstruction; no holdout rows used", "rationale": "anchor-specific base curves and region-specific path-conditioned transitions; no global component mean or global Basic Amount ratio"}, "results": {"calibration": aggregate(calibration_results), "holdout": holdout}, "holdouts": holdout_results, "thresholdTargets": {"IDEAL": holdout["maxErrorPercent"] <= .01, "STRONG": holdout["maxErrorPercent"] <= .02, "TARGET": holdout["maxErrorPercent"] <= .05, "HARD_LIMIT": holdout["maxErrorPercent"] <= .10}, "supportedRange": {"issueAges": sorted({item["issueAge"] for item in cases}), "premiums": sorted({item["annualPremium"] for item in cases}), "withdrawalStartAges": sorted({item["withdrawalStartAge"] for item in cases if item["withdrawalStartAge"]}), "withdrawalPatterns": sorted({item["withdrawalPattern"] for item in cases})}, "notVerifiedRange": ["continuous premiums outside supplied anchors", "portfolio pause/resume against direct proposal evidence", "production integration"], "finalStatus": "READY_FOR_INTEGRATION_REVIEW" if holdout["maxErrorPercent"] <= .10 else "NOT_READY_FOR_INTEGRATION"}
+report = {"engineVersion": "ipos-approximation-terminal-dividend-transition-v4", "dataset": {"calibrationCases": len(calibration), "holdoutCases": len(holdouts), "annualRows": sum(len(item["rows"]) for item in cases), "fixtureSource": dataset["sourcePolicy"], "leakageCheck": set(model["calibrationCaseIds"]) == {item["caseId"] for item in calibration}}, "modelSelection": {"selected": "policyYearBasicAmountNormalizedTransitionWithTerminalDividendState", "previousV1HoldoutMAPE": 17.17569366, "previousV1HoldoutMaxErrorPercent": 57.11395611, "previousV2HoldoutMAPE": 5.973153, "previousV2HoldoutMaxErrorPercent": 56.85795543, "previousV3HoldoutMAPE": 5.16213632, "previousV3HoldoutMaxErrorPercent": 35.97650942, "terminalDividendChange": "component-specific terminal-dividend state recovery correction fitted only from calibration rows", "rationale": "anchor-specific base curves and region-specific path-conditioned transitions with explicit terminal-dividend state recovery"}, "results": {"calibration": aggregate(calibration_results), "holdout": holdout}, "holdouts": holdout_results, "thresholdTargets": {"IDEAL": holdout["maxErrorPercent"] <= .01, "STRONG": holdout["maxErrorPercent"] <= .02, "TARGET": holdout["maxErrorPercent"] <= .05, "HARD_LIMIT": holdout["maxErrorPercent"] <= .10}, "supportedRange": {"issueAges": sorted({item["issueAge"] for item in cases}), "premiums": sorted({item["annualPremium"] for item in cases}), "withdrawalStartAges": sorted({item["withdrawalStartAge"] for item in cases if item["withdrawalStartAge"]}), "withdrawalPatterns": sorted({item["withdrawalPattern"] for item in cases})}, "notVerifiedRange": ["continuous premiums outside supplied anchors", "portfolio pause/resume against direct proposal evidence", "production integration"], "finalStatus": "READY_FOR_INTEGRATION_REVIEW" if holdout["maxErrorPercent"] <= .10 else "NOT_READY_FOR_INTEGRATION"}
 report["diagnosis"] = {"worstCase": holdout["worstCase"], "primaryObservedFactors": ["first-withdrawal base-curve interpolation for non-anchor Policy Years", "terminal-dividend behavior after a correct first withdrawal", "remaining long-horizon transition behavior"], "evidenceBoundary": "Calibration-only first-withdrawal component reconstruction is used for base curves; holdout first-withdrawal rows remain validation-only. Later rows use the fitted transition model."}
 (ROOT / "validation-report.json").write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n")
 first_divergence_report = {"engineVersion": report["engineVersion"], "frozenHoldoutCheck": report["dataset"]["leakageCheck"], "cases": first_divergence_results, "diagnosticRule": "The first >0.10% row is classified before any model change; first-withdrawal checks use the proposal-supported no-withdrawal-minus-withdrawal identity where available."}
@@ -282,6 +321,6 @@ for item in holdout_results:
     lines += ["### " + item["caseName"], "- MAPE: " + str(item["MAPE"]) + "%", "- Max Error %: " + str(item["maxErrorPercent"]) + "%", "- Max Dollar Error: HKD " + str(item["maxDollarError"]), "- Worst age / Policy Year: " + str(item["worstAge"]) + " / " + str(item["worstPolicyYear"])]
     for key in [">0.01%", ">0.02%", ">0.05%", ">0.10%"]:
         lines.append("- First " + key + ": " + json.dumps(item["crossings"][key], ensure_ascii=False))
-lines += ["", "## DIAGNOSIS", "- Primary factors: first-withdrawal base-curve interpolation for non-anchor Policy Years, terminal-dividend behavior after a correct first withdrawal, and remaining long-horizon transition behavior.", "- Evidence boundary: calibration-only first-withdrawal component reconstruction is used for base curves; holdout first-withdrawal rows remain validation-only. Later rows use the fitted transition model.", "- Detailed first-divergence output: first-divergence-report.json and first-divergence-report.md", "", "## ACCURACY DISTRIBUTION"] + ["- " + key + ": " + str(value) for key, value in report["results"]["holdout"]["distribution"].items()] + ["", "## FINAL STATUS", report["finalStatus"], "", "This is a calibrated approximation and is not the official AIA/iPOS calculation engine."]
+lines += ["", "## DIAGNOSIS", "- Primary factors: terminal-dividend state recovery after a correct first withdrawal, remaining long-horizon transition behavior, and display rounding at low Policy Years.", "- Evidence boundary: terminal-dividend state recovery is fitted only from calibration component rows; holdout first-withdrawal rows remain validation-only.", "- Detailed first-divergence output: first-divergence-report.json and first-divergence-report.md", "", "## ACCURACY DISTRIBUTION"] + ["- " + key + ": " + str(value) for key, value in report["results"]["holdout"]["distribution"].items()] + ["", "## FINAL STATUS", report["finalStatus"], "", "This is a calibrated approximation and is not the official AIA/iPOS calculation engine."]
 (ROOT / "validation-report.md").write_text("\n".join(lines) + "\n")
 print(json.dumps({"status": report["finalStatus"], "holdout": holdout}))

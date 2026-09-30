@@ -53,6 +53,9 @@ function solve(matrix, vector, ridge = 1e-6) {
 function featureVector(policyYear, previousRatio, withdrawalRatio, previousWithdrawalRatio, gcvRatio, gcvTapped, basicRatio, timeSince) {
   return [1, previousRatio, policyYear / 60, withdrawalRatio, previousWithdrawalRatio, gcvRatio, gcvTapped ? 1 : 0, basicRatio, Math.min(timeSince, 20) / 20];
 }
+function terminalFeatureVector(policyYear, previousRatio, withdrawalRatio, previousWithdrawalRatio, basicRatio, timeSince) {
+  return [1, previousRatio, policyYear / 60, withdrawalRatio, previousWithdrawalRatio, basicRatio, Math.min(timeSince, 20) / 20];
+}
 function normalizeCase(item) {
   if (!item || item.product !== 'AIA 環宇盈活儲蓄保險計劃' || item.currency !== 'HKD' || item.paymentTerm !== 5) throw new Error('Unsupported product, currency, or payment term');
   if (!Number.isInteger(item.issueAge) || item.issueAge < 0) throw new Error('Invalid issue age');
@@ -111,10 +114,10 @@ export function buildCalibrationModel(cases) {
     values.total = COMPONENTS.reduce((sum, component) => sum + values[component], 0);
     return values;
   };
-  const transitionRows = { early: [], middle: [], late: [] }, reductionRows = { early: [], middle: [], late: [] };
+  const transitionRows = { early: [], middle: [], late: [] }, terminalRows = { early: [], middle: [], late: [] }, reductionRows = { early: [], middle: [], late: [] };
   calibration.forEach(item => {
     const schedule = new Map(item.withdrawalSchedule.map(row => [row.age, row]));
-    let previous = null, previousBasic = item.initialBasicAmount, lastWithdrawalAge = null;
+    let previous = null, previousTerminal = null, previousTerminalWithdrawal = 0, previousBasic = item.initialBasicAmount, lastWithdrawalAge = null;
     item.rows.forEach(actual => {
       const currentBasic = Number(actual.basicAmountAfterWithdrawal || previousBasic);
       const currentBase = baseAt(actual.policyYear, currentBasic);
@@ -124,14 +127,22 @@ export function buildCalibrationModel(cases) {
       const previousRatio = previousRemaining / Math.max(previousBase.total, 1);
       const withdrawal = Number(actual.withdrawal || 0), withdrawalRatio = withdrawal / Math.max(currentBase.total, 1);
       const gcvTap = Number(schedule.get(actual.age)?.withdrawalFromGuaranteedCashValue || 0), gcvRatio = gcvTap / Math.max(currentBase.guaranteedCashValue, 1);
+      const tdWithdrawal = Number(schedule.get(actual.age)?.withdrawalFromTerminalDividend || 0);
+      const previousTerminalBase = previous ? previousBase.terminalDividendCashValue : currentBase.terminalDividendCashValue;
+      const previousTerminalRatio = previousTerminal == null ? 1 : previousTerminal / Math.max(previousTerminalBase, 1);
+      const tdWithdrawalRatio = tdWithdrawal / Math.max(currentBase.terminalDividendCashValue, 1);
+      const previousTdWithdrawalRatio = previousTerminalWithdrawal / Math.max(previousTerminalBase, 1);
       const timeSince = lastWithdrawalAge == null ? 20 : actual.age - lastWithdrawalAge;
       if (withdrawal > 0) lastWithdrawalAge = actual.age;
       transitionRows[region(actual.policyYear)].push({ features: featureVector(actual.policyYear, previousRatio, withdrawalRatio, previousWithdrawalRatio, gcvRatio, gcvTap > 0, currentBasic / item.initialBasicAmount, timeSince), target: Number(actual.projectedRemainingSurrenderValue) / Math.max(currentBase.total, 1) });
+      terminalRows[region(actual.policyYear)].push({ features: terminalFeatureVector(actual.policyYear, previousTerminalRatio, tdWithdrawalRatio, previousTdWithdrawalRatio, currentBasic / item.initialBasicAmount, timeSince), target: (Number(actual.terminalDividendCashValue || 0) + tdWithdrawal) / Math.max(currentBase.terminalDividendCashValue, 1) });
       if (gcvTap > 0 && currentBasic < previousBasic) {
         const gcvPerBasic = previousBase.guaranteedCashValue / Math.max(previousBasic, 1);
         reductionRows[region(actual.policyYear)].push((previousBasic - currentBasic) / Math.max(gcvTap / Math.max(gcvPerBasic, 1e-9), 1e-9));
       }
       previous = actual;
+      previousTerminal = Number(actual.terminalDividendCashValue || 0);
+      previousTerminalWithdrawal = tdWithdrawal;
       previousBasic = currentBasic;
     });
   });
@@ -144,7 +155,16 @@ export function buildCalibrationModel(cases) {
     }));
     transitions[name] = solve(matrix, vector);
   }
-  return Object.freeze({ anchors, curves, baseAt, transitions, reductionCoefficients: Object.fromEntries(Object.entries(reductionRows).map(([name, rows]) => [name, median(rows)])), calibrationCaseIds: calibration.map(item => item.caseId) });
+  const terminalTransitions = {};
+  for (const [name, rows] of Object.entries(terminalRows)) {
+    const matrix = Array.from({ length: 7 }, () => Array(7).fill(0)), vector = Array(7).fill(0);
+    rows.forEach(row => row.features.forEach((feature, index) => {
+      vector[index] += feature * row.target;
+      row.features.forEach((other, otherIndex) => { matrix[index][otherIndex] += feature * other; });
+    }));
+    terminalTransitions[name] = solve(matrix, vector);
+  }
+  return Object.freeze({ anchors, curves, baseAt, transitions, terminalTransitions, reductionCoefficients: Object.fromEntries(Object.entries(reductionRows).map(([name, rows]) => [name, median(rows)])), calibrationCaseIds: calibration.map(item => item.caseId) });
 }
 
 export function projectPolicy(input, model) {
@@ -154,12 +174,14 @@ export function projectPolicy(input, model) {
   const mappedBasic = interpolate(model.anchors, policy.annualPremium);
   const currentBasicRange = model.anchors[0].x <= policy.annualPremium && policy.annualPremium <= model.anchors[model.anchors.length - 1].x;
   const schedule = new Map((policy.withdrawalSchedule || []).map(row => [row.age, row]));
-  let currentBasic = mappedBasic || policy.initialBasicAmount, previousRemaining = null, previousBasic = currentBasic, previousWithdrawal = 0, previousBase = null, lastWithdrawalAge = null, firstWithdrawalSeen = false;
+  let currentBasic = mappedBasic || policy.initialBasicAmount, previousRemaining = null, previousBasic = currentBasic, previousWithdrawal = 0, previousBase = null, previousTerminal = null, previousTerminalWithdrawal = 0, lastWithdrawalAge = null, firstWithdrawalSeen = false;
   const rows = [];
   for (let age = policy.issueAge + 1; age <= endAge; age += 1) {
     const policyYear = policyYearFor(policy.issueAge, age), base = model.baseAt(policyYear, currentBasic), point = schedule.get(age) || {};
     const withdrawal = age >= (policy.withdrawalStartAge ?? Number.POSITIVE_INFINITY) ? Number(point.withdrawal || 0) : 0;
     const gcvTap = withdrawal > 0 ? Number(point.withdrawalFromGuaranteedCashValue || 0) : 0;
+    const tdWithdrawal = withdrawal > 0 ? Number(point.withdrawalFromTerminalDividend || 0) : 0;
+    let terminalState = base.terminalDividendCashValue;
     let remaining = base.total;
     if (previousRemaining != null && firstWithdrawalSeen) {
       const prevBase = previousBase || model.baseAt(Math.max(1, policyYear - 1), previousBasic);
@@ -172,8 +194,17 @@ export function projectPolicy(input, model) {
       const coefficients = model.transitions[region(policyYear)];
       const ratio = Math.max(0, Math.min(1.5, coefficients.reduce((sum, coefficient, index) => sum + coefficient * features[index], 0)));
       remaining = base.total * ratio;
+      const previousTerminalBase = previousTerminal == null ? base.terminalDividendCashValue : previousBase.terminalDividendCashValue;
+      const previousTerminalRatio = previousTerminal == null ? 1 : previousTerminal / Math.max(previousTerminalBase, 1);
+      const terminalFeatures = terminalFeatureVector(policyYear, previousTerminalRatio, tdWithdrawal / Math.max(base.terminalDividendCashValue, 1), previousTerminalWithdrawal / Math.max(previousTerminalBase, 1), currentBasic / policy.initialBasicAmount, timeSince);
+      const terminalRatio = Math.max(0, Math.min(1.5, model.terminalTransitions[region(policyYear)].reduce((sum, coefficient, index) => sum + coefficient * terminalFeatures[index], 0)));
+      terminalState = base.terminalDividendCashValue * terminalRatio - tdWithdrawal;
+      remaining += terminalState - base.terminalDividendCashValue * ratio;
     }
-    if (withdrawal > 0 && !firstWithdrawalSeen) remaining = Math.max(0, base.total - withdrawal);
+    if (withdrawal > 0 && !firstWithdrawalSeen) {
+      remaining = Math.max(0, base.total - withdrawal);
+      terminalState = base.terminalDividendCashValue - tdWithdrawal;
+    }
     if (withdrawal > 0) { firstWithdrawalSeen = true; lastWithdrawalAge = age; }
     if (gcvTap > 0) {
       const coefficient = model.reductionCoefficients[region(policyYear)];
@@ -187,6 +218,8 @@ export function projectPolicy(input, model) {
     previousWithdrawal = withdrawal;
     previousBasic = currentBasic;
     previousBase = base;
+    previousTerminal = terminalState;
+    previousTerminalWithdrawal = tdWithdrawal;
   }
   const firstShortfallAge = rows.find(row => row.status === 'INSUFFICIENT_RESERVE')?.age ?? null;
   return { rows, firstShortfallAge, status: firstShortfallAge == null ? 'OK' : 'INSUFFICIENT_RESERVE', calibrationStatus: currentBasicRange ? 'IN_CALIBRATION_RANGE' : 'OUT_OF_CALIBRATION_RANGE' };

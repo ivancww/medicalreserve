@@ -35,6 +35,14 @@ test('zero-withdrawal continuation keeps persistent state', () => {
   assert.ok(result.rows.find(row => row.age === 78).projectedRemainingSurrenderValue >= 0);
 });
 
+test('terminal-dividend state transition is calibrated separately', () => {
+  assert.deepEqual(Object.keys(model.terminalTransitions).sort(), ['early', 'late', 'middle']);
+  for (const coefficients of Object.values(model.terminalTransitions)) {
+    assert.equal(coefficients.length, 7);
+    assert.ok(coefficients.every(Number.isFinite));
+  }
+});
+
 test('portfolio keeps independent policy histories', () => {
   const result = simulatePortfolio(dataset.cases.slice(0, 2).map(item => ({ ...item, withdrawalStartAge: 65 })), model, { startAge: 65, endAge: 75 });
   assert.equal(result.rows.length, 11);

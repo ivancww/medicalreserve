@@ -1,5 +1,5 @@
 {
-  "engineVersion": "ipos-approximation-policy-year-transition-v3-basecurve",
+  "engineVersion": "ipos-approximation-terminal-dividend-transition-v4",
   "frozenHoldoutCheck": true,
   "cases": [
     {
@@ -38,10 +38,10 @@
         "noWithdrawalBaseValue": 887115,
         "withdrawal": 14400,
         "expectedIPOSRemaining": 858040,
-        "modelRemaining": 853765,
-        "dollarError": -4275,
-        "percentageError": -0.49822852,
-        "absolutePercentageError": 0.49822852
+        "modelRemaining": 860248,
+        "dollarError": 2208,
+        "percentageError": 0.25733066,
+        "absolutePercentageError": 0.25733066
       },
       "previousRow": {
         "case": "45yrs_5pay_130k_avf_55",
@@ -108,10 +108,10 @@
         "noWithdrawalBaseValue": 887115,
         "withdrawal": 20416,
         "expectedIPOSRemaining": 846694,
-        "modelRemaining": 842285,
-        "dollarError": -4409,
-        "percentageError": -0.52073122,
-        "absolutePercentageError": 0.52073122
+        "modelRemaining": 852327,
+        "dollarError": 5633,
+        "percentageError": 0.66529348,
+        "absolutePercentageError": 0.66529348
       },
       "previousRow": {
         "case": "45yrs_5pay_130k_avpu_55yr",
@@ -233,10 +233,10 @@
         "noWithdrawalBaseValue": 2064720,
         "withdrawal": 29576,
         "expectedIPOSRemaining": 1980705,
-        "modelRemaining": 1997123,
-        "dollarError": 16418,
-        "percentageError": 0.82889678,
-        "absolutePercentageError": 0.82889678
+        "modelRemaining": 2004807,
+        "dollarError": 24102,
+        "percentageError": 1.21683946,
+        "absolutePercentageError": 1.21683946
       },
       "previousRow": {
         "case": "5pay_avpu_200k",
@@ -303,10 +303,10 @@
         "noWithdrawalBaseValue": 947516,
         "withdrawal": 29576,
         "expectedIPOSRemaining": 889076,
-        "modelRemaining": 884299,
-        "dollarError": -4777,
-        "percentageError": -0.5372994,
-        "absolutePercentageError": 0.5372994
+        "modelRemaining": 899328,
+        "dollarError": 10252,
+        "percentageError": 1.15310727,
+        "absolutePercentageError": 1.15310727
       },
       "previousRow": {
         "case": "50yrs_5pay_130k_avpu",
@@ -373,10 +373,10 @@
         "noWithdrawalBaseValue": 718250,
         "withdrawal": 21896,
         "expectedIPOSRemaining": 665993,
-        "modelRemaining": 671339,
-        "dollarError": 5346,
-        "percentageError": 0.80271114,
-        "absolutePercentageError": 0.80271114
+        "modelRemaining": 680643,
+        "dollarError": 14650,
+        "percentageError": 2.19972282,
+        "absolutePercentageError": 2.19972282
       },
       "previousRow": {
         "case": "70k_original",
