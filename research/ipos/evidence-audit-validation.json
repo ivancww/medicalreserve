@@ -1,0 +1,25 @@
+{
+  "schemaValidation": "PASS",
+  "evidenceValidation": "PASS",
+  "deterministicEvidenceRegeneration": "PASS",
+  "baselineReportRegeneration": "PASS",
+  "syntaxChecks": "PASS",
+  "nodeRegressionTests": {
+    "status": "PASS",
+    "passed": 21,
+    "failed": 0
+  },
+  "fixtureValidation": {
+    "status": "FAIL",
+    "schema": "PASS",
+    "reason": "Three pre-existing frozen age-100 schedules contain 85/8/2 while annual rows and genuine source allocations display zero. Sources now verify zero; frozen fixture intentionally unchanged for benchmark comparability."
+  },
+  "frozenMetricsUnchanged": "PASS",
+  "frozenRoleAssignment": "PASS",
+  "leakage": "PASS",
+  "productionAndEngineChanges": "NONE",
+  "visualSourceVerification": "PASS: central no-withdrawal table and age-100 allocation/post tables checked against rendered PDFs",
+  "gitDiffCheck": "PASS",
+  "blockedChecks": [],
+  "finalResearchStatus": "NOT_READY_FOR_INTEGRATION"
+}
