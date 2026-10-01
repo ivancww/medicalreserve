@@ -1,0 +1,199 @@
+{
+  "phase": "A",
+  "iteration": 2,
+  "startingHead": "39fb72b8d6b218188139534299985f605591fa4b",
+  "candidate": "ipos-approximation-independent-component-state-phase-a-iteration-2-rb-annual-increment",
+  "hypothesis": "RB replenishment follows the annual increment in the genuine no-withdrawal RB curve instead of a capital-scaled carried deficit.",
+  "rbFormula": "RB_after(PY) = RB_after(PY-1) + [RB_base(PY,current Basic Amount) - RB_base(PY-1,current Basic Amount)] - withdrawalFromRB(PY)",
+  "calibrationEvidence": {
+    "transitionRows": 556,
+    "meanAbsoluteDollarError": 1978.02403544,
+    "medianSignedDollarError": 1270.43819304,
+    "maximumAbsoluteDollarError": 6523.123144,
+    "withinDisplayedHKD1": 0,
+    "sourceHeldOutInterpretation": "The RB rule has zero fitted parameters; each source therefore tests the same rule without source-specific fitting.",
+    "bySource": [
+      {
+        "caseId": "40yrs_5pay_130k_avf",
+        "rows": 39,
+        "meanAbsoluteDollarError": 1623.45558239,
+        "maximumAbsoluteDollarError": 4234.45931536
+      },
+      {
+        "caseId": "40yrs_5pay_130k_avpu",
+        "rows": 39,
+        "meanAbsoluteDollarError": 1664.54409735,
+        "maximumAbsoluteDollarError": 3698.62967649
+      },
+      {
+        "caseId": "50yrs_5pay_180k_avpu",
+        "rows": 39,
+        "meanAbsoluteDollarError": 2568.39782177,
+        "maximumAbsoluteDollarError": 4482.90497405
+      },
+      {
+        "caseId": "50yrs_5pay_130k_avf",
+        "rows": 39,
+        "meanAbsoluteDollarError": 1964.55163636,
+        "maximumAbsoluteDollarError": 3514.22318366
+      },
+      {
+        "caseId": "50yrs_5pay_180k_avf",
+        "rows": 39,
+        "meanAbsoluteDollarError": 2853.23025351,
+        "maximumAbsoluteDollarError": 5355.90265653
+      },
+      {
+        "caseId": "45yrs_5pay_180k_56_60",
+        "rows": 44,
+        "meanAbsoluteDollarError": 2374.95454545,
+        "maximumAbsoluteDollarError": 5715
+      },
+      {
+        "caseId": "45yrs_5pay_130k_avf_56_60",
+        "rows": 44,
+        "meanAbsoluteDollarError": 1923.81344351,
+        "maximumAbsoluteDollarError": 4153.73617439
+      },
+      {
+        "caseId": "45yrs_5pay_130k_avf",
+        "rows": 39,
+        "meanAbsoluteDollarError": 1889.20766575,
+        "maximumAbsoluteDollarError": 3858.78234576
+      },
+      {
+        "caseId": "5pay_180k_avf",
+        "rows": 39,
+        "meanAbsoluteDollarError": 2593.9874097,
+        "maximumAbsoluteDollarError": 5743.34498094
+      },
+      {
+        "caseId": "5pay_180k_avpu",
+        "rows": 39,
+        "meanAbsoluteDollarError": 2554.17311372,
+        "maximumAbsoluteDollarError": 5033.20177262
+      },
+      {
+        "caseId": "5pay_avf_200k",
+        "rows": 39,
+        "meanAbsoluteDollarError": 2845.31508323,
+        "maximumAbsoluteDollarError": 6523.123144
+      },
+      {
+        "caseId": "70k_avf",
+        "rows": 39,
+        "meanAbsoluteDollarError": 887.3322695,
+        "maximumAbsoluteDollarError": 1586.08452143
+      },
+      {
+        "caseId": "70k_avpu",
+        "rows": 39,
+        "meanAbsoluteDollarError": 594.19587137,
+        "maximumAbsoluteDollarError": 1260.95022092
+      },
+      {
+        "caseId": "100k_original",
+        "rows": 39,
+        "meanAbsoluteDollarError": 1311.23925157,
+        "maximumAbsoluteDollarError": 2402.30159501
+      }
+    ]
+  },
+  "baseIdentityMaxResidual": 1,
+  "frozenRoles": {
+    "40yrs_5pay_130k_avf": "calibration",
+    "40yrs_5pay_130k_avpu": "calibration",
+    "45yrs_5pay_130k_avf_55": "holdout",
+    "45yrs_5pay_130k_avpu_55yr": "holdout",
+    "45yrs_5pay_130k_avf_56_60": "calibration",
+    "45yrs_5pay_180k_56_60": "calibration",
+    "45yrs_5pay_130k_avf": "calibration",
+    "5pay_avf_150k": "holdout",
+    "5pay_avf_200k": "calibration",
+    "5pay_avpu_200k": "holdout",
+    "5pay_180k_avf": "calibration",
+    "5pay_180k_avpu": "calibration",
+    "50yrs_5pay_130k_avf": "calibration",
+    "50yrs_5pay_130k_avpu": "holdout",
+    "50yrs_5pay_180k_avf": "calibration",
+    "50yrs_5pay_180k_avpu": "calibration",
+    "70k_avf": "calibration",
+    "70k_avpu": "calibration",
+    "70k_original": "holdout",
+    "100k_original": "calibration",
+    "40k_base": "regression"
+  },
+  "fixtureSHA256": "4111e99433bcef96acc7a4bdbc0150b549728d4fb961c7a96de2db2f4f1bba2c",
+  "modelLock": {
+    "rbTransition": "previous RB after withdrawal + annual no-withdrawal RB curve increment at current Basic Amount - current RB withdrawal",
+    "rbFreeParameters": 0,
+    "terminalTransitions": {
+      "early": [
+        0.26041769383166613,
+        0.015626539212749924,
+        5.7499753614341875,
+        0,
+        0,
+        0,
+        0
+      ],
+      "middle": [
+        0.28184181822269605,
+        0.932958261158316,
+        -0.005180844092208503,
+        0.29042418212334115,
+        0.06659619063836786,
+        -0.21859271349384607,
+        0.00447997545171562
+      ],
+      "late": [
+        -0.09046456823292387,
+        1.079516569066803,
+        0.03292288256731515,
+        0.97072846245529,
+        0.09091964966774735,
+        -0.0018499632407840555,
+        -0.005891386578198326
+      ]
+    },
+    "reductionCoefficients": {
+      "early": 0,
+      "middle": 0.9524599900736501,
+      "late": 0.9980076622639963
+    },
+    "calibrationCaseIds": [
+      "40yrs_5pay_130k_avf",
+      "40yrs_5pay_130k_avpu",
+      "45yrs_5pay_130k_avf_56_60",
+      "45yrs_5pay_180k_56_60",
+      "45yrs_5pay_130k_avf",
+      "5pay_avf_200k",
+      "5pay_180k_avf",
+      "5pay_180k_avpu",
+      "50yrs_5pay_130k_avf",
+      "50yrs_5pay_180k_avf",
+      "50yrs_5pay_180k_avpu",
+      "70k_avf",
+      "70k_avpu",
+      "100k_original"
+    ],
+    "sourceIds": [
+      "ipos-43aef1e32fa3e42d",
+      "ipos-b1272f8eb1f797f5",
+      "ipos-097be310d0f7d0d1",
+      "ipos-ec240d657705979a",
+      "ipos-34ec372fa4c903db",
+      "ipos-3afcb35b16f2ab2f",
+      "ipos-cf93323294f22530",
+      "ipos-fb8b45d0c3d329ff",
+      "ipos-c6cbc4082bd01470",
+      "ipos-1b1268c5907ee30d",
+      "ipos-1c3651fc71e1a245",
+      "ipos-19aab67938abfd5f",
+      "ipos-d9689d78fa5440fd",
+      "ipos-8100b5272f80c956"
+    ]
+  },
+  "modelLockSHA256": "a164ff7350d9649034fad2cdbffdc9be5a913ef1f5149594d990e24893202547",
+  "holdoutEvaluated": false
+}
