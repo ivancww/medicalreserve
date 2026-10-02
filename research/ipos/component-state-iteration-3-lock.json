@@ -1,0 +1,129 @@
+{
+  "phase": "A",
+  "iteration": 3,
+  "finalPhaseAIteration": true,
+  "startingHead": "13489029fdc7615eaadc7c4870706007f2c3f7ad",
+  "candidate": "ipos-approximation-independent-component-state-phase-a-iteration-3-td-annual-increment",
+  "hypothesis": "Restore Iteration 1 RB and test a parameter-free carried TD state replenished only by the genuine annual no-withdrawal TD curve increment.",
+  "tdFormula": "TD_after(PY) = TD_after(PY-1) + [TD_base(PY, Basic Amount entering PY) - TD_base(PY-1, same Basic Amount)] - withdrawalFromTD(PY)",
+  "calibrationDiagnostics": {
+    "eligibleTransitions": 556,
+    "overall": {
+      "rows": 556,
+      "meanSignedDollarResidual": 30492.00053789,
+      "meanAbsoluteDollarResidual": 30584.55835794,
+      "maximumAbsoluteDollarResidual": 130297.22780693,
+      "impossibleTDStates": 0
+    },
+    "beforePriorGCVTap": {
+      "rows": 146,
+      "meanSignedDollarResidual": 16484.93150685,
+      "meanAbsoluteDollarResidual": 16511.26027397,
+      "maximumAbsoluteDollarResidual": 116140,
+      "impossibleTDStates": 0
+    },
+    "afterPriorGCVTap": {
+      "rows": 410,
+      "meanSignedDollarResidual": 35479.88365626,
+      "meanAbsoluteDollarResidual": 35596.02548053,
+      "maximumAbsoluteDollarResidual": 130297.22780693,
+      "impossibleTDStates": 0
+    },
+    "horizon": {
+      "years1to5": {
+        "rows": 70,
+        "meanSignedDollarResidual": 3331.11331163,
+        "meanAbsoluteDollarResidual": 3331.11331163,
+        "maximumAbsoluteDollarResidual": 14287,
+        "impossibleTDStates": 0
+      },
+      "years6to15": {
+        "rows": 140,
+        "meanSignedDollarResidual": 14237.15239823,
+        "meanAbsoluteDollarResidual": 14267.19738056,
+        "maximumAbsoluteDollarResidual": 37016.85820357,
+        "impossibleTDStates": 0
+      },
+      "years16Plus": {
+        "rows": 346,
+        "meanSignedDollarResidual": 42564.08390607,
+        "meanAbsoluteDollarResidual": 42700.66150845,
+        "maximumAbsoluteDollarResidual": 130297.22780693,
+        "impossibleTDStates": 0
+      }
+    },
+    "biasGrowsWithHorizon": true,
+    "conclusion": "Calibration residual is positive and grows materially with horizon; the parameter-free TD annual-increment hypothesis is structurally insufficient without fitted repair."
+  },
+  "baseIdentityMaxResidual": 1,
+  "frozenRoles": {
+    "40yrs_5pay_130k_avf": "calibration",
+    "40yrs_5pay_130k_avpu": "calibration",
+    "45yrs_5pay_130k_avf_55": "holdout",
+    "45yrs_5pay_130k_avpu_55yr": "holdout",
+    "45yrs_5pay_130k_avf_56_60": "calibration",
+    "45yrs_5pay_180k_56_60": "calibration",
+    "45yrs_5pay_130k_avf": "calibration",
+    "5pay_avf_150k": "holdout",
+    "5pay_avf_200k": "calibration",
+    "5pay_avpu_200k": "holdout",
+    "5pay_180k_avf": "calibration",
+    "5pay_180k_avpu": "calibration",
+    "50yrs_5pay_130k_avf": "calibration",
+    "50yrs_5pay_130k_avpu": "holdout",
+    "50yrs_5pay_180k_avf": "calibration",
+    "50yrs_5pay_180k_avpu": "calibration",
+    "70k_avf": "calibration",
+    "70k_avpu": "calibration",
+    "70k_original": "holdout",
+    "100k_original": "calibration",
+    "40k_base": "regression"
+  },
+  "fixtureSHA256": "4111e99433bcef96acc7a4bdbc0150b549728d4fb961c7a96de2db2f4f1bba2c",
+  "modelLock": {
+    "rbTransition": "Iteration 1 pristine RB base minus carried deficit times its frozen calibration median persistence and capital ratio, then current RB withdrawal",
+    "rbPersistence": 1.0244991772664351,
+    "tdTransition": "previous TD after withdrawal + annual no-withdrawal TD curve increment at Basic Amount entering the year - current associated TD withdrawal",
+    "tdFreeParameters": 0,
+    "tdAccrualBasicAmountBasis": "Basic Amount entering the policy year (previous annual row post-withdrawal amount), used for both adjacent normalized no-withdrawal TD curve points",
+    "reductionCoefficients": {
+      "early": 0,
+      "middle": 0.9524599900736501,
+      "late": 0.9980076622639963
+    },
+    "calibrationCaseIds": [
+      "40yrs_5pay_130k_avf",
+      "40yrs_5pay_130k_avpu",
+      "45yrs_5pay_130k_avf_56_60",
+      "45yrs_5pay_180k_56_60",
+      "45yrs_5pay_130k_avf",
+      "5pay_avf_200k",
+      "5pay_180k_avf",
+      "5pay_180k_avpu",
+      "50yrs_5pay_130k_avf",
+      "50yrs_5pay_180k_avf",
+      "50yrs_5pay_180k_avpu",
+      "70k_avf",
+      "70k_avpu",
+      "100k_original"
+    ],
+    "sourceIds": [
+      "ipos-43aef1e32fa3e42d",
+      "ipos-b1272f8eb1f797f5",
+      "ipos-097be310d0f7d0d1",
+      "ipos-ec240d657705979a",
+      "ipos-34ec372fa4c903db",
+      "ipos-3afcb35b16f2ab2f",
+      "ipos-cf93323294f22530",
+      "ipos-fb8b45d0c3d329ff",
+      "ipos-c6cbc4082bd01470",
+      "ipos-1b1268c5907ee30d",
+      "ipos-1c3651fc71e1a245",
+      "ipos-19aab67938abfd5f",
+      "ipos-d9689d78fa5440fd",
+      "ipos-8100b5272f80c956"
+    ]
+  },
+  "modelLockSHA256": "fce66985c0c82da55e1f4578268922a0684be9b9a739a6f10a259e2cf23e75f2",
+  "holdoutEvaluated": false
+}

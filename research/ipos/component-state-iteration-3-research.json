@@ -1,0 +1,7054 @@
+{
+  "phase": "A",
+  "iteration": 3,
+  "finalPhaseAIteration": true,
+  "startingHead": "13489029fdc7615eaadc7c4870706007f2c3f7ad",
+  "candidate": "ipos-approximation-independent-component-state-phase-a-iteration-3-td-annual-increment",
+  "hypothesis": "Restore Iteration 1 RB and test a parameter-free carried TD state replenished only by the genuine annual no-withdrawal TD curve increment.",
+  "tdFormula": "TD_after(PY) = TD_after(PY-1) + [TD_base(PY, Basic Amount entering PY) - TD_base(PY-1, same Basic Amount)] - withdrawalFromTD(PY)",
+  "calibrationDiagnostics": {
+    "eligibleTransitions": 556,
+    "overall": {
+      "rows": 556,
+      "meanSignedDollarResidual": 30492.00053789,
+      "meanAbsoluteDollarResidual": 30584.55835794,
+      "maximumAbsoluteDollarResidual": 130297.22780693,
+      "impossibleTDStates": 0
+    },
+    "beforePriorGCVTap": {
+      "rows": 146,
+      "meanSignedDollarResidual": 16484.93150685,
+      "meanAbsoluteDollarResidual": 16511.26027397,
+      "maximumAbsoluteDollarResidual": 116140,
+      "impossibleTDStates": 0
+    },
+    "afterPriorGCVTap": {
+      "rows": 410,
+      "meanSignedDollarResidual": 35479.88365626,
+      "meanAbsoluteDollarResidual": 35596.02548053,
+      "maximumAbsoluteDollarResidual": 130297.22780693,
+      "impossibleTDStates": 0
+    },
+    "horizon": {
+      "years1to5": {
+        "rows": 70,
+        "meanSignedDollarResidual": 3331.11331163,
+        "meanAbsoluteDollarResidual": 3331.11331163,
+        "maximumAbsoluteDollarResidual": 14287,
+        "impossibleTDStates": 0
+      },
+      "years6to15": {
+        "rows": 140,
+        "meanSignedDollarResidual": 14237.15239823,
+        "meanAbsoluteDollarResidual": 14267.19738056,
+        "maximumAbsoluteDollarResidual": 37016.85820357,
+        "impossibleTDStates": 0
+      },
+      "years16Plus": {
+        "rows": 346,
+        "meanSignedDollarResidual": 42564.08390607,
+        "meanAbsoluteDollarResidual": 42700.66150845,
+        "maximumAbsoluteDollarResidual": 130297.22780693,
+        "impossibleTDStates": 0
+      }
+    },
+    "biasGrowsWithHorizon": true,
+    "conclusion": "Calibration residual is positive and grows materially with horizon; the parameter-free TD annual-increment hypothesis is structurally insufficient without fitted repair."
+  },
+  "baseIdentityMaxResidual": 1,
+  "frozenRoles": {
+    "40yrs_5pay_130k_avf": "calibration",
+    "40yrs_5pay_130k_avpu": "calibration",
+    "45yrs_5pay_130k_avf_55": "holdout",
+    "45yrs_5pay_130k_avpu_55yr": "holdout",
+    "45yrs_5pay_130k_avf_56_60": "calibration",
+    "45yrs_5pay_180k_56_60": "calibration",
+    "45yrs_5pay_130k_avf": "calibration",
+    "5pay_avf_150k": "holdout",
+    "5pay_avf_200k": "calibration",
+    "5pay_avpu_200k": "holdout",
+    "5pay_180k_avf": "calibration",
+    "5pay_180k_avpu": "calibration",
+    "50yrs_5pay_130k_avf": "calibration",
+    "50yrs_5pay_130k_avpu": "holdout",
+    "50yrs_5pay_180k_avf": "calibration",
+    "50yrs_5pay_180k_avpu": "calibration",
+    "70k_avf": "calibration",
+    "70k_avpu": "calibration",
+    "70k_original": "holdout",
+    "100k_original": "calibration",
+    "40k_base": "regression"
+  },
+  "fixtureSHA256": "4111e99433bcef96acc7a4bdbc0150b549728d4fb961c7a96de2db2f4f1bba2c",
+  "modelLock": {
+    "rbTransition": "Iteration 1 pristine RB base minus carried deficit times its frozen calibration median persistence and capital ratio, then current RB withdrawal",
+    "rbPersistence": 1.0244991772664351,
+    "tdTransition": "previous TD after withdrawal + annual no-withdrawal TD curve increment at Basic Amount entering the year - current associated TD withdrawal",
+    "tdFreeParameters": 0,
+    "tdAccrualBasicAmountBasis": "Basic Amount entering the policy year (previous annual row post-withdrawal amount), used for both adjacent normalized no-withdrawal TD curve points",
+    "reductionCoefficients": {
+      "early": 0,
+      "middle": 0.9524599900736501,
+      "late": 0.9980076622639963
+    },
+    "calibrationCaseIds": [
+      "40yrs_5pay_130k_avf",
+      "40yrs_5pay_130k_avpu",
+      "45yrs_5pay_130k_avf_56_60",
+      "45yrs_5pay_180k_56_60",
+      "45yrs_5pay_130k_avf",
+      "5pay_avf_200k",
+      "5pay_180k_avf",
+      "5pay_180k_avpu",
+      "50yrs_5pay_130k_avf",
+      "50yrs_5pay_180k_avf",
+      "50yrs_5pay_180k_avpu",
+      "70k_avf",
+      "70k_avpu",
+      "100k_original"
+    ],
+    "sourceIds": [
+      "ipos-43aef1e32fa3e42d",
+      "ipos-b1272f8eb1f797f5",
+      "ipos-097be310d0f7d0d1",
+      "ipos-ec240d657705979a",
+      "ipos-34ec372fa4c903db",
+      "ipos-3afcb35b16f2ab2f",
+      "ipos-cf93323294f22530",
+      "ipos-fb8b45d0c3d329ff",
+      "ipos-c6cbc4082bd01470",
+      "ipos-1b1268c5907ee30d",
+      "ipos-1c3651fc71e1a245",
+      "ipos-19aab67938abfd5f",
+      "ipos-d9689d78fa5440fd",
+      "ipos-8100b5272f80c956"
+    ]
+  },
+  "modelLockSHA256": "fce66985c0c82da55e1f4578268922a0684be9b9a739a6f10a259e2cf23e75f2",
+  "holdoutEvaluated": true,
+  "holdoutEvaluationCount": 1,
+  "architecture": {
+    "rbState": "Iteration 1 transition restored exactly; no new RB fitting.",
+    "gcvState": "Independent GCV curve at current Basic Amount minus genuine current GCV allocation.",
+    "tdState": "TD_after(PY) = TD_after(PY-1) + [TD_base(PY, Basic Amount entering PY) - TD_base(PY-1, same Basic Amount)] - withdrawalFromTD(PY)",
+    "basicAmountState": "Unchanged without GCV tap; existing calibration reduction relationship otherwise."
+  },
+  "firstWithdrawalGate": "PASS",
+  "firstWithdrawals": [
+    {
+      "caseId": "40yrs_5pay_130k_avf",
+      "age": 61,
+      "policyYear": 21,
+      "components": {
+        "GCV": {
+          "genuine": 566466,
+          "model": 566466,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "RB": {
+          "genuine": 102345,
+          "model": 102345,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "TD": {
+          "genuine": 1122399,
+          "model": 1122399,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "total": {
+          "genuine": 1791210,
+          "model": 1791210,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        }
+      },
+      "sourceIdentityError": 0,
+      "modelIdentityError": 0,
+      "componentTotalResidual": 0,
+      "status": "PASS"
+    },
+    {
+      "caseId": "40yrs_5pay_130k_avpu",
+      "age": 61,
+      "policyYear": 21,
+      "components": {
+        "GCV": {
+          "genuine": 566466,
+          "model": 566466,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "RB": {
+          "genuine": 96826,
+          "model": 96826,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "TD": {
+          "genuine": 1118055,
+          "model": 1118055,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "total": {
+          "genuine": 1781347,
+          "model": 1781347,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        }
+      },
+      "sourceIdentityError": 0,
+      "modelIdentityError": 0,
+      "componentTotalResidual": 0,
+      "status": "PASS"
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 55,
+      "policyYear": 10,
+      "components": {
+        "GCV": {
+          "genuine": 334929,
+          "model": 334929,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "RB": {
+          "genuine": 70135,
+          "model": 70135,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "TD": {
+          "genuine": 409825,
+          "model": 409825,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "total": {
+          "genuine": 814889,
+          "model": 814889,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        }
+      },
+      "sourceIdentityError": 0,
+      "modelIdentityError": 0,
+      "componentTotalResidual": 0,
+      "status": "PASS"
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 55,
+      "policyYear": 10,
+      "components": {
+        "GCV": {
+          "genuine": 334929,
+          "model": 334929,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "RB": {
+          "genuine": 66196,
+          "model": 66196,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "TD": {
+          "genuine": 408667,
+          "model": 408667,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "total": {
+          "genuine": 809792,
+          "model": 809792,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        }
+      },
+      "sourceIdentityError": 0,
+      "modelIdentityError": 0,
+      "componentTotalResidual": 0,
+      "status": "PASS"
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_56_60",
+      "age": 56,
+      "policyYear": 11,
+      "components": {
+        "GCV": {
+          "genuine": 351874,
+          "model": 351874,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "RB": {
+          "genuine": 72591,
+          "model": 72590,
+          "dollarError": -1,
+          "percentError": -0.00137758,
+          "percentOfGenuineTotal": -0.00011458
+        },
+        "TD": {
+          "genuine": 448251,
+          "model": 448251,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "total": {
+          "genuine": 872715,
+          "model": 872715,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        }
+      },
+      "sourceIdentityError": 0,
+      "modelIdentityError": 0,
+      "componentTotalResidual": 0,
+      "status": "PASS"
+    },
+    {
+      "caseId": "45yrs_5pay_180k_56_60",
+      "age": 56,
+      "policyYear": 11,
+      "components": {
+        "GCV": {
+          "genuine": 487210,
+          "model": 487210,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "RB": {
+          "genuine": 104703,
+          "model": 104703,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "TD": {
+          "genuine": 622001,
+          "model": 622001,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "total": {
+          "genuine": 1213913,
+          "model": 1213914,
+          "dollarError": 1,
+          "percentError": 0.00008238,
+          "percentOfGenuineTotal": 0.00008238
+        }
+      },
+      "sourceIdentityError": 0,
+      "modelIdentityError": 0,
+      "componentTotalResidual": 0,
+      "status": "PASS"
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf",
+      "age": 61,
+      "policyYear": 16,
+      "components": {
+        "GCV": {
+          "genuine": 450499,
+          "model": 450499,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "RB": {
+          "genuine": 85048,
+          "model": 85047,
+          "dollarError": -1,
+          "percentError": -0.00117581,
+          "percentOfGenuineTotal": -0.00008223
+        },
+        "TD": {
+          "genuine": 680487,
+          "model": 680488,
+          "dollarError": 1,
+          "percentError": 0.00014695,
+          "percentOfGenuineTotal": 0.00008223
+        },
+        "total": {
+          "genuine": 1216034,
+          "model": 1216034,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        }
+      },
+      "sourceIdentityError": 0,
+      "modelIdentityError": 0,
+      "componentTotalResidual": 0,
+      "status": "PASS"
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 61,
+      "policyYear": 16,
+      "components": {
+        "GCV": {
+          "genuine": 519807,
+          "model": 519807,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "RB": {
+          "genuine": 99973,
+          "model": 99972,
+          "dollarError": -1,
+          "percentError": -0.00100027,
+          "percentOfGenuineTotal": -0.00007113
+        },
+        "TD": {
+          "genuine": 786067,
+          "model": 786067,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "total": {
+          "genuine": 1405846,
+          "model": 1405846,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        }
+      },
+      "sourceIdentityError": 0,
+      "modelIdentityError": 0,
+      "componentTotalResidual": 0,
+      "status": "PASS"
+    },
+    {
+      "caseId": "5pay_avf_200k",
+      "age": 61,
+      "policyYear": 16,
+      "components": {
+        "GCV": {
+          "genuine": 695199,
+          "model": 695199,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "RB": {
+          "genuine": 137743,
+          "model": 137743,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "TD": {
+          "genuine": 1053251,
+          "model": 1053251,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "total": {
+          "genuine": 1886193,
+          "model": 1886193,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        }
+      },
+      "sourceIdentityError": 0,
+      "modelIdentityError": 0,
+      "componentTotalResidual": 0,
+      "status": "PASS"
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 61,
+      "policyYear": 16,
+      "components": {
+        "GCV": {
+          "genuine": 695199,
+          "model": 695199,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "RB": {
+          "genuine": 131092,
+          "model": 131093,
+          "dollarError": 1,
+          "percentError": 0.00076282,
+          "percentOfGenuineTotal": 0.0000533
+        },
+        "TD": {
+          "genuine": 1050039,
+          "model": 1050038,
+          "dollarError": -1,
+          "percentError": -0.00009523,
+          "percentOfGenuineTotal": -0.0000533
+        },
+        "total": {
+          "genuine": 1876330,
+          "model": 1876330,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        }
+      },
+      "sourceIdentityError": 0,
+      "modelIdentityError": 0,
+      "componentTotalResidual": 0,
+      "status": "PASS"
+    },
+    {
+      "caseId": "5pay_180k_avf",
+      "age": 61,
+      "policyYear": 16,
+      "components": {
+        "GCV": {
+          "genuine": 623768,
+          "model": 623768,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "RB": {
+          "genuine": 122361,
+          "model": 122360,
+          "dollarError": -1,
+          "percentError": -0.00081725,
+          "percentOfGenuineTotal": -0.00005915
+        },
+        "TD": {
+          "genuine": 944436,
+          "model": 944437,
+          "dollarError": 1,
+          "percentError": 0.00010588,
+          "percentOfGenuineTotal": 0.00005915
+        },
+        "total": {
+          "genuine": 1690565,
+          "model": 1690565,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        }
+      },
+      "sourceIdentityError": 0,
+      "modelIdentityError": 0,
+      "componentTotalResidual": 0,
+      "status": "PASS"
+    },
+    {
+      "caseId": "5pay_180k_avpu",
+      "age": 61,
+      "policyYear": 16,
+      "components": {
+        "GCV": {
+          "genuine": 623768,
+          "model": 623768,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "RB": {
+          "genuine": 115710,
+          "model": 115710,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "TD": {
+          "genuine": 941224,
+          "model": 941224,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "total": {
+          "genuine": 1680702,
+          "model": 1680702,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        }
+      },
+      "sourceIdentityError": 0,
+      "modelIdentityError": 0,
+      "componentTotalResidual": 0,
+      "status": "PASS"
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avf",
+      "age": 61,
+      "policyYear": 11,
+      "components": {
+        "GCV": {
+          "genuine": 351874,
+          "model": 351874,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "RB": {
+          "genuine": 70058,
+          "model": 70058,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "TD": {
+          "genuine": 447438,
+          "model": 447438,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "total": {
+          "genuine": 869370,
+          "model": 869370,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        }
+      },
+      "sourceIdentityError": 0,
+      "modelIdentityError": 0,
+      "componentTotalResidual": 0,
+      "status": "PASS"
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 61,
+      "policyYear": 11,
+      "components": {
+        "GCV": {
+          "genuine": 351874,
+          "model": 351874,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "RB": {
+          "genuine": 62592,
+          "model": 62592,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "TD": {
+          "genuine": 445041,
+          "model": 445041,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "total": {
+          "genuine": 859507,
+          "model": 859507,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        }
+      },
+      "sourceIdentityError": 0,
+      "modelIdentityError": 0,
+      "componentTotalResidual": 0,
+      "status": "PASS"
+    },
+    {
+      "caseId": "50yrs_5pay_180k_avf",
+      "age": 61,
+      "policyYear": 11,
+      "components": {
+        "GCV": {
+          "genuine": 487210,
+          "model": 487210,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "RB": {
+          "genuine": 102171,
+          "model": 102171,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "TD": {
+          "genuine": 621188,
+          "model": 621188,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "total": {
+          "genuine": 1210568,
+          "model": 1210569,
+          "dollarError": 1,
+          "percentError": 0.00008261,
+          "percentOfGenuineTotal": 0.00008261
+        }
+      },
+      "sourceIdentityError": 0,
+      "modelIdentityError": 0,
+      "componentTotalResidual": 0,
+      "status": "PASS"
+    },
+    {
+      "caseId": "50yrs_5pay_180k_avpu",
+      "age": 61,
+      "policyYear": 11,
+      "components": {
+        "GCV": {
+          "genuine": 487210,
+          "model": 487210,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "RB": {
+          "genuine": 94704,
+          "model": 94705,
+          "dollarError": 1,
+          "percentError": 0.00105592,
+          "percentOfGenuineTotal": 0.00008328
+        },
+        "TD": {
+          "genuine": 618791,
+          "model": 618791,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "total": {
+          "genuine": 1200705,
+          "model": 1200706,
+          "dollarError": 1,
+          "percentError": 0.00008328,
+          "percentOfGenuineTotal": 0.00008328
+        }
+      },
+      "sourceIdentityError": 0,
+      "modelIdentityError": 0,
+      "componentTotalResidual": 0,
+      "status": "PASS"
+    },
+    {
+      "caseId": "70k_avf",
+      "age": 61,
+      "policyYear": 16,
+      "components": {
+        "GCV": {
+          "genuine": 241838,
+          "model": 241838,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "RB": {
+          "genuine": 40113,
+          "model": 40113,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "TD": {
+          "genuine": 362623,
+          "model": 362624,
+          "dollarError": 1,
+          "percentError": 0.00027577,
+          "percentOfGenuineTotal": 0.00015514
+        },
+        "total": {
+          "genuine": 644574,
+          "model": 644575,
+          "dollarError": 1,
+          "percentError": 0.00015514,
+          "percentOfGenuineTotal": 0.00015514
+        }
+      },
+      "sourceIdentityError": 0,
+      "modelIdentityError": 0,
+      "componentTotalResidual": 0,
+      "status": "PASS"
+    },
+    {
+      "caseId": "70k_avpu",
+      "age": 61,
+      "policyYear": 16,
+      "components": {
+        "GCV": {
+          "genuine": 241838,
+          "model": 241838,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "RB": {
+          "genuine": 33463,
+          "model": 33463,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "TD": {
+          "genuine": 359411,
+          "model": 359411,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "total": {
+          "genuine": 634711,
+          "model": 634712,
+          "dollarError": 1,
+          "percentError": 0.00015755,
+          "percentOfGenuineTotal": 0.00015755
+        }
+      },
+      "sourceIdentityError": 0,
+      "modelIdentityError": 0,
+      "componentTotalResidual": 0,
+      "status": "PASS"
+    },
+    {
+      "caseId": "70k_original",
+      "age": 61,
+      "policyYear": 16,
+      "components": {
+        "GCV": {
+          "genuine": 241838,
+          "model": 241838,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "RB": {
+          "genuine": 38296,
+          "model": 38296,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "TD": {
+          "genuine": 361746,
+          "model": 361746,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "total": {
+          "genuine": 641879,
+          "model": 641880,
+          "dollarError": 1,
+          "percentError": 0.00015579,
+          "percentOfGenuineTotal": 0.00015579
+        }
+      },
+      "sourceIdentityError": 0,
+      "modelIdentityError": 0,
+      "componentTotalResidual": 0,
+      "status": "PASS"
+    },
+    {
+      "caseId": "100k_original",
+      "age": 61,
+      "policyYear": 16,
+      "components": {
+        "GCV": {
+          "genuine": 345482,
+          "model": 345482,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "RB": {
+          "genuine": 60616,
+          "model": 60615,
+          "dollarError": -1,
+          "percentError": -0.00164973,
+          "percentOfGenuineTotal": -0.00010802
+        },
+        "TD": {
+          "genuine": 519633,
+          "model": 519633,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "total": {
+          "genuine": 925731,
+          "model": 925731,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        }
+      },
+      "sourceIdentityError": 0,
+      "modelIdentityError": 0,
+      "componentTotalResidual": 1,
+      "status": "PASS"
+    }
+  ],
+  "fiveRowComponentGate": "FAIL",
+  "fiveRowThreshold": "Every component and total <=0.10% of its genuine component value, or <=HKD1 displayed rounding; zero denominator judged by dollars.",
+  "fiveRows": [
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 56,
+      "policyYear": 11,
+      "components": {
+        "GCV": {
+          "genuine": 351874,
+          "model": 351874,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "RB": {
+          "genuine": 61482,
+          "model": 61481,
+          "dollarError": -1,
+          "percentError": -0.00162649,
+          "percentOfGenuineTotal": -0.00011654
+        },
+        "TD": {
+          "genuine": 444685,
+          "model": 445063,
+          "dollarError": 378,
+          "percentError": 0.08500399,
+          "percentOfGenuineTotal": 0.04405389
+        },
+        "total": {
+          "genuine": 858040,
+          "model": 858418,
+          "dollarError": 378,
+          "percentError": 0.04405389,
+          "percentOfGenuineTotal": 0.04405389
+        }
+      },
+      "basicAmount": {
+        "genuine": 1323829,
+        "model": 1323829,
+        "difference": 0
+      },
+      "iteration1TDComparison": {
+        "iteration1DollarError": -480,
+        "iteration3DollarError": 378,
+        "absoluteErrorImprovement": 102
+      },
+      "status": "PASS"
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 56,
+      "policyYear": 11,
+      "components": {
+        "GCV": {
+          "genuine": 351874,
+          "model": 351874,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "RB": {
+          "genuine": 52892,
+          "model": 52892,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "TD": {
+          "genuine": 441928,
+          "model": 442443,
+          "dollarError": 515,
+          "percentError": 0.11653482,
+          "percentOfGenuineTotal": 0.06082481
+        },
+        "total": {
+          "genuine": 846694,
+          "model": 847209,
+          "dollarError": 515,
+          "percentError": 0.06082481,
+          "percentOfGenuineTotal": 0.06082481
+        }
+      },
+      "basicAmount": {
+        "genuine": 1323829,
+        "model": 1323829,
+        "difference": 0
+      },
+      "iteration1TDComparison": {
+        "iteration1DollarError": 142,
+        "iteration3DollarError": 515,
+        "absoluteErrorImprovement": -373
+      },
+      "status": "FAIL"
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 62,
+      "policyYear": 17,
+      "components": {
+        "GCV": {
+          "genuine": 729520,
+          "model": 729520,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "RB": {
+          "genuine": 115740,
+          "model": 115741,
+          "dollarError": 1,
+          "percentError": 0.00086401,
+          "percentOfGenuineTotal": 0.00005049
+        },
+        "TD": {
+          "genuine": 1135445,
+          "model": 1136485,
+          "dollarError": 1040,
+          "percentError": 0.09159404,
+          "percentOfGenuineTotal": 0.05250656
+        },
+        "total": {
+          "genuine": 1980705,
+          "model": 1981746,
+          "dollarError": 1041,
+          "percentError": 0.05255704,
+          "percentOfGenuineTotal": 0.05255704
+        }
+      },
+      "basicAmount": {
+        "genuine": 2042901,
+        "model": 2042901,
+        "difference": 0
+      },
+      "iteration1TDComparison": {
+        "iteration1DollarError": -1329,
+        "iteration3DollarError": 1040,
+        "absoluteErrorImprovement": 289
+      },
+      "status": "PASS"
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 62,
+      "policyYear": 12,
+      "components": {
+        "GCV": {
+          "genuine": 370805,
+          "model": 370805,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "RB": {
+          "genuine": 42715,
+          "model": 42715,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "TD": {
+          "genuine": 475557,
+          "model": 476300,
+          "dollarError": 743,
+          "percentError": 0.15623784,
+          "percentOfGenuineTotal": 0.08356991
+        },
+        "total": {
+          "genuine": 889076,
+          "model": 889820,
+          "dollarError": 744,
+          "percentError": 0.08368238,
+          "percentOfGenuineTotal": 0.08368238
+        }
+      },
+      "basicAmount": {
+        "genuine": 1323829,
+        "model": 1323829,
+        "difference": 0
+      },
+      "iteration1TDComparison": {
+        "iteration1DollarError": 1097,
+        "iteration3DollarError": 743,
+        "absoluteErrorImprovement": 354
+      },
+      "status": "FAIL"
+    },
+    {
+      "caseId": "70k_original",
+      "age": 62,
+      "policyYear": 17,
+      "components": {
+        "GCV": {
+          "genuine": 253777,
+          "model": 253777,
+          "dollarError": 0,
+          "percentError": 0,
+          "percentOfGenuineTotal": 0
+        },
+        "RB": {
+          "genuine": 25170,
+          "model": 25169,
+          "dollarError": -1,
+          "percentError": -0.00397298,
+          "percentOfGenuineTotal": -0.00015015
+        },
+        "TD": {
+          "genuine": 387047,
+          "model": 387817,
+          "dollarError": 770,
+          "percentError": 0.19894225,
+          "percentOfGenuineTotal": 0.11561683
+        },
+        "total": {
+          "genuine": 665993,
+          "model": 666763,
+          "dollarError": 770,
+          "percentError": 0.11561683,
+          "percentOfGenuineTotal": 0.11561683
+        }
+      },
+      "basicAmount": {
+        "genuine": 710660,
+        "model": 710660,
+        "difference": 0
+      },
+      "iteration1TDComparison": {
+        "iteration1DollarError": 1300,
+        "iteration3DollarError": 770,
+        "absoluteErrorImprovement": 530
+      },
+      "status": "FAIL"
+    }
+  ],
+  "zeroWithdrawalPersistence": "PASS",
+  "pauseAccuracyBoundary": "Persistence-only structure; not a claim of full pause/resume numerical accuracy.",
+  "pauseChecks": [
+    {
+      "caseId": "45yrs_5pay_180k_56_60",
+      "sourceId": "ipos-3afcb35b16f2ab2f",
+      "checks": [
+        {
+          "age": 61,
+          "policyYear": 16,
+          "components": {
+            "GCV": {
+              "genuine": 623768,
+              "model": 623768,
+              "dollarError": 0,
+              "percentError": 0,
+              "percentOfGenuineTotal": 0
+            },
+            "RB": {
+              "genuine": 74421,
+              "model": 74421,
+              "dollarError": 0,
+              "percentError": 0,
+              "percentOfGenuineTotal": 0
+            },
+            "TD": {
+              "genuine": 921282,
+              "model": 928773,
+              "dollarError": 7491,
+              "percentError": 0.81310608,
+              "percentOfGenuineTotal": 0.46255874
+            },
+            "total": {
+              "genuine": 1619470,
+              "model": 1626962,
+              "dollarError": 7492,
+              "percentError": 0.46262049,
+              "percentOfGenuineTotal": 0.46262049
+            }
+          },
+          "basicPersists": true,
+          "rbCarryPersists": true,
+          "tdCarriedByAccrual": true,
+          "tdNotPristine": true,
+          "gcvIndependent": true
+        },
+        {
+          "age": 62,
+          "policyYear": 17,
+          "components": {
+            "GCV": {
+              "genuine": 654562,
+              "model": 654562,
+              "dollarError": 0,
+              "percentError": 0,
+              "percentOfGenuineTotal": 0
+            },
+            "RB": {
+              "genuine": 76978,
+              "model": 76977,
+              "dollarError": -1,
+              "percentError": -0.00129907,
+              "percentOfGenuineTotal": -0.0000576
+            },
+            "TD": {
+              "genuine": 1004645,
+              "model": 1015484,
+              "dollarError": 10839,
+              "percentError": 1.07888856,
+              "percentOfGenuineTotal": 0.62429983
+            },
+            "total": {
+              "genuine": 1736185,
+              "model": 1747023,
+              "dollarError": 10838,
+              "percentError": 0.62424223,
+              "percentOfGenuineTotal": 0.62424223
+            }
+          },
+          "basicPersists": true,
+          "rbCarryPersists": true,
+          "tdCarriedByAccrual": true,
+          "tdNotPristine": true,
+          "gcvIndependent": true
+        },
+        {
+          "age": 63,
+          "policyYear": 18,
+          "components": {
+            "GCV": {
+              "genuine": 687006,
+              "model": 687006,
+              "dollarError": 0,
+              "percentError": 0,
+              "percentOfGenuineTotal": 0
+            },
+            "RB": {
+              "genuine": 79597,
+              "model": 79597,
+              "dollarError": 0,
+              "percentError": 0,
+              "percentOfGenuineTotal": 0
+            },
+            "TD": {
+              "genuine": 1092089,
+              "model": 1106549,
+              "dollarError": 14460,
+              "percentError": 1.32406791,
+              "percentOfGenuineTotal": 0.77796644
+            },
+            "total": {
+              "genuine": 1858692,
+              "model": 1873152,
+              "dollarError": 14460,
+              "percentError": 0.77796644,
+              "percentOfGenuineTotal": 0.77796644
+            }
+          },
+          "basicPersists": true,
+          "rbCarryPersists": true,
+          "tdCarriedByAccrual": true,
+          "tdNotPristine": true,
+          "gcvIndependent": true
+        },
+        {
+          "age": 64,
+          "policyYear": 19,
+          "components": {
+            "GCV": {
+              "genuine": 721283,
+              "model": 721283,
+              "dollarError": 0,
+              "percentError": 0,
+              "percentOfGenuineTotal": 0
+            },
+            "RB": {
+              "genuine": 82280,
+              "model": 82280,
+              "dollarError": 0,
+              "percentError": 0,
+              "percentOfGenuineTotal": 0
+            },
+            "TD": {
+              "genuine": 1200877,
+              "model": 1219823,
+              "dollarError": 18946,
+              "percentError": 1.57768031,
+              "percentOfGenuineTotal": 0.94520165
+            },
+            "total": {
+              "genuine": 2004440,
+              "model": 2023386,
+              "dollarError": 18946,
+              "percentError": 0.94520165,
+              "percentOfGenuineTotal": 0.94520165
+            }
+          },
+          "basicPersists": true,
+          "rbCarryPersists": true,
+          "tdCarriedByAccrual": true,
+          "tdNotPristine": true,
+          "gcvIndependent": true
+        },
+        {
+          "age": 65,
+          "policyYear": 20,
+          "components": {
+            "GCV": {
+              "genuine": 759409,
+              "model": 759409,
+              "dollarError": 0,
+              "percentError": 0,
+              "percentOfGenuineTotal": 0
+            },
+            "RB": {
+              "genuine": 85029,
+              "model": 85029,
+              "dollarError": 0,
+              "percentError": 0,
+              "percentOfGenuineTotal": 0
+            },
+            "TD": {
+              "genuine": 1329190,
+              "model": 1353482,
+              "dollarError": 24292,
+              "percentError": 1.8275792,
+              "percentOfGenuineTotal": 1.11757802
+            },
+            "total": {
+              "genuine": 2173629,
+              "model": 2197920,
+              "dollarError": 24291,
+              "percentError": 1.11753202,
+              "percentOfGenuineTotal": 1.11753202
+            }
+          },
+          "basicPersists": true,
+          "rbCarryPersists": true,
+          "tdCarriedByAccrual": true,
+          "tdNotPristine": true,
+          "gcvIndependent": true
+        }
+      ],
+      "status": "PASS"
+    },
+    {
+      "caseId": "45yrs_5pay_180k_56_60",
+      "sourceId": "ipos-3afcb35b16f2ab2f",
+      "checks": [
+        {
+          "age": 71,
+          "policyYear": 26,
+          "components": {
+            "GCV": {
+              "genuine": 893218,
+              "model": 893218,
+              "dollarError": 0,
+              "percentError": 0,
+              "percentOfGenuineTotal": 0
+            },
+            "RB": {
+              "genuine": 29822,
+              "model": 29823,
+              "dollarError": 1,
+              "percentError": 0.00335323,
+              "percentOfGenuineTotal": 0.0000306
+            },
+            "TD": {
+              "genuine": 2345285,
+              "model": 2447661,
+              "dollarError": 102376,
+              "percentError": 4.36518376,
+              "percentOfGenuineTotal": 3.13236903
+            },
+            "total": {
+              "genuine": 3268325,
+              "model": 3370702,
+              "dollarError": 102377,
+              "percentError": 3.13239962,
+              "percentOfGenuineTotal": 3.13239962
+            }
+          },
+          "basicPersists": true,
+          "rbCarryPersists": true,
+          "tdCarriedByAccrual": true,
+          "tdNotPristine": true,
+          "gcvIndependent": true
+        },
+        {
+          "age": 72,
+          "policyYear": 27,
+          "components": {
+            "GCV": {
+              "genuine": 894134,
+              "model": 894134,
+              "dollarError": 0,
+              "percentError": 0,
+              "percentOfGenuineTotal": 0
+            },
+            "RB": {
+              "genuine": 31286,
+              "model": 31287,
+              "dollarError": 1,
+              "percentError": 0.00319632,
+              "percentOfGenuineTotal": 0.00002886
+            },
+            "TD": {
+              "genuine": 2539149,
+              "model": 2661910,
+              "dollarError": 122761,
+              "percentError": 4.83473006,
+              "percentOfGenuineTotal": 3.54332675
+            },
+            "total": {
+              "genuine": 3464569,
+              "model": 3587331,
+              "dollarError": 122762,
+              "percentError": 3.54335561,
+              "percentOfGenuineTotal": 3.54335561
+            }
+          },
+          "basicPersists": true,
+          "rbCarryPersists": true,
+          "tdCarriedByAccrual": true,
+          "tdNotPristine": true,
+          "gcvIndependent": true
+        },
+        {
+          "age": 73,
+          "policyYear": 28,
+          "components": {
+            "GCV": {
+              "genuine": 894868,
+              "model": 894868,
+              "dollarError": 0,
+              "percentError": 0,
+              "percentOfGenuineTotal": 0
+            },
+            "RB": {
+              "genuine": 32785,
+              "model": 32786,
+              "dollarError": 1,
+              "percentError": 0.00305018,
+              "percentOfGenuineTotal": 0.00002722
+            },
+            "TD": {
+              "genuine": 2746427,
+              "model": 2891558,
+              "dollarError": 145131,
+              "percentError": 5.28435673,
+              "percentOfGenuineTotal": 3.95013173
+            },
+            "total": {
+              "genuine": 3674080,
+              "model": 3819212,
+              "dollarError": 145132,
+              "percentError": 3.95015895,
+              "percentOfGenuineTotal": 3.95015895
+            }
+          },
+          "basicPersists": true,
+          "rbCarryPersists": true,
+          "tdCarriedByAccrual": true,
+          "tdNotPristine": true,
+          "gcvIndependent": true
+        },
+        {
+          "age": 74,
+          "policyYear": 29,
+          "components": {
+            "GCV": {
+              "genuine": 895784,
+              "model": 895784,
+              "dollarError": 0,
+              "percentError": 0,
+              "percentOfGenuineTotal": 0
+            },
+            "RB": {
+              "genuine": 34322,
+              "model": 34324,
+              "dollarError": 2,
+              "percentError": 0.00582717,
+              "percentOfGenuineTotal": 0.00005134
+            },
+            "TD": {
+              "genuine": 2965297,
+              "model": 3134733,
+              "dollarError": 169436,
+              "percentError": 5.7139639,
+              "percentOfGenuineTotal": 4.34963982
+            },
+            "total": {
+              "genuine": 3895403,
+              "model": 4064841,
+              "dollarError": 169438,
+              "percentError": 4.34969116,
+              "percentOfGenuineTotal": 4.34969116
+            }
+          },
+          "basicPersists": true,
+          "rbCarryPersists": true,
+          "tdCarriedByAccrual": true,
+          "tdNotPristine": true,
+          "gcvIndependent": true
+        },
+        {
+          "age": 75,
+          "policyYear": 30,
+          "components": {
+            "GCV": {
+              "genuine": 896884,
+              "model": 896884,
+              "dollarError": 0,
+              "percentError": 0,
+              "percentOfGenuineTotal": 0
+            },
+            "RB": {
+              "genuine": 35896,
+              "model": 35897,
+              "dollarError": 1,
+              "percentError": 0.00278583,
+              "percentOfGenuineTotal": 0.00002421
+            },
+            "TD": {
+              "genuine": 3197671,
+              "model": 3393616,
+              "dollarError": 195945,
+              "percentError": 6.1277411,
+              "percentOfGenuineTotal": 4.7439141
+            },
+            "total": {
+              "genuine": 4130450,
+              "model": 4326397,
+              "dollarError": 195947,
+              "percentError": 4.74396252,
+              "percentOfGenuineTotal": 4.74396252
+            }
+          },
+          "basicPersists": true,
+          "rbCarryPersists": true,
+          "tdCarriedByAccrual": true,
+          "tdNotPristine": true,
+          "gcvIndependent": true
+        }
+      ],
+      "status": "PASS"
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_56_60",
+      "sourceId": "ipos-cf93323294f22530",
+      "checks": [
+        {
+          "age": 61,
+          "policyYear": 16,
+          "components": {
+            "GCV": {
+              "genuine": 450499,
+              "model": 450499,
+              "dollarError": 0,
+              "percentError": 0,
+              "percentOfGenuineTotal": 0
+            },
+            "RB": {
+              "genuine": 37108,
+              "model": 37108,
+              "dollarError": 0,
+              "percentError": 0,
+              "percentOfGenuineTotal": 0
+            },
+            "TD": {
+              "genuine": 657333,
+              "model": 664824,
+              "dollarError": 7491,
+              "percentError": 1.13960504,
+              "percentOfGenuineTotal": 0.65427009
+            },
+            "total": {
+              "genuine": 1144940,
+              "model": 1152431,
+              "dollarError": 7491,
+              "percentError": 0.65427009,
+              "percentOfGenuineTotal": 0.65427009
+            }
+          },
+          "basicPersists": true,
+          "rbCarryPersists": true,
+          "tdCarriedByAccrual": true,
+          "tdNotPristine": true,
+          "gcvIndependent": true
+        },
+        {
+          "age": 62,
+          "policyYear": 17,
+          "components": {
+            "GCV": {
+              "genuine": 472739,
+              "model": 472739,
+              "dollarError": 0,
+              "percentError": 0,
+              "percentOfGenuineTotal": 0
+            },
+            "RB": {
+              "genuine": 38547,
+              "model": 38547,
+              "dollarError": 0,
+              "percentError": 0,
+              "percentOfGenuineTotal": 0
+            },
+            "TD": {
+              "genuine": 716610,
+              "model": 727449,
+              "dollarError": 10839,
+              "percentError": 1.5125382,
+              "percentOfGenuineTotal": 0.88272948
+            },
+            "total": {
+              "genuine": 1227896,
+              "model": 1238735,
+              "dollarError": 10839,
+              "percentError": 0.88272948,
+              "percentOfGenuineTotal": 0.88272948
+            }
+          },
+          "basicPersists": true,
+          "rbCarryPersists": true,
+          "tdCarriedByAccrual": true,
+          "tdNotPristine": true,
+          "gcvIndependent": true
+        },
+        {
+          "age": 63,
+          "policyYear": 18,
+          "components": {
+            "GCV": {
+              "genuine": 496171,
+              "model": 496171,
+              "dollarError": 0,
+              "percentError": 0,
+              "percentOfGenuineTotal": 0
+            },
+            "RB": {
+              "genuine": 40021,
+              "model": 40021,
+              "dollarError": 0,
+              "percentError": 0,
+              "percentOfGenuineTotal": 0
+            },
+            "TD": {
+              "genuine": 778758,
+              "model": 793218,
+              "dollarError": 14460,
+              "percentError": 1.85680276,
+              "percentOfGenuineTotal": 1.09966158
+            },
+            "total": {
+              "genuine": 1314950,
+              "model": 1329410,
+              "dollarError": 14460,
+              "percentError": 1.09966158,
+              "percentOfGenuineTotal": 1.09966158
+            }
+          },
+          "basicPersists": true,
+          "rbCarryPersists": true,
+          "tdCarriedByAccrual": true,
+          "tdNotPristine": true,
+          "gcvIndependent": true
+        },
+        {
+          "age": 64,
+          "policyYear": 19,
+          "components": {
+            "GCV": {
+              "genuine": 520927,
+              "model": 520927,
+              "dollarError": 0,
+              "percentError": 0,
+              "percentOfGenuineTotal": 0
+            },
+            "RB": {
+              "genuine": 41531,
+              "model": 41531,
+              "dollarError": 0,
+              "percentError": 0,
+              "percentOfGenuineTotal": 0
+            },
+            "TD": {
+              "genuine": 856081,
+              "model": 875027,
+              "dollarError": 18946,
+              "percentError": 2.21310834,
+              "percentOfGenuineTotal": 1.33560046
+            },
+            "total": {
+              "genuine": 1418538,
+              "model": 1437485,
+              "dollarError": 18947,
+              "percentError": 1.33567095,
+              "percentOfGenuineTotal": 1.33567095
+            }
+          },
+          "basicPersists": true,
+          "rbCarryPersists": true,
+          "tdCarriedByAccrual": true,
+          "tdNotPristine": true,
+          "gcvIndependent": true
+        },
+        {
+          "age": 65,
+          "policyYear": 20,
+          "components": {
+            "GCV": {
+              "genuine": 548462,
+              "model": 548462,
+              "dollarError": 0,
+              "percentError": 0,
+              "percentOfGenuineTotal": 0
+            },
+            "RB": {
+              "genuine": 43078,
+              "model": 43078,
+              "dollarError": 0,
+              "percentError": 0,
+              "percentOfGenuineTotal": 0
+            },
+            "TD": {
+              "genuine": 947267,
+              "model": 971558,
+              "dollarError": 24291,
+              "percentError": 2.56432453,
+              "percentOfGenuineTotal": 1.57856053
+            },
+            "total": {
+              "genuine": 1538807,
+              "model": 1563098,
+              "dollarError": 24291,
+              "percentError": 1.57856053,
+              "percentOfGenuineTotal": 1.57856053
+            }
+          },
+          "basicPersists": true,
+          "rbCarryPersists": true,
+          "tdCarriedByAccrual": true,
+          "tdNotPristine": true,
+          "gcvIndependent": true
+        }
+      ],
+      "status": "PASS"
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_56_60",
+      "sourceId": "ipos-cf93323294f22530",
+      "checks": [
+        {
+          "age": 71,
+          "policyYear": 26,
+          "components": {
+            "GCV": {
+              "genuine": 632260,
+              "model": 632285,
+              "dollarError": 25,
+              "percentError": 0.00395407,
+              "percentOfGenuineTotal": 0.0011028
+            },
+            "RB": {
+              "genuine": 519,
+              "model": 520,
+              "dollarError": 1,
+              "percentError": 0.19267823,
+              "percentOfGenuineTotal": 0.00004411
+            },
+            "TD": {
+              "genuine": 1634174,
+              "model": 1731790,
+              "dollarError": 97616,
+              "percentError": 5.97341532,
+              "percentOfGenuineTotal": 4.30604428
+            },
+            "total": {
+              "genuine": 2266953,
+              "model": 2364595,
+              "dollarError": 97642,
+              "percentError": 4.30719119,
+              "percentOfGenuineTotal": 4.30719119
+            }
+          },
+          "basicPersists": true,
+          "rbCarryPersists": true,
+          "tdCarriedByAccrual": true,
+          "tdNotPristine": true,
+          "gcvIndependent": true
+        },
+        {
+          "age": 72,
+          "policyYear": 27,
+          "components": {
+            "GCV": {
+              "genuine": 632908,
+              "model": 632934,
+              "dollarError": 26,
+              "percentError": 0.00410802,
+              "percentOfGenuineTotal": 0.00108218
+            },
+            "RB": {
+              "genuine": 1051,
+              "model": 1051,
+              "dollarError": 0,
+              "percentError": 0,
+              "percentOfGenuineTotal": 0
+            },
+            "TD": {
+              "genuine": 1768592,
+              "model": 1883451,
+              "dollarError": 114859,
+              "percentError": 6.49437519,
+              "percentOfGenuineTotal": 4.78071017
+            },
+            "total": {
+              "genuine": 2402551,
+              "model": 2517436,
+              "dollarError": 114885,
+              "percentError": 4.78179235,
+              "percentOfGenuineTotal": 4.78179235
+            }
+          },
+          "basicPersists": true,
+          "rbCarryPersists": true,
+          "tdCarriedByAccrual": true,
+          "tdNotPristine": true,
+          "gcvIndependent": true
+        },
+        {
+          "age": 73,
+          "policyYear": 28,
+          "components": {
+            "GCV": {
+              "genuine": 633427,
+              "model": 633453,
+              "dollarError": 26,
+              "percentError": 0.00410466,
+              "percentOfGenuineTotal": 0.00102071
+            },
+            "RB": {
+              "genuine": 1595,
+              "model": 1596,
+              "dollarError": 1,
+              "percentError": 0.06269592,
+              "percentOfGenuineTotal": 0.00003926
+            },
+            "TD": {
+              "genuine": 1912232,
+              "model": 2046013,
+              "dollarError": 133781,
+              "percentError": 6.99606533,
+              "percentOfGenuineTotal": 5.25196938
+            },
+            "total": {
+              "genuine": 2547254,
+              "model": 2681062,
+              "dollarError": 133808,
+              "percentError": 5.25302934,
+              "percentOfGenuineTotal": 5.25302934
+            }
+          },
+          "basicPersists": true,
+          "rbCarryPersists": true,
+          "tdCarriedByAccrual": true,
+          "tdNotPristine": true,
+          "gcvIndependent": true
+        },
+        {
+          "age": 74,
+          "policyYear": 29,
+          "components": {
+            "GCV": {
+              "genuine": 634076,
+              "model": 634102,
+              "dollarError": 26,
+              "percentError": 0.00410045,
+              "percentOfGenuineTotal": 0.00096295
+            },
+            "RB": {
+              "genuine": 2154,
+              "model": 2155,
+              "dollarError": 1,
+              "percentError": 0.04642526,
+              "percentOfGenuineTotal": 0.00003704
+            },
+            "TD": {
+              "genuine": 2063810,
+              "model": 2218149,
+              "dollarError": 154339,
+              "percentError": 7.47835314,
+              "percentOfGenuineTotal": 5.71617669
+            },
+            "total": {
+              "genuine": 2700039,
+              "model": 2854405,
+              "dollarError": 154366,
+              "percentError": 5.71717668,
+              "percentOfGenuineTotal": 5.71717668
+            }
+          },
+          "basicPersists": true,
+          "rbCarryPersists": true,
+          "tdCarriedByAccrual": true,
+          "tdNotPristine": true,
+          "gcvIndependent": true
+        },
+        {
+          "age": 75,
+          "policyYear": 30,
+          "components": {
+            "GCV": {
+              "genuine": 634854,
+              "model": 634881,
+              "dollarError": 27,
+              "percentError": 0.00425295,
+              "percentOfGenuineTotal": 0.00094332
+            },
+            "RB": {
+              "genuine": 2725,
+              "model": 2726,
+              "dollarError": 1,
+              "percentError": 0.03669725,
+              "percentOfGenuineTotal": 0.00003494
+            },
+            "TD": {
+              "genuine": 2224642,
+              "model": 2401406,
+              "dollarError": 176764,
+              "percentError": 7.9457279,
+              "percentOfGenuineTotal": 6.17576135
+            },
+            "total": {
+              "genuine": 2862222,
+              "model": 3039013,
+              "dollarError": 176791,
+              "percentError": 6.17670467,
+              "percentOfGenuineTotal": 6.17670467
+            }
+          },
+          "basicPersists": true,
+          "rbCarryPersists": true,
+          "tdCarriedByAccrual": true,
+          "tdNotPristine": true,
+          "gcvIndependent": true
+        }
+      ],
+      "status": "PASS"
+    },
+    {
+      "caseId": "40k_base",
+      "sourceId": "ipos-500fbc7cf3a698d8",
+      "checks": [
+        {
+          "age": 79,
+          "policyYear": 39,
+          "components": {
+            "GCV": {
+              "genuine": 76919,
+              "model": 77166,
+              "dollarError": 247,
+              "percentError": 0.32111702,
+              "percentOfGenuineTotal": 0.04266868
+            },
+            "RB": {
+              "genuine": 62,
+              "model": 64,
+              "dollarError": 2,
+              "percentError": 3.22580645,
+              "percentOfGenuineTotal": 0.0003455
+            },
+            "TD": {
+              "genuine": 501898,
+              "model": 579748,
+              "dollarError": 77850,
+              "percentError": 15.51111979,
+              "percentOfGenuineTotal": 13.44840632
+            },
+            "total": {
+              "genuine": 578879,
+              "model": 656979,
+              "dollarError": 78100,
+              "percentError": 13.49159323,
+              "percentOfGenuineTotal": 13.49159323
+            }
+          },
+          "basicPersists": true,
+          "rbCarryPersists": true,
+          "tdCarriedByAccrual": true,
+          "tdNotPristine": true,
+          "gcvIndependent": true
+        },
+        {
+          "age": 80,
+          "policyYear": 40,
+          "components": {
+            "GCV": {
+              "genuine": 77058,
+              "model": 77306,
+              "dollarError": 248,
+              "percentError": 0.3218355,
+              "percentOfGenuineTotal": 0.04036918
+            },
+            "RB": {
+              "genuine": 759,
+              "model": 330,
+              "dollarError": -429,
+              "percentError": -56.52173913,
+              "percentOfGenuineTotal": -0.06983217
+            },
+            "TD": {
+              "genuine": 536513,
+              "model": 618577,
+              "dollarError": 82064,
+              "percentError": 15.2958083,
+              "percentOfGenuineTotal": 13.35829277
+            },
+            "total": {
+              "genuine": 614330,
+              "model": 696213,
+              "dollarError": 81883,
+              "percentError": 13.32882978,
+              "percentOfGenuineTotal": 13.32882978
+            }
+          },
+          "basicPersists": true,
+          "rbCarryPersists": true,
+          "tdCarriedByAccrual": true,
+          "tdNotPristine": true,
+          "gcvIndependent": true
+        },
+        {
+          "age": 81,
+          "policyYear": 41,
+          "components": {
+            "GCV": {
+              "genuine": 77259,
+              "model": 77508,
+              "dollarError": 249,
+              "percentError": 0.32229255,
+              "percentOfGenuineTotal": 0.03820724
+            },
+            "RB": {
+              "genuine": 1459,
+              "model": 586,
+              "dollarError": -873,
+              "percentError": -59.83550377,
+              "percentOfGenuineTotal": -0.13395549
+            },
+            "TD": {
+              "genuine": 572991,
+              "model": 659726,
+              "dollarError": 86735,
+              "percentError": 15.13723601,
+              "percentOfGenuineTotal": 13.30885411
+            },
+            "total": {
+              "genuine": 651709,
+              "model": 737820,
+              "dollarError": 86111,
+              "percentError": 13.21310585,
+              "percentOfGenuineTotal": 13.21310585
+            }
+          },
+          "basicPersists": true,
+          "rbCarryPersists": true,
+          "tdCarriedByAccrual": true,
+          "tdNotPristine": true,
+          "gcvIndependent": true
+        },
+        {
+          "age": 82,
+          "policyYear": 42,
+          "components": {
+            "GCV": {
+              "genuine": 77445,
+              "model": 77694,
+              "dollarError": 249,
+              "percentError": 0.3215185,
+              "percentOfGenuineTotal": 0.03601211
+            },
+            "RB": {
+              "genuine": 2162,
+              "model": 832,
+              "dollarError": -1330,
+              "percentError": -61.51711378,
+              "percentOfGenuineTotal": -0.19235386
+            },
+            "TD": {
+              "genuine": 611827,
+              "model": 703416,
+              "dollarError": 91589,
+              "percentError": 14.96975452,
+              "percentOfGenuineTotal": 13.24623898
+            },
+            "total": {
+              "genuine": 691434,
+              "model": 781943,
+              "dollarError": 90509,
+              "percentError": 13.09004186,
+              "percentOfGenuineTotal": 13.09004186
+            }
+          },
+          "basicPersists": true,
+          "rbCarryPersists": true,
+          "tdCarriedByAccrual": true,
+          "tdNotPristine": true,
+          "gcvIndependent": true
+        },
+        {
+          "age": 83,
+          "policyYear": 43,
+          "components": {
+            "GCV": {
+              "genuine": 77569,
+              "model": 77818,
+              "dollarError": 249,
+              "percentError": 0.32100453,
+              "percentOfGenuineTotal": 0.03394739
+            },
+            "RB": {
+              "genuine": 2868,
+              "model": 1069,
+              "dollarError": -1799,
+              "percentError": -62.72663877,
+              "percentOfGenuineTotal": -0.24526645
+            },
+            "TD": {
+              "genuine": 653050,
+              "model": 749846,
+              "dollarError": 96796,
+              "percentError": 14.82214226,
+              "percentOfGenuineTotal": 13.19667125
+            },
+            "total": {
+              "genuine": 733488,
+              "model": 828733,
+              "dollarError": 95245,
+              "percentError": 12.98521585,
+              "percentOfGenuineTotal": 12.98521585
+            }
+          },
+          "basicPersists": true,
+          "rbCarryPersists": true,
+          "tdCarriedByAccrual": true,
+          "tdNotPristine": true,
+          "gcvIndependent": true
+        },
+        {
+          "age": 84,
+          "policyYear": 44,
+          "components": {
+            "GCV": {
+              "genuine": 77693,
+              "model": 77942,
+              "dollarError": 249,
+              "percentError": 0.32049219,
+              "percentOfGenuineTotal": 0.03200021
+            },
+            "RB": {
+              "genuine": 3578,
+              "model": 1294,
+              "dollarError": -2284,
+              "percentError": -63.83454444,
+              "percentOfGenuineTotal": -0.29352799
+            },
+            "TD": {
+              "genuine": 696850,
+              "model": 799113,
+              "dollarError": 102263,
+              "percentError": 14.67503767,
+              "percentOfGenuineTotal": 13.14231738
+            },
+            "total": {
+              "genuine": 778120,
+              "model": 878350,
+              "dollarError": 100230,
+              "percentError": 12.88104663,
+              "percentOfGenuineTotal": 12.88104663
+            }
+          },
+          "basicPersists": true,
+          "rbCarryPersists": true,
+          "tdCarriedByAccrual": true,
+          "tdNotPristine": true,
+          "gcvIndependent": true
+        }
+      ],
+      "status": "PASS"
+    },
+    {
+      "caseId": "40k_base",
+      "sourceId": "ipos-500fbc7cf3a698d8",
+      "checks": [
+        {
+          "age": 86,
+          "policyYear": 46,
+          "components": {
+            "GCV": {
+              "genuine": 78064,
+              "model": 78315,
+              "dollarError": 251,
+              "percentError": 0.32153105,
+              "percentOfGenuineTotal": 0.02866819
+            },
+            "RB": {
+              "genuine": 5006,
+              "model": 1714,
+              "dollarError": -3292,
+              "percentError": -65.7610867,
+              "percentOfGenuineTotal": -0.37599868
+            },
+            "TD": {
+              "genuine": 792465,
+              "model": 906730,
+              "dollarError": 114265,
+              "percentError": 14.41893333,
+              "percentOfGenuineTotal": 13.05087746
+            },
+            "total": {
+              "genuine": 875535,
+              "model": 986759,
+              "dollarError": 111224,
+              "percentError": 12.70354697,
+              "percentOfGenuineTotal": 12.70354697
+            }
+          },
+          "basicPersists": true,
+          "rbCarryPersists": true,
+          "tdCarriedByAccrual": true,
+          "tdNotPristine": true,
+          "gcvIndependent": true
+        },
+        {
+          "age": 87,
+          "policyYear": 47,
+          "components": {
+            "GCV": {
+              "genuine": 78265,
+              "model": 78517,
+              "dollarError": 252,
+              "percentError": 0.32198301,
+              "percentOfGenuineTotal": 0.02713587
+            },
+            "RB": {
+              "genuine": 5725,
+              "model": 1907,
+              "dollarError": -3818,
+              "percentError": -66.68995633,
+              "percentOfGenuineTotal": -0.41113002
+            },
+            "TD": {
+              "genuine": 844669,
+              "model": 965498,
+              "dollarError": 120829,
+              "percentError": 14.3048934,
+              "percentOfGenuineTotal": 13.01111279
+            },
+            "total": {
+              "genuine": 928660,
+              "model": 1045922,
+              "dollarError": 117262,
+              "percentError": 12.62701096,
+              "percentOfGenuineTotal": 12.62701096
+            }
+          },
+          "basicPersists": true,
+          "rbCarryPersists": true,
+          "tdCarriedByAccrual": true,
+          "tdNotPristine": true,
+          "gcvIndependent": true
+        },
+        {
+          "age": 88,
+          "policyYear": 48,
+          "components": {
+            "GCV": {
+              "genuine": 78343,
+              "model": 78595,
+              "dollarError": 252,
+              "percentError": 0.32166243,
+              "percentOfGenuineTotal": 0.02558742
+            },
+            "RB": {
+              "genuine": 6448,
+              "model": 2088,
+              "dollarError": -4360,
+              "percentError": -67.617866,
+              "percentOfGenuineTotal": -0.44270297
+            },
+            "TD": {
+              "genuine": 900069,
+              "model": 1027975,
+              "dollarError": 127906,
+              "percentError": 14.21068829,
+              "percentOfGenuineTotal": 12.9872398
+            },
+            "total": {
+              "genuine": 984859,
+              "model": 1108657,
+              "dollarError": 123798,
+              "percentError": 12.57012425,
+              "percentOfGenuineTotal": 12.57012425
+            }
+          },
+          "basicPersists": true,
+          "rbCarryPersists": true,
+          "tdCarriedByAccrual": true,
+          "tdNotPristine": true,
+          "gcvIndependent": true
+        },
+        {
+          "age": 89,
+          "policyYear": 49,
+          "components": {
+            "GCV": {
+              "genuine": 78467,
+              "model": 78719,
+              "dollarError": 252,
+              "percentError": 0.32115412,
+              "percentOfGenuineTotal": 0.02412626
+            },
+            "RB": {
+              "genuine": 7173,
+              "model": 2257,
+              "dollarError": -4916,
+              "percentError": -68.53478321,
+              "percentOfGenuineTotal": -0.47065356
+            },
+            "TD": {
+              "genuine": 958865,
+              "model": 1094204,
+              "dollarError": 135339,
+              "percentError": 14.11449996,
+              "percentOfGenuineTotal": 12.95723812
+            },
+            "total": {
+              "genuine": 1044505,
+              "model": 1175180,
+              "dollarError": 130675,
+              "percentError": 12.51071082,
+              "percentOfGenuineTotal": 12.51071082
+            }
+          },
+          "basicPersists": true,
+          "rbCarryPersists": true,
+          "tdCarriedByAccrual": true,
+          "tdNotPristine": true,
+          "gcvIndependent": true
+        }
+      ],
+      "status": "PASS"
+    },
+    {
+      "caseId": "40k_base",
+      "sourceId": "ipos-500fbc7cf3a698d8",
+      "checks": [
+        {
+          "age": 91,
+          "policyYear": 51,
+          "components": {
+            "GCV": {
+              "genuine": 78838,
+              "model": 79092,
+              "dollarError": 254,
+              "percentError": 0.32217966,
+              "percentOfGenuineTotal": 0.02161805
+            },
+            "RB": {
+              "genuine": 8634,
+              "model": 2557,
+              "dollarError": -6077,
+              "percentError": -70.38452629,
+              "percentOfGenuineTotal": -0.51721614
+            },
+            "TD": {
+              "genuine": 1087472,
+              "model": 1238860,
+              "dollarError": 151388,
+              "percentError": 13.92109406,
+              "percentOfGenuineTotal": 12.88469919
+            },
+            "total": {
+              "genuine": 1174944,
+              "model": 1320509,
+              "dollarError": 145565,
+              "percentError": 12.3891011,
+              "percentOfGenuineTotal": 12.3891011
+            }
+          },
+          "basicPersists": true,
+          "rbCarryPersists": true,
+          "tdCarriedByAccrual": true,
+          "tdNotPristine": true,
+          "gcvIndependent": true
+        },
+        {
+          "age": 92,
+          "policyYear": 52,
+          "components": {
+            "GCV": {
+              "genuine": 79039,
+              "model": 79294,
+              "dollarError": 255,
+              "percentError": 0.32262554,
+              "percentOfGenuineTotal": 0.02046633
+            },
+            "RB": {
+              "genuine": 9370,
+              "model": 2688,
+              "dollarError": -6682,
+              "percentError": -71.31270011,
+              "percentOfGenuineTotal": -0.53629803
+            },
+            "TD": {
+              "genuine": 1157540,
+              "model": 1317833,
+              "dollarError": 160293,
+              "percentError": 13.8477288,
+              "percentOfGenuineTotal": 12.86513332
+            },
+            "total": {
+              "genuine": 1245949,
+              "model": 1399815,
+              "dollarError": 153866,
+              "percentError": 12.34930162,
+              "percentOfGenuineTotal": 12.34930162
+            }
+          },
+          "basicPersists": true,
+          "rbCarryPersists": true,
+          "tdCarriedByAccrual": true,
+          "tdNotPristine": true,
+          "gcvIndependent": true
+        },
+        {
+          "age": 93,
+          "policyYear": 53,
+          "components": {
+            "GCV": {
+              "genuine": 79148,
+              "model": 79402,
+              "dollarError": 254,
+              "percentError": 0.32091777,
+              "percentOfGenuineTotal": 0.019224
+            },
+            "RB": {
+              "genuine": 10108,
+              "model": 2805,
+              "dollarError": -7303,
+              "percentError": -72.24970321,
+              "percentOfGenuineTotal": -0.55272788
+            },
+            "TD": {
+              "genuine": 1232009,
+              "model": 1401697,
+              "dollarError": 169688,
+              "percentError": 13.77327601,
+              "percentOfGenuineTotal": 12.84284379
+            },
+            "total": {
+              "genuine": 1321265,
+              "model": 1483904,
+              "dollarError": 162639,
+              "percentError": 12.30933991,
+              "percentOfGenuineTotal": 12.30933991
+            }
+          },
+          "basicPersists": true,
+          "rbCarryPersists": true,
+          "tdCarriedByAccrual": true,
+          "tdNotPristine": true,
+          "gcvIndependent": true
+        },
+        {
+          "age": 94,
+          "policyYear": 54,
+          "components": {
+            "GCV": {
+              "genuine": 79287,
+              "model": 79542,
+              "dollarError": 255,
+              "percentError": 0.32161641,
+              "percentOfGenuineTotal": 0.01820034
+            },
+            "RB": {
+              "genuine": 10850,
+              "model": 2908,
+              "dollarError": -7942,
+              "percentError": -73.19815668,
+              "percentOfGenuineTotal": -0.56685126
+            },
+            "TD": {
+              "genuine": 1310935,
+              "model": 1490614,
+              "dollarError": 179679,
+              "percentError": 13.70617155,
+              "percentOfGenuineTotal": 12.82438531
+            },
+            "total": {
+              "genuine": 1401073,
+              "model": 1573064,
+              "dollarError": 171991,
+              "percentError": 12.27566301,
+              "percentOfGenuineTotal": 12.27566301
+            }
+          },
+          "basicPersists": true,
+          "rbCarryPersists": true,
+          "tdCarriedByAccrual": true,
+          "tdNotPristine": true,
+          "gcvIndependent": true
+        },
+        {
+          "age": 95,
+          "policyYear": 55,
+          "components": {
+            "GCV": {
+              "genuine": 79473,
+              "model": 79728,
+              "dollarError": 255,
+              "percentError": 0.32086369,
+              "percentOfGenuineTotal": 0.01716276
+            },
+            "RB": {
+              "genuine": 11596,
+              "model": 2996,
+              "dollarError": -8600,
+              "percentError": -74.16350466,
+              "percentOfGenuineTotal": -0.5788225
+            },
+            "TD": {
+              "genuine": 1394706,
+              "model": 1584876,
+              "dollarError": 190170,
+              "percentError": 13.63513171,
+              "percentOfGenuineTotal": 12.79938079
+            },
+            "total": {
+              "genuine": 1485775,
+              "model": 1667601,
+              "dollarError": 181826,
+              "percentError": 12.23778836,
+              "percentOfGenuineTotal": 12.23778836
+            }
+          },
+          "basicPersists": true,
+          "rbCarryPersists": true,
+          "tdCarriedByAccrual": true,
+          "tdNotPristine": true,
+          "gcvIndependent": true
+        },
+        {
+          "age": 96,
+          "policyYear": 56,
+          "components": {
+            "GCV": {
+              "genuine": 79674,
+              "model": 79728,
+              "dollarError": 54,
+              "percentError": 0.06777619,
+              "percentOfGenuineTotal": 0.00342733
+            },
+            "RB": {
+              "genuine": 12345,
+              "model": 2214,
+              "dollarError": -10131,
+              "percentError": -82.06561361,
+              "percentOfGenuineTotal": -0.6430058
+            },
+            "TD": {
+              "genuine": 1483550,
+              "model": 1584876,
+              "dollarError": 101326,
+              "percentError": 6.82996866,
+              "percentOfGenuineTotal": 6.43107347
+            },
+            "total": {
+              "genuine": 1575569,
+              "model": 1666818,
+              "dollarError": 91249,
+              "percentError": 5.79149501,
+              "percentOfGenuineTotal": 5.79149501
+            }
+          },
+          "basicPersists": true,
+          "rbCarryPersists": true,
+          "tdCarriedByAccrual": true,
+          "tdNotPristine": true,
+          "gcvIndependent": true
+        },
+        {
+          "age": 97,
+          "policyYear": 57,
+          "components": {
+            "GCV": {
+              "genuine": 79860,
+              "model": 79728,
+              "dollarError": -132,
+              "percentError": -0.16528926,
+              "percentOfGenuineTotal": -0.00790109
+            },
+            "RB": {
+              "genuine": 13097,
+              "model": 1412,
+              "dollarError": -11685,
+              "percentError": -89.21890509,
+              "percentOfGenuineTotal": -0.69942585
+            },
+            "TD": {
+              "genuine": 1577699,
+              "model": 1584876,
+              "dollarError": 7177,
+              "percentError": 0.45490299,
+              "percentOfGenuineTotal": 0.42959173
+            },
+            "total": {
+              "genuine": 1670656,
+              "model": 1666017,
+              "dollarError": -4639,
+              "percentError": -0.27767536,
+              "percentOfGenuineTotal": -0.27767536
+            }
+          },
+          "basicPersists": true,
+          "rbCarryPersists": true,
+          "tdCarriedByAccrual": true,
+          "tdNotPristine": true,
+          "gcvIndependent": true
+        },
+        {
+          "age": 98,
+          "policyYear": 58,
+          "components": {
+            "GCV": {
+              "genuine": 79968,
+              "model": 79728,
+              "dollarError": -240,
+              "percentError": -0.30012005,
+              "percentOfGenuineTotal": -0.01354879
+            },
+            "RB": {
+              "genuine": 13852,
+              "model": 591,
+              "dollarError": -13261,
+              "percentError": -95.73346809,
+              "percentOfGenuineTotal": -0.74862706
+            },
+            "TD": {
+              "genuine": 1677556,
+              "model": 1584876,
+              "dollarError": -92680,
+              "percentError": -5.5247038,
+              "percentOfGenuineTotal": -5.23209076
+            },
+            "total": {
+              "genuine": 1771376,
+              "model": 1665196,
+              "dollarError": -106180,
+              "percentError": -5.99421015,
+              "percentOfGenuineTotal": -5.99421015
+            }
+          },
+          "basicPersists": true,
+          "rbCarryPersists": true,
+          "tdCarriedByAccrual": true,
+          "tdNotPristine": true,
+          "gcvIndependent": true
+        },
+        {
+          "age": 99,
+          "policyYear": 59,
+          "components": {
+            "GCV": {
+              "genuine": 80092,
+              "model": 79728,
+              "dollarError": -364,
+              "percentError": -0.45447735,
+              "percentOfGenuineTotal": -0.01937991
+            },
+            "RB": {
+              "genuine": 14611,
+              "model": 0,
+              "dollarError": -14611,
+              "percentError": -100,
+              "percentOfGenuineTotal": -0.77791159
+            },
+            "TD": {
+              "genuine": 1783531,
+              "model": 1584876,
+              "dollarError": -198655,
+              "percentError": -11.13829813,
+              "percentOfGenuineTotal": -10.57669066
+            },
+            "total": {
+              "genuine": 1878234,
+              "model": 1664604,
+              "dollarError": -213630,
+              "percentError": -11.37398216,
+              "percentOfGenuineTotal": -11.37398216
+            }
+          },
+          "basicPersists": true,
+          "rbCarryPersists": true,
+          "tdCarriedByAccrual": true,
+          "tdNotPristine": true,
+          "gcvIndependent": true
+        }
+      ],
+      "status": "PASS"
+    }
+  ],
+  "holdout": {
+    "MAPE": 5.51908644,
+    "maxErrorPercent": 12.05713439,
+    "rowsAbove010": 243,
+    "annualRows": 325,
+    "maxDollarError": 1660297,
+    "worstCase": "45yrs_5pay_130k_avpu_55yr",
+    "worstAge": 100,
+    "worstPolicyYear": 55
+  },
+  "holdoutRows": [
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 46,
+      "policyYear": 1,
+      "actual": 132,
+      "predicted": 132,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 47,
+      "policyYear": 2,
+      "actual": 132,
+      "predicted": 132,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 48,
+      "policyYear": 3,
+      "actual": 64477,
+      "predicted": 64477,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 49,
+      "policyYear": 4,
+      "actual": 162051,
+      "predicted": 162051,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 50,
+      "policyYear": 5,
+      "actual": 295170,
+      "predicted": 295170,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 51,
+      "policyYear": 6,
+      "actual": 553221,
+      "predicted": 553222,
+      "dollarError": 1,
+      "absolutePercent": 0.00018076,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 52,
+      "policyYear": 7,
+      "actual": 644692,
+      "predicted": 644692,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 53,
+      "policyYear": 8,
+      "actual": 726809,
+      "predicted": 726809,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 54,
+      "policyYear": 9,
+      "actual": 764993,
+      "predicted": 764993,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 55,
+      "policyYear": 10,
+      "actual": 814889,
+      "predicted": 814889,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 56,
+      "policyYear": 11,
+      "actual": 858040,
+      "predicted": 858418,
+      "dollarError": 378,
+      "absolutePercent": 0.04405389,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 57,
+      "policyYear": 12,
+      "actual": 902335,
+      "predicted": 903496,
+      "dollarError": 1161,
+      "absolutePercent": 0.12866618,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 58,
+      "policyYear": 13,
+      "actual": 954578,
+      "predicted": 957191,
+      "dollarError": 2613,
+      "absolutePercent": 0.27373352,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 59,
+      "policyYear": 14,
+      "actual": 1010675,
+      "predicted": 1015435,
+      "dollarError": 4760,
+      "absolutePercent": 0.47097237,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 60,
+      "policyYear": 15,
+      "actual": 1058007,
+      "predicted": 1065195,
+      "dollarError": 7188,
+      "absolutePercent": 0.67939059,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 61,
+      "policyYear": 16,
+      "actual": 1108601,
+      "predicted": 1118960,
+      "dollarError": 10359,
+      "absolutePercent": 0.93442095,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 62,
+      "policyYear": 17,
+      "actual": 1170812,
+      "predicted": 1185888,
+      "dollarError": 15076,
+      "absolutePercent": 1.28765336,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 63,
+      "policyYear": 18,
+      "actual": 1234713,
+      "predicted": 1255617,
+      "dollarError": 20904,
+      "absolutePercent": 1.69302502,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 1
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 64,
+      "policyYear": 19,
+      "actual": 1311991,
+      "predicted": 1340535,
+      "dollarError": 28544,
+      "absolutePercent": 2.17562468,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 65,
+      "policyYear": 20,
+      "actual": 1401635,
+      "predicted": 1439258,
+      "dollarError": 37623,
+      "absolutePercent": 2.68422235,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": -1,
+      "allocationResidual": 1
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 66,
+      "policyYear": 21,
+      "actual": 1514836,
+      "predicted": 1564990,
+      "dollarError": 50154,
+      "absolutePercent": 3.31085345,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 67,
+      "policyYear": 22,
+      "actual": 1596112,
+      "predicted": 1656274,
+      "dollarError": 60162,
+      "absolutePercent": 3.76928436,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": -1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 68,
+      "policyYear": 23,
+      "actual": 1695355,
+      "predicted": 1767770,
+      "dollarError": 72415,
+      "absolutePercent": 4.27137679,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 69,
+      "policyYear": 24,
+      "actual": 1781925,
+      "predicted": 1864074,
+      "dollarError": 82149,
+      "absolutePercent": 4.61012669,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 1
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 70,
+      "policyYear": 25,
+      "actual": 1894652,
+      "predicted": 1993248,
+      "dollarError": 98596,
+      "absolutePercent": 5.2039108,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 71,
+      "policyYear": 26,
+      "actual": 2021221,
+      "predicted": 2138578,
+      "dollarError": 117357,
+      "absolutePercent": 5.80624286,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 72,
+      "policyYear": 27,
+      "actual": 2109049,
+      "predicted": 2242213,
+      "dollarError": 133164,
+      "absolutePercent": 6.31393581,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 73,
+      "policyYear": 28,
+      "actual": 2201125,
+      "predicted": 2351441,
+      "dollarError": 150316,
+      "absolutePercent": 6.82905333,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": -1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 74,
+      "policyYear": 29,
+      "actual": 2296317,
+      "predicted": 2465057,
+      "dollarError": 168740,
+      "absolutePercent": 7.34828859,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 75,
+      "policyYear": 30,
+      "actual": 2395191,
+      "predicted": 2583795,
+      "dollarError": 188604,
+      "absolutePercent": 7.87427808,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 1
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 76,
+      "policyYear": 31,
+      "actual": 2513618,
+      "predicted": 2725325,
+      "dollarError": 211707,
+      "absolutePercent": 8.42240149,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 77,
+      "policyYear": 32,
+      "actual": 2638473,
+      "predicted": 2862236,
+      "dollarError": 223763,
+      "absolutePercent": 8.48077657,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": -1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 78,
+      "policyYear": 33,
+      "actual": 2816436,
+      "predicted": 3039397,
+      "dollarError": 222961,
+      "absolutePercent": 7.91642345,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 79,
+      "policyYear": 34,
+      "actual": 2987710,
+      "predicted": 3227278,
+      "dollarError": 239568,
+      "absolutePercent": 8.01844891,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 80,
+      "policyYear": 35,
+      "actual": 3161379,
+      "predicted": 3426540,
+      "dollarError": 265161,
+      "absolutePercent": 8.38751064,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 81,
+      "policyYear": 36,
+      "actual": 3344742,
+      "predicted": 3637870,
+      "dollarError": 293128,
+      "absolutePercent": 8.76384486,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 82,
+      "policyYear": 37,
+      "actual": 3537818,
+      "predicted": 3861995,
+      "dollarError": 324177,
+      "absolutePercent": 9.16319042,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 83,
+      "policyYear": 38,
+      "actual": 3742216,
+      "predicted": 4099683,
+      "dollarError": 357467,
+      "absolutePercent": 9.55228132,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 84,
+      "policyYear": 39,
+      "actual": 3957323,
+      "predicted": 4351754,
+      "dollarError": 394431,
+      "absolutePercent": 9.96711666,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 85,
+      "policyYear": 40,
+      "actual": 4199581,
+      "predicted": 4619073,
+      "dollarError": 419492,
+      "absolutePercent": 9.98890127,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": -1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 86,
+      "policyYear": 41,
+      "actual": 4455020,
+      "predicted": 4902555,
+      "dollarError": 447535,
+      "absolutePercent": 10.04563391,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 87,
+      "policyYear": 42,
+      "actual": 4726488,
+      "predicted": 5203177,
+      "dollarError": 476689,
+      "absolutePercent": 10.08547996,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 88,
+      "policyYear": 43,
+      "actual": 5013872,
+      "predicted": 5521967,
+      "dollarError": 508095,
+      "absolutePercent": 10.13378483,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 89,
+      "policyYear": 44,
+      "actual": 5318881,
+      "predicted": 5860021,
+      "dollarError": 541140,
+      "absolutePercent": 10.17394448,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 90,
+      "policyYear": 45,
+      "actual": 5642158,
+      "predicted": 6218498,
+      "dollarError": 576340,
+      "absolutePercent": 10.21488586,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": -1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 91,
+      "policyYear": 46,
+      "actual": 5984595,
+      "predicted": 6598623,
+      "dollarError": 614028,
+      "absolutePercent": 10.26014292,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 92,
+      "policyYear": 47,
+      "actual": 6347635,
+      "predicted": 7001705,
+      "dollarError": 654070,
+      "absolutePercent": 10.30415265,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 93,
+      "policyYear": 48,
+      "actual": 6731687,
+      "predicted": 7429118,
+      "dollarError": 697431,
+      "absolutePercent": 10.36041931,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 94,
+      "policyYear": 49,
+      "actual": 7139291,
+      "predicted": 7882332,
+      "dollarError": 743041,
+      "absolutePercent": 10.40777018,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 95,
+      "policyYear": 50,
+      "actual": 7571851,
+      "predicted": 8362893,
+      "dollarError": 791042,
+      "absolutePercent": 10.44714166,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": -1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 96,
+      "policyYear": 51,
+      "actual": 8030687,
+      "predicted": 8872450,
+      "dollarError": 841763,
+      "absolutePercent": 10.48183051,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 97,
+      "policyYear": 52,
+      "actual": 8515914,
+      "predicted": 9412745,
+      "dollarError": 896831,
+      "absolutePercent": 10.53123599,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 98,
+      "policyYear": 53,
+      "actual": 9030609,
+      "predicted": 9985624,
+      "dollarError": 955015,
+      "absolutePercent": 10.57531114,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 99,
+      "policyYear": 54,
+      "actual": 9575994,
+      "predicted": 10593050,
+      "dollarError": 1017056,
+      "absolutePercent": 10.6208922,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 100,
+      "policyYear": 55,
+      "actual": 10154829,
+      "predicted": 11237100,
+      "dollarError": 1082271,
+      "absolutePercent": 10.65769793,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 46,
+      "policyYear": 1,
+      "actual": 132,
+      "predicted": 132,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 47,
+      "policyYear": 2,
+      "actual": 132,
+      "predicted": 132,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 48,
+      "policyYear": 3,
+      "actual": 64477,
+      "predicted": 64477,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 49,
+      "policyYear": 4,
+      "actual": 162051,
+      "predicted": 162051,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 50,
+      "policyYear": 5,
+      "actual": 295170,
+      "predicted": 295170,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 51,
+      "policyYear": 6,
+      "actual": 553221,
+      "predicted": 553222,
+      "dollarError": 1,
+      "absolutePercent": 0.00018076,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 52,
+      "policyYear": 7,
+      "actual": 644692,
+      "predicted": 644692,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 53,
+      "policyYear": 8,
+      "actual": 726809,
+      "predicted": 726809,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 54,
+      "policyYear": 9,
+      "actual": 764993,
+      "predicted": 764993,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 55,
+      "policyYear": 10,
+      "actual": 809792,
+      "predicted": 809792,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 56,
+      "policyYear": 11,
+      "actual": 846694,
+      "predicted": 847209,
+      "dollarError": 515,
+      "absolutePercent": 0.06082481,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 57,
+      "policyYear": 12,
+      "actual": 883552,
+      "predicted": 885156,
+      "dollarError": 1604,
+      "absolutePercent": 0.18153997,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 58,
+      "policyYear": 13,
+      "actual": 927200,
+      "predicted": 930860,
+      "dollarError": 3660,
+      "absolutePercent": 0.39473684,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 59,
+      "policyYear": 14,
+      "actual": 973164,
+      "predicted": 979907,
+      "dollarError": 6743,
+      "absolutePercent": 0.69289452,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 60,
+      "policyYear": 15,
+      "actual": 1009383,
+      "predicted": 1019665,
+      "dollarError": 10282,
+      "absolutePercent": 1.01864208,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": -1
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 61,
+      "policyYear": 16,
+      "actual": 1047536,
+      "predicted": 1062319,
+      "dollarError": 14783,
+      "absolutePercent": 1.41121642,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 62,
+      "policyYear": 17,
+      "actual": 1094824,
+      "predicted": 1115503,
+      "dollarError": 20679,
+      "absolutePercent": 1.88879674,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 63,
+      "policyYear": 18,
+      "actual": 1141167,
+      "predicted": 1168191,
+      "dollarError": 27024,
+      "absolutePercent": 2.36810213,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 64,
+      "policyYear": 19,
+      "actual": 1196955,
+      "predicted": 1231713,
+      "dollarError": 34758,
+      "absolutePercent": 2.90386857,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 65,
+      "policyYear": 20,
+      "actual": 1261742,
+      "predicted": 1305594,
+      "dollarError": 43852,
+      "absolutePercent": 3.47551243,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 66,
+      "policyYear": 21,
+      "actual": 1343956,
+      "predicted": 1400133,
+      "dollarError": 56177,
+      "absolutePercent": 4.17997315,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 67,
+      "policyYear": 22,
+      "actual": 1394789,
+      "predicted": 1460452,
+      "dollarError": 65663,
+      "absolutePercent": 4.70773716,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 1
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 68,
+      "policyYear": 23,
+      "actual": 1459031,
+      "predicted": 1536135,
+      "dollarError": 77104,
+      "absolutePercent": 5.28460327,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 1
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 69,
+      "policyYear": 24,
+      "actual": 1509448,
+      "predicted": 1595607,
+      "dollarError": 86159,
+      "absolutePercent": 5.70798067,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 70,
+      "policyYear": 25,
+      "actual": 1579455,
+      "predicted": 1680432,
+      "dollarError": 100977,
+      "absolutePercent": 6.3931546,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 71,
+      "policyYear": 26,
+      "actual": 1657333,
+      "predicted": 1774958,
+      "dollarError": 117625,
+      "absolutePercent": 7.097246,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": -1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 72,
+      "policyYear": 27,
+      "actual": 1699705,
+      "predicted": 1831097,
+      "dollarError": 131392,
+      "absolutePercent": 7.73028261,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 73,
+      "policyYear": 28,
+      "actual": 1742776,
+      "predicted": 1888860,
+      "dollarError": 146084,
+      "absolutePercent": 8.38225911,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": -1
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 74,
+      "policyYear": 29,
+      "actual": 1784418,
+      "predicted": 1946021,
+      "dollarError": 161603,
+      "absolutePercent": 9.05634218,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 75,
+      "policyYear": 30,
+      "actual": 1825402,
+      "predicted": 2003439,
+      "dollarError": 178037,
+      "absolutePercent": 9.75330366,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": -1
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 76,
+      "policyYear": 31,
+      "actual": 1877817,
+      "predicted": 2074650,
+      "dollarError": 196833,
+      "absolutePercent": 10.48201183,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 77,
+      "policyYear": 32,
+      "actual": 1931403,
+      "predicted": 2139795,
+      "dollarError": 208392,
+      "absolutePercent": 10.78966948,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 78,
+      "policyYear": 33,
+      "actual": 2061674,
+      "predicted": 2270751,
+      "dollarError": 209077,
+      "absolutePercent": 10.14112803,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 79,
+      "policyYear": 34,
+      "actual": 2187050,
+      "predicted": 2409615,
+      "dollarError": 222565,
+      "absolutePercent": 10.17649345,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 80,
+      "policyYear": 35,
+      "actual": 2314178,
+      "predicted": 2556893,
+      "dollarError": 242715,
+      "absolutePercent": 10.48817334,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 81,
+      "policyYear": 36,
+      "actual": 2448402,
+      "predicted": 2713090,
+      "dollarError": 264688,
+      "absolutePercent": 10.81064302,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 82,
+      "policyYear": 37,
+      "actual": 2589737,
+      "predicted": 2878743,
+      "dollarError": 289006,
+      "absolutePercent": 11.15966602,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 83,
+      "policyYear": 38,
+      "actual": 2739360,
+      "predicted": 3054422,
+      "dollarError": 315062,
+      "absolutePercent": 11.50129957,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 84,
+      "policyYear": 39,
+      "actual": 2896821,
+      "predicted": 3240730,
+      "dollarError": 343909,
+      "absolutePercent": 11.87194514,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 85,
+      "policyYear": 40,
+      "actual": 3074158,
+      "predicted": 3438309,
+      "dollarError": 364151,
+      "absolutePercent": 11.84555251,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 86,
+      "policyYear": 41,
+      "actual": 3261143,
+      "predicted": 3647833,
+      "dollarError": 386690,
+      "absolutePercent": 11.85749904,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 87,
+      "policyYear": 42,
+      "actual": 3459862,
+      "predicted": 3870026,
+      "dollarError": 410164,
+      "absolutePercent": 11.85492369,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": -1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 88,
+      "policyYear": 43,
+      "actual": 3670232,
+      "predicted": 4105648,
+      "dollarError": 435416,
+      "absolutePercent": 11.86344623,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 89,
+      "policyYear": 44,
+      "actual": 3893503,
+      "predicted": 4355507,
+      "dollarError": 462004,
+      "absolutePercent": 11.86602399,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 90,
+      "policyYear": 45,
+      "actual": 4130146,
+      "predicted": 4620462,
+      "dollarError": 490316,
+      "absolutePercent": 11.87163844,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 91,
+      "policyYear": 46,
+      "actual": 4380816,
+      "predicted": 4901416,
+      "dollarError": 520600,
+      "absolutePercent": 11.88363081,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 92,
+      "policyYear": 47,
+      "actual": 4646566,
+      "predicted": 5199337,
+      "dollarError": 552771,
+      "absolutePercent": 11.89633377,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 93,
+      "policyYear": 48,
+      "actual": 4927698,
+      "predicted": 5515243,
+      "dollarError": 587545,
+      "absolutePercent": 11.92331592,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 94,
+      "policyYear": 49,
+      "actual": 5226071,
+      "predicted": 5850218,
+      "dollarError": 624147,
+      "absolutePercent": 11.94294911,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 95,
+      "policyYear": 50,
+      "actual": 5542712,
+      "predicted": 6205405,
+      "dollarError": 662693,
+      "absolutePercent": 11.95611462,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 96,
+      "policyYear": 51,
+      "actual": 5878587,
+      "predicted": 6582022,
+      "dollarError": 703435,
+      "absolutePercent": 11.96605579,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": -1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 97,
+      "policyYear": 52,
+      "actual": 6233780,
+      "predicted": 6981360,
+      "dollarError": 747580,
+      "absolutePercent": 11.99240268,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 98,
+      "policyYear": 53,
+      "actual": 6610545,
+      "predicted": 7404780,
+      "dollarError": 794235,
+      "absolutePercent": 12.01466747,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": -1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 99,
+      "policyYear": 54,
+      "actual": 7009775,
+      "predicted": 7853734,
+      "dollarError": 843959,
+      "absolutePercent": 12.0397445,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": -1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 100,
+      "policyYear": 55,
+      "actual": 7433491,
+      "predicted": 8329757,
+      "dollarError": 896266,
+      "absolutePercent": 12.05713439,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 46,
+      "policyYear": 1,
+      "actual": 153,
+      "predicted": 152,
+      "dollarError": -1,
+      "absolutePercent": 0.65359477,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 47,
+      "policyYear": 2,
+      "actual": 153,
+      "predicted": 152,
+      "dollarError": -1,
+      "absolutePercent": 0.65359477,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 48,
+      "policyYear": 3,
+      "actual": 74397,
+      "predicted": 74397,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 49,
+      "policyYear": 4,
+      "actual": 186982,
+      "predicted": 186982,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 50,
+      "policyYear": 5,
+      "actual": 340581,
+      "predicted": 340581,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 51,
+      "policyYear": 6,
+      "actual": 638332,
+      "predicted": 638333,
+      "dollarError": 1,
+      "absolutePercent": 0.00015666,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 52,
+      "policyYear": 7,
+      "actual": 743875,
+      "predicted": 743875,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": -1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 53,
+      "policyYear": 8,
+      "actual": 838625,
+      "predicted": 838626,
+      "dollarError": 1,
+      "absolutePercent": 0.00011924,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 54,
+      "policyYear": 9,
+      "actual": 882684,
+      "predicted": 882684,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 55,
+      "policyYear": 10,
+      "actual": 956446,
+      "predicted": 956446,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 56,
+      "policyYear": 11,
+      "actual": 1023594,
+      "predicted": 1023595,
+      "dollarError": 1,
+      "absolutePercent": 0.00009769,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 57,
+      "policyYear": 12,
+      "actual": 1093286,
+      "predicted": 1093287,
+      "dollarError": 1,
+      "absolutePercent": 0.00009147,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": -1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 58,
+      "policyYear": 13,
+      "actual": 1173884,
+      "predicted": 1173884,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": -1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 59,
+      "policyYear": 14,
+      "actual": 1260762,
+      "predicted": 1260762,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 60,
+      "policyYear": 15,
+      "actual": 1339082,
+      "predicted": 1339082,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 61,
+      "policyYear": 16,
+      "actual": 1405846,
+      "predicted": 1405846,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 62,
+      "policyYear": 17,
+      "actual": 1487384,
+      "predicted": 1488052,
+      "dollarError": 668,
+      "absolutePercent": 0.04491107,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 63,
+      "policyYear": 18,
+      "actual": 1571662,
+      "predicted": 1573780,
+      "dollarError": 2118,
+      "absolutePercent": 0.1347618,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 64,
+      "policyYear": 19,
+      "actual": 1673417,
+      "predicted": 1678241,
+      "dollarError": 4824,
+      "absolutePercent": 0.28827244,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 65,
+      "policyYear": 20,
+      "actual": 1791789,
+      "predicted": 1800911,
+      "dollarError": 9122,
+      "absolutePercent": 0.50910012,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 66,
+      "policyYear": 21,
+      "actual": 1941505,
+      "predicted": 1958166,
+      "dollarError": 16661,
+      "absolutePercent": 0.8581487,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": -1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 67,
+      "policyYear": 22,
+      "actual": 2052320,
+      "predicted": 2076488,
+      "dollarError": 24168,
+      "absolutePercent": 1.17759414,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 68,
+      "policyYear": 23,
+      "actual": 2187088,
+      "predicted": 2222049,
+      "dollarError": 34961,
+      "absolutePercent": 1.59851821,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 69,
+      "policyYear": 24,
+      "actual": 2306309,
+      "predicted": 2351069,
+      "dollarError": 44760,
+      "absolutePercent": 1.94076336,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 70,
+      "policyYear": 25,
+      "actual": 2460957,
+      "predicted": 2524581,
+      "dollarError": 63624,
+      "absolutePercent": 2.5853357,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 71,
+      "policyYear": 26,
+      "actual": 2634682,
+      "predicted": 2722082,
+      "dollarError": 87400,
+      "absolutePercent": 3.31728839,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 72,
+      "policyYear": 27,
+      "actual": 2759200,
+      "predicted": 2866748,
+      "dollarError": 107548,
+      "absolutePercent": 3.89779646,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 1
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 73,
+      "policyYear": 28,
+      "actual": 2890426,
+      "predicted": 3019920,
+      "dollarError": 129494,
+      "absolutePercent": 4.48010086,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": -1
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 74,
+      "policyYear": 29,
+      "actual": 3026949,
+      "predicted": 3180112,
+      "dollarError": 153163,
+      "absolutePercent": 5.05997954,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 75,
+      "policyYear": 30,
+      "actual": 3169690,
+      "predicted": 3348471,
+      "dollarError": 178781,
+      "absolutePercent": 5.64033076,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 76,
+      "policyYear": 31,
+      "actual": 3339629,
+      "predicted": 3548320,
+      "dollarError": 208691,
+      "absolutePercent": 6.24892765,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 77,
+      "policyYear": 32,
+      "actual": 3519564,
+      "predicted": 3733670,
+      "dollarError": 214106,
+      "absolutePercent": 6.08331032,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": -1,
+      "allocationResidual": -1
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 78,
+      "policyYear": 33,
+      "actual": 3756956,
+      "predicted": 3968689,
+      "dollarError": 211733,
+      "absolutePercent": 5.63575938,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 79,
+      "policyYear": 34,
+      "actual": 3985426,
+      "predicted": 4217934,
+      "dollarError": 232508,
+      "absolutePercent": 5.83395602,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": -1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 80,
+      "policyYear": 35,
+      "actual": 4217089,
+      "predicted": 4482278,
+      "dollarError": 265189,
+      "absolutePercent": 6.28843736,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 81,
+      "policyYear": 36,
+      "actual": 4461684,
+      "predicted": 4762632,
+      "dollarError": 300948,
+      "absolutePercent": 6.74516617,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 82,
+      "policyYear": 37,
+      "actual": 4719237,
+      "predicted": 5059959,
+      "dollarError": 340722,
+      "absolutePercent": 7.21985355,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 83,
+      "policyYear": 38,
+      "actual": 4991892,
+      "predicted": 5375282,
+      "dollarError": 383390,
+      "absolutePercent": 7.6802543,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 84,
+      "policyYear": 39,
+      "actual": 5278831,
+      "predicted": 5709685,
+      "dollarError": 430854,
+      "absolutePercent": 8.1619207,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": -1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 85,
+      "policyYear": 40,
+      "actual": 5601988,
+      "predicted": 6064315,
+      "dollarError": 462327,
+      "absolutePercent": 8.2529095,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 86,
+      "policyYear": 41,
+      "actual": 5942729,
+      "predicted": 6440390,
+      "dollarError": 497661,
+      "absolutePercent": 8.37428394,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 87,
+      "policyYear": 42,
+      "actual": 6304851,
+      "predicted": 6839203,
+      "dollarError": 534352,
+      "absolutePercent": 8.47525183,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 88,
+      "policyYear": 43,
+      "actual": 6688204,
+      "predicted": 7262119,
+      "dollarError": 573915,
+      "absolutePercent": 8.58100321,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 89,
+      "policyYear": 44,
+      "actual": 7095068,
+      "predicted": 7710591,
+      "dollarError": 615523,
+      "absolutePercent": 8.67536435,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 90,
+      "policyYear": 45,
+      "actual": 7526299,
+      "predicted": 8186156,
+      "dollarError": 659857,
+      "absolutePercent": 8.76735033,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 91,
+      "policyYear": 46,
+      "actual": 7983090,
+      "predicted": 8690445,
+      "dollarError": 707355,
+      "absolutePercent": 8.86066673,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 92,
+      "policyYear": 47,
+      "actual": 8467363,
+      "predicted": 9225186,
+      "dollarError": 757823,
+      "absolutePercent": 8.94992928,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 93,
+      "policyYear": 48,
+      "actual": 8979665,
+      "predicted": 9792208,
+      "dollarError": 812543,
+      "absolutePercent": 9.04870059,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 94,
+      "policyYear": 49,
+      "actual": 9523385,
+      "predicted": 10393456,
+      "dollarError": 870071,
+      "absolutePercent": 9.13615274,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 95,
+      "policyYear": 50,
+      "actual": 10100395,
+      "predicted": 11030988,
+      "dollarError": 930593,
+      "absolutePercent": 9.21343175,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 96,
+      "policyYear": 51,
+      "actual": 10712454,
+      "predicted": 11706986,
+      "dollarError": 994532,
+      "absolutePercent": 9.28388584,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 97,
+      "policyYear": 52,
+      "actual": 11359718,
+      "predicted": 12423760,
+      "dollarError": 1064042,
+      "absolutePercent": 9.36679942,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 98,
+      "policyYear": 53,
+      "actual": 12046290,
+      "predicted": 13183767,
+      "dollarError": 1137477,
+      "absolutePercent": 9.44255036,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 99,
+      "policyYear": 54,
+      "actual": 12773800,
+      "predicted": 13989603,
+      "dollarError": 1215803,
+      "absolutePercent": 9.51794298,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": -1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 100,
+      "policyYear": 55,
+      "actual": 13545931,
+      "predicted": 14844026,
+      "dollarError": 1298095,
+      "absolutePercent": 9.5829146,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 46,
+      "policyYear": 1,
+      "actual": 204,
+      "predicted": 204,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 47,
+      "policyYear": 2,
+      "actual": 204,
+      "predicted": 204,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 48,
+      "policyYear": 3,
+      "actual": 99500,
+      "predicted": 99500,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 49,
+      "policyYear": 4,
+      "actual": 250074,
+      "predicted": 250073,
+      "dollarError": -1,
+      "absolutePercent": 0.00039988,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 50,
+      "policyYear": 5,
+      "actual": 455499,
+      "predicted": 455499,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 51,
+      "policyYear": 6,
+      "actual": 853718,
+      "predicted": 853718,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 52,
+      "policyYear": 7,
+      "actual": 994873,
+      "predicted": 994873,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 53,
+      "policyYear": 8,
+      "actual": 1121594,
+      "predicted": 1121593,
+      "dollarError": -1,
+      "absolutePercent": 0.00008916,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 54,
+      "policyYear": 9,
+      "actual": 1180519,
+      "predicted": 1180519,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 55,
+      "policyYear": 10,
+      "actual": 1279169,
+      "predicted": 1279169,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 56,
+      "policyYear": 11,
+      "actual": 1368975,
+      "predicted": 1368975,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 57,
+      "policyYear": 12,
+      "actual": 1462182,
+      "predicted": 1462182,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 58,
+      "policyYear": 13,
+      "actual": 1569975,
+      "predicted": 1569975,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 59,
+      "policyYear": 14,
+      "actual": 1686167,
+      "predicted": 1686168,
+      "dollarError": 1,
+      "absolutePercent": 0.00005931,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 60,
+      "policyYear": 15,
+      "actual": 1790914,
+      "predicted": 1790913,
+      "dollarError": -1,
+      "absolutePercent": 0.00005584,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 61,
+      "policyYear": 16,
+      "actual": 1876330,
+      "predicted": 1876330,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 62,
+      "policyYear": 17,
+      "actual": 1980705,
+      "predicted": 1981746,
+      "dollarError": 1041,
+      "absolutePercent": 0.05255704,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 63,
+      "policyYear": 18,
+      "actual": 2087574,
+      "predicted": 2090883,
+      "dollarError": 3309,
+      "absolutePercent": 0.15850935,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 64,
+      "policyYear": 19,
+      "actual": 2215862,
+      "predicted": 2223444,
+      "dollarError": 7582,
+      "absolutePercent": 0.34216932,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 65,
+      "policyYear": 20,
+      "actual": 2365413,
+      "predicted": 2379875,
+      "dollarError": 14462,
+      "absolutePercent": 0.61139429,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 66,
+      "policyYear": 21,
+      "actual": 2553889,
+      "predicted": 2580507,
+      "dollarError": 26618,
+      "absolutePercent": 1.0422536,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 67,
+      "policyYear": 22,
+      "actual": 2689173,
+      "predicted": 2728029,
+      "dollarError": 38856,
+      "absolutePercent": 1.44490518,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 68,
+      "policyYear": 23,
+      "actual": 2855095,
+      "predicted": 2911717,
+      "dollarError": 56622,
+      "absolutePercent": 1.98319145,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 69,
+      "policyYear": 24,
+      "actual": 2999583,
+      "predicted": 3072081,
+      "dollarError": 72498,
+      "absolutePercent": 2.41693595,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": -1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 70,
+      "policyYear": 25,
+      "actual": 3188384,
+      "predicted": 3287926,
+      "dollarError": 99542,
+      "absolutePercent": 3.12202043,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": -1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 71,
+      "policyYear": 26,
+      "actual": 3400236,
+      "predicted": 3530626,
+      "dollarError": 130390,
+      "absolutePercent": 3.83473382,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": -1,
+      "allocationResidual": -1
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 72,
+      "policyYear": 27,
+      "actual": 3546849,
+      "predicted": 3703264,
+      "dollarError": 156415,
+      "absolutePercent": 4.40997065,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": -1
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 73,
+      "policyYear": 28,
+      "actual": 3701148,
+      "predicted": 3885804,
+      "dollarError": 184656,
+      "absolutePercent": 4.98915472,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 74,
+      "policyYear": 29,
+      "actual": 3860216,
+      "predicted": 4075209,
+      "dollarError": 214993,
+      "absolutePercent": 5.56945518,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 75,
+      "policyYear": 30,
+      "actual": 4025830,
+      "predicted": 4273526,
+      "dollarError": 247696,
+      "absolutePercent": 6.15266914,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": -1
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 76,
+      "policyYear": 31,
+      "actual": 4224596,
+      "predicted": 4510322,
+      "dollarError": 285726,
+      "absolutePercent": 6.76339229,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 77,
+      "policyYear": 32,
+      "actual": 4434671,
+      "predicted": 4727289,
+      "dollarError": 292618,
+      "absolutePercent": 6.59841508,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 1
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 78,
+      "policyYear": 33,
+      "actual": 4733786,
+      "predicted": 5023461,
+      "dollarError": 289675,
+      "absolutePercent": 6.11930915,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": -1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 79,
+      "policyYear": 34,
+      "actual": 5021659,
+      "predicted": 5337553,
+      "dollarError": 315894,
+      "absolutePercent": 6.29063025,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 80,
+      "policyYear": 35,
+      "actual": 5313556,
+      "predicted": 5670671,
+      "dollarError": 357115,
+      "absolutePercent": 6.72082876,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 81,
+      "policyYear": 36,
+      "actual": 5621747,
+      "predicted": 6023965,
+      "dollarError": 402218,
+      "absolutePercent": 7.15467985,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 82,
+      "policyYear": 37,
+      "actual": 5946265,
+      "predicted": 6398648,
+      "dollarError": 452383,
+      "absolutePercent": 7.60785132,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 83,
+      "policyYear": 38,
+      "actual": 6289812,
+      "predicted": 6796011,
+      "dollarError": 506199,
+      "absolutePercent": 8.0479194,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 84,
+      "policyYear": 39,
+      "actual": 6651357,
+      "predicted": 7217414,
+      "dollarError": 566057,
+      "absolutePercent": 8.51039871,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 85,
+      "policyYear": 40,
+      "actual": 7058537,
+      "predicted": 7664308,
+      "dollarError": 605771,
+      "absolutePercent": 8.5821042,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 86,
+      "policyYear": 41,
+      "actual": 7487872,
+      "predicted": 8138227,
+      "dollarError": 650355,
+      "absolutePercent": 8.68544494,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 87,
+      "policyYear": 42,
+      "actual": 7944148,
+      "predicted": 8640800,
+      "dollarError": 696652,
+      "absolutePercent": 8.76937338,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 88,
+      "policyYear": 43,
+      "actual": 8427175,
+      "predicted": 9173747,
+      "dollarError": 746572,
+      "absolutePercent": 8.85910166,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 89,
+      "policyYear": 44,
+      "actual": 8939826,
+      "predicted": 9738900,
+      "dollarError": 799074,
+      "absolutePercent": 8.93836189,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 90,
+      "policyYear": 45,
+      "actual": 9483180,
+      "predicted": 10338193,
+      "dollarError": 855013,
+      "absolutePercent": 9.01610008,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 91,
+      "policyYear": 46,
+      "actual": 10058738,
+      "predicted": 10973682,
+      "dollarError": 914944,
+      "absolutePercent": 9.09601185,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": -1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 92,
+      "policyYear": 47,
+      "actual": 10668926,
+      "predicted": 11647546,
+      "dollarError": 978620,
+      "absolutePercent": 9.17261962,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 93,
+      "policyYear": 48,
+      "actual": 11314429,
+      "predicted": 12362092,
+      "dollarError": 1047663,
+      "absolutePercent": 9.25953046,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 94,
+      "policyYear": 49,
+      "actual": 11999519,
+      "predicted": 13119769,
+      "dollarError": 1120250,
+      "absolutePercent": 9.33579088,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 95,
+      "policyYear": 50,
+      "actual": 12726555,
+      "predicted": 13923166,
+      "dollarError": 1196611,
+      "absolutePercent": 9.4024738,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 96,
+      "policyYear": 51,
+      "actual": 13497753,
+      "predicted": 14775039,
+      "dollarError": 1277286,
+      "absolutePercent": 9.46295283,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 97,
+      "policyYear": 52,
+      "actual": 14313309,
+      "predicted": 15678300,
+      "dollarError": 1364991,
+      "absolutePercent": 9.53651598,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 98,
+      "policyYear": 53,
+      "actual": 15178394,
+      "predicted": 16636037,
+      "dollarError": 1457643,
+      "absolutePercent": 9.60340732,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 99,
+      "policyYear": 54,
+      "actual": 16095061,
+      "predicted": 17651529,
+      "dollarError": 1556468,
+      "absolutePercent": 9.67046972,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 100,
+      "policyYear": 55,
+      "actual": 17067951,
+      "predicted": 18728248,
+      "dollarError": 1660297,
+      "absolutePercent": 9.7275707,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 51,
+      "policyYear": 1,
+      "actual": 132,
+      "predicted": 132,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 52,
+      "policyYear": 2,
+      "actual": 132,
+      "predicted": 132,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 53,
+      "policyYear": 3,
+      "actual": 64477,
+      "predicted": 64477,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 54,
+      "policyYear": 4,
+      "actual": 162051,
+      "predicted": 162051,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 55,
+      "policyYear": 5,
+      "actual": 295170,
+      "predicted": 295170,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 56,
+      "policyYear": 6,
+      "actual": 553221,
+      "predicted": 553222,
+      "dollarError": 1,
+      "absolutePercent": 0.00018076,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 57,
+      "policyYear": 7,
+      "actual": 644692,
+      "predicted": 644692,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 58,
+      "policyYear": 8,
+      "actual": 726809,
+      "predicted": 726809,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 59,
+      "policyYear": 9,
+      "actual": 764993,
+      "predicted": 764993,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 60,
+      "policyYear": 10,
+      "actual": 828920,
+      "predicted": 828920,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 61,
+      "policyYear": 11,
+      "actual": 859507,
+      "predicted": 859507,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 62,
+      "policyYear": 12,
+      "actual": 889076,
+      "predicted": 889820,
+      "dollarError": 744,
+      "absolutePercent": 0.08368238,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 63,
+      "policyYear": 13,
+      "actual": 923818,
+      "predicted": 926440,
+      "dollarError": 2622,
+      "absolutePercent": 0.28382214,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 64,
+      "policyYear": 14,
+      "actual": 959126,
+      "predicted": 964947,
+      "dollarError": 5821,
+      "absolutePercent": 0.6069067,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": -1
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 65,
+      "policyYear": 15,
+      "actual": 982861,
+      "predicted": 992597,
+      "dollarError": 9736,
+      "absolutePercent": 0.99057751,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 66,
+      "policyYear": 16,
+      "actual": 1005686,
+      "predicted": 1020347,
+      "dollarError": 14661,
+      "absolutePercent": 1.45781089,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 67,
+      "policyYear": 17,
+      "actual": 1035903,
+      "predicted": 1056676,
+      "dollarError": 20773,
+      "absolutePercent": 2.00530359,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 68,
+      "policyYear": 18,
+      "actual": 1064653,
+      "predicted": 1091959,
+      "dollarError": 27306,
+      "absolutePercent": 2.56477932,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 69,
+      "policyYear": 19,
+      "actual": 1101577,
+      "predicted": 1136732,
+      "dollarError": 35155,
+      "absolutePercent": 3.19133388,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 70,
+      "policyYear": 20,
+      "actual": 1145676,
+      "predicted": 1189957,
+      "dollarError": 44281,
+      "absolutePercent": 3.86505434,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": -1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 71,
+      "policyYear": 21,
+      "actual": 1204105,
+      "predicted": 1260542,
+      "dollarError": 56437,
+      "absolutePercent": 4.68704972,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 72,
+      "policyYear": 22,
+      "actual": 1231938,
+      "predicted": 1297436,
+      "dollarError": 65498,
+      "absolutePercent": 5.31666366,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 73,
+      "policyYear": 23,
+      "actual": 1269618,
+      "predicted": 1345912,
+      "dollarError": 76294,
+      "absolutePercent": 6.00920907,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": -1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 74,
+      "policyYear": 24,
+      "actual": 1292313,
+      "predicted": 1377133,
+      "dollarError": 84820,
+      "absolutePercent": 6.56342542,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 1
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 75,
+      "policyYear": 25,
+      "actual": 1329185,
+      "predicted": 1427547,
+      "dollarError": 98362,
+      "absolutePercent": 7.40017379,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": -1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 76,
+      "policyYear": 26,
+      "actual": 1439864,
+      "predicted": 1553228,
+      "dollarError": 113364,
+      "absolutePercent": 7.87324358,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 77,
+      "policyYear": 27,
+      "actual": 1525989,
+      "predicted": 1651972,
+      "dollarError": 125983,
+      "absolutePercent": 8.25582622,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 78,
+      "policyYear": 28,
+      "actual": 1617898,
+      "predicted": 1757682,
+      "dollarError": 139784,
+      "absolutePercent": 8.63985245,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 79,
+      "policyYear": 29,
+      "actual": 1714941,
+      "predicted": 1869671,
+      "dollarError": 154730,
+      "absolutePercent": 9.02246783,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": -1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 80,
+      "policyYear": 30,
+      "actual": 1817952,
+      "predicted": 1988937,
+      "dollarError": 170985,
+      "absolutePercent": 9.40536384,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 81,
+      "policyYear": 31,
+      "actual": 1938922,
+      "predicted": 2129032,
+      "dollarError": 190110,
+      "absolutePercent": 9.80493284,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 82,
+      "policyYear": 32,
+      "actual": 2068292,
+      "predicted": 2270599,
+      "dollarError": 202307,
+      "absolutePercent": 9.78135582,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 83,
+      "policyYear": 33,
+      "actual": 2207901,
+      "predicted": 2411039,
+      "dollarError": 203138,
+      "absolutePercent": 9.2005031,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 84,
+      "policyYear": 34,
+      "actual": 2342293,
+      "predicted": 2559988,
+      "dollarError": 217695,
+      "absolutePercent": 9.29409771,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 85,
+      "policyYear": 35,
+      "actual": 2478585,
+      "predicted": 2717959,
+      "dollarError": 239374,
+      "absolutePercent": 9.65768775,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 86,
+      "policyYear": 36,
+      "actual": 2622500,
+      "predicted": 2885494,
+      "dollarError": 262994,
+      "absolutePercent": 10.02836988,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 87,
+      "policyYear": 37,
+      "actual": 2774056,
+      "predicted": 3063169,
+      "dollarError": 289113,
+      "absolutePercent": 10.42203186,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": -1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 88,
+      "policyYear": 38,
+      "actual": 2934517,
+      "predicted": 3251596,
+      "dollarError": 317079,
+      "absolutePercent": 10.80515124,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 89,
+      "policyYear": 39,
+      "actual": 3103405,
+      "predicted": 3451421,
+      "dollarError": 348016,
+      "absolutePercent": 11.21400526,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 90,
+      "policyYear": 40,
+      "actual": 3293295,
+      "predicted": 3663331,
+      "dollarError": 370036,
+      "absolutePercent": 11.23604172,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 91,
+      "policyYear": 41,
+      "actual": 3493516,
+      "predicted": 3888051,
+      "dollarError": 394535,
+      "absolutePercent": 11.29335031,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 92,
+      "policyYear": 42,
+      "actual": 3706302,
+      "predicted": 4126355,
+      "dollarError": 420053,
+      "absolutePercent": 11.33348011,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 93,
+      "policyYear": 43,
+      "actual": 3931564,
+      "predicted": 4379058,
+      "dollarError": 447494,
+      "absolutePercent": 11.38208611,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 94,
+      "policyYear": 44,
+      "actual": 4170641,
+      "predicted": 4647029,
+      "dollarError": 476388,
+      "absolutePercent": 11.42241684,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 95,
+      "policyYear": 45,
+      "actual": 4424037,
+      "predicted": 4931187,
+      "dollarError": 507150,
+      "absolutePercent": 11.46351172,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 96,
+      "policyYear": 46,
+      "actual": 4692451,
+      "predicted": 5232501,
+      "dollarError": 540050,
+      "absolutePercent": 11.5089108,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 97,
+      "policyYear": 47,
+      "actual": 4977014,
+      "predicted": 5552008,
+      "dollarError": 574994,
+      "absolutePercent": 11.55299141,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 98,
+      "policyYear": 48,
+      "actual": 5278050,
+      "predicted": 5890800,
+      "dollarError": 612750,
+      "absolutePercent": 11.6094012,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 99,
+      "policyYear": 49,
+      "actual": 5597546,
+      "predicted": 6250040,
+      "dollarError": 652494,
+      "absolutePercent": 11.65678674,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 100,
+      "policyYear": 50,
+      "actual": 5936604,
+      "predicted": 6630952,
+      "dollarError": 694348,
+      "absolutePercent": 11.6960471,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 85
+    },
+    {
+      "caseId": "70k_original",
+      "age": 46,
+      "policyYear": 1,
+      "actual": 71,
+      "predicted": 71,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 47,
+      "policyYear": 2,
+      "actual": 71,
+      "predicted": 71,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 48,
+      "policyYear": 3,
+      "actual": 34613,
+      "predicted": 34612,
+      "dollarError": -1,
+      "absolutePercent": 0.00288909,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 49,
+      "policyYear": 4,
+      "actual": 86993,
+      "predicted": 86993,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 50,
+      "policyYear": 5,
+      "actual": 158454,
+      "predicted": 158454,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 51,
+      "policyYear": 6,
+      "actual": 296981,
+      "predicted": 296982,
+      "dollarError": 1,
+      "absolutePercent": 0.00033672,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 52,
+      "policyYear": 7,
+      "actual": 346085,
+      "predicted": 346084,
+      "dollarError": -1,
+      "absolutePercent": 0.00028895,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 53,
+      "policyYear": 8,
+      "actual": 390167,
+      "predicted": 390166,
+      "dollarError": -1,
+      "absolutePercent": 0.0002563,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 54,
+      "policyYear": 9,
+      "actual": 410665,
+      "predicted": 410665,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 55,
+      "policyYear": 10,
+      "actual": 444982,
+      "predicted": 444982,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 56,
+      "policyYear": 11,
+      "actual": 476223,
+      "predicted": 476222,
+      "dollarError": -1,
+      "absolutePercent": 0.00020999,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 57,
+      "policyYear": 12,
+      "actual": 508646,
+      "predicted": 508646,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 58,
+      "policyYear": 13,
+      "actual": 546144,
+      "predicted": 546144,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 59,
+      "policyYear": 14,
+      "actual": 586564,
+      "predicted": 586565,
+      "dollarError": 1,
+      "absolutePercent": 0.00017048,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 60,
+      "policyYear": 15,
+      "actual": 623002,
+      "predicted": 623002,
+      "dollarError": 0,
+      "absolutePercent": 0,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 61,
+      "policyYear": 16,
+      "actual": 641879,
+      "predicted": 641880,
+      "dollarError": 1,
+      "absolutePercent": 0.00015579,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 62,
+      "policyYear": 17,
+      "actual": 665993,
+      "predicted": 666763,
+      "dollarError": 770,
+      "absolutePercent": 0.11561683,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 63,
+      "policyYear": 18,
+      "actual": 689283,
+      "predicted": 691732,
+      "dollarError": 2449,
+      "absolutePercent": 0.35529674,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 64,
+      "policyYear": 19,
+      "actual": 717870,
+      "predicted": 723484,
+      "dollarError": 5614,
+      "absolutePercent": 0.78203574,
+      "negativeComponents": [
+        "RB"
+      ],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 65,
+      "policyYear": 20,
+      "actual": 751406,
+      "predicted": 761858,
+      "dollarError": 10452,
+      "absolutePercent": 1.39099235,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 66,
+      "policyYear": 21,
+      "actual": 794396,
+      "predicted": 811851,
+      "dollarError": 17455,
+      "absolutePercent": 2.19726685,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 67,
+      "policyYear": 22,
+      "actual": 817936,
+      "predicted": 840661,
+      "dollarError": 22725,
+      "absolutePercent": 2.77833474,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 68,
+      "policyYear": 23,
+      "actual": 848600,
+      "predicted": 877638,
+      "dollarError": 29038,
+      "absolutePercent": 3.42187132,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 69,
+      "policyYear": 24,
+      "actual": 870317,
+      "predicted": 904265,
+      "dollarError": 33948,
+      "absolutePercent": 3.9006477,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 70,
+      "policyYear": 25,
+      "actual": 902435,
+      "predicted": 944468,
+      "dollarError": 42033,
+      "absolutePercent": 4.65773158,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 71,
+      "policyYear": 26,
+      "actual": 937868,
+      "predicted": 988905,
+      "dollarError": 51037,
+      "absolutePercent": 5.44181057,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 72,
+      "policyYear": 27,
+      "actual": 951945,
+      "predicted": 1010382,
+      "dollarError": 58437,
+      "absolutePercent": 6.13869499,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 73,
+      "policyYear": 28,
+      "actual": 965380,
+      "predicted": 1031634,
+      "dollarError": 66254,
+      "absolutePercent": 6.86299695,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": -1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 74,
+      "policyYear": 29,
+      "actual": 976729,
+      "predicted": 1051153,
+      "dollarError": 74424,
+      "absolutePercent": 7.61971847,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 75,
+      "policyYear": 30,
+      "actual": 986395,
+      "predicted": 1069372,
+      "dollarError": 82977,
+      "absolutePercent": 8.41214726,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 76,
+      "policyYear": 31,
+      "actual": 1000920,
+      "predicted": 1093544,
+      "dollarError": 92624,
+      "absolutePercent": 9.25388642,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 77,
+      "policyYear": 32,
+      "actual": 1014632,
+      "predicted": 1112917,
+      "dollarError": 98285,
+      "absolutePercent": 9.68676328,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 78,
+      "policyYear": 33,
+      "actual": 1028428,
+      "predicted": 1126589,
+      "dollarError": 98161,
+      "absolutePercent": 9.54476152,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 79,
+      "policyYear": 34,
+      "actual": 1090962,
+      "predicted": 1195440,
+      "dollarError": 104478,
+      "absolutePercent": 9.57668553,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": -1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 80,
+      "policyYear": 35,
+      "actual": 1154368,
+      "predicted": 1268443,
+      "dollarError": 114075,
+      "absolutePercent": 9.88203069,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 81,
+      "policyYear": 36,
+      "actual": 1221314,
+      "predicted": 1345867,
+      "dollarError": 124553,
+      "absolutePercent": 10.19827825,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 82,
+      "policyYear": 37,
+      "actual": 1291804,
+      "predicted": 1427977,
+      "dollarError": 136173,
+      "absolutePercent": 10.54130503,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 83,
+      "policyYear": 38,
+      "actual": 1366427,
+      "predicted": 1515058,
+      "dollarError": 148631,
+      "absolutePercent": 10.87734654,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 84,
+      "policyYear": 39,
+      "actual": 1444958,
+      "predicted": 1607408,
+      "dollarError": 162450,
+      "absolutePercent": 11.24254131,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 85,
+      "policyYear": 40,
+      "actual": 1533420,
+      "predicted": 1705344,
+      "dollarError": 171924,
+      "absolutePercent": 11.21180107,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 86,
+      "policyYear": 41,
+      "actual": 1626696,
+      "predicted": 1809202,
+      "dollarError": 182506,
+      "absolutePercent": 11.21942883,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 87,
+      "policyYear": 42,
+      "actual": 1725825,
+      "predicted": 1919339,
+      "dollarError": 193514,
+      "absolutePercent": 11.21284024,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 88,
+      "policyYear": 43,
+      "actual": 1830766,
+      "predicted": 2036133,
+      "dollarError": 205367,
+      "absolutePercent": 11.21754501,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 89,
+      "policyYear": 44,
+      "actual": 1942142,
+      "predicted": 2159985,
+      "dollarError": 217843,
+      "absolutePercent": 11.21663606,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 90,
+      "policyYear": 45,
+      "actual": 2060189,
+      "predicted": 2291319,
+      "dollarError": 231130,
+      "absolutePercent": 11.21887361,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 91,
+      "policyYear": 46,
+      "actual": 2185233,
+      "predicted": 2430585,
+      "dollarError": 245352,
+      "absolutePercent": 11.2277272,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 92,
+      "policyYear": 47,
+      "actual": 2317800,
+      "predicted": 2578261,
+      "dollarError": 260461,
+      "absolutePercent": 11.23742342,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 93,
+      "policyYear": 48,
+      "actual": 2458040,
+      "predicted": 2734852,
+      "dollarError": 276812,
+      "absolutePercent": 11.2614929,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 94,
+      "policyYear": 49,
+      "actual": 2606880,
+      "predicted": 2900895,
+      "dollarError": 294015,
+      "absolutePercent": 11.27842478,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 95,
+      "policyYear": 50,
+      "actual": 2764833,
+      "predicted": 3076957,
+      "dollarError": 312124,
+      "absolutePercent": 11.28907243,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 96,
+      "policyYear": 51,
+      "actual": 2932381,
+      "predicted": 3263643,
+      "dollarError": 331262,
+      "absolutePercent": 11.2966903,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 97,
+      "policyYear": 52,
+      "actual": 3109565,
+      "predicted": 3461591,
+      "dollarError": 352026,
+      "absolutePercent": 11.32074744,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 98,
+      "policyYear": 53,
+      "actual": 3297510,
+      "predicted": 3671477,
+      "dollarError": 373967,
+      "absolutePercent": 11.34089055,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 1,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 99,
+      "policyYear": 54,
+      "actual": 3496662,
+      "predicted": 3894019,
+      "dollarError": 397357,
+      "absolutePercent": 11.36389505,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 100,
+      "policyYear": 55,
+      "actual": 3708028,
+      "predicted": 4129980,
+      "dollarError": 421952,
+      "absolutePercent": 11.37941785,
+      "negativeComponents": [],
+      "invalidBasicAmount": false,
+      "componentTotalResidual": 0,
+      "allocationResidual": 2
+    }
+  ],
+  "leakage": "PASS",
+  "impossibleComponentStates": {
+    "calibrationRows": 5,
+    "holdoutRows": 1,
+    "total": 6
+  },
+  "impossibleAllocations": {
+    "calibrationRows": 1,
+    "holdoutRows": 2
+  },
+  "frozenScheduleAnomalies": [
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 100,
+      "policyYear": 50,
+      "withdrawal": 85,
+      "allocationResidual": 85
+    },
+    {
+      "caseId": "50yrs_5pay_180k_avpu",
+      "age": 100,
+      "policyYear": 50,
+      "withdrawal": 8,
+      "allocationResidual": 8
+    },
+    {
+      "caseId": "70k_original",
+      "age": 100,
+      "policyYear": 55,
+      "withdrawal": 2,
+      "allocationResidual": 2
+    }
+  ],
+  "comparison": {
+    "v4": {
+      "engine": "ipos-approximation-terminal-dividend-transition-v4",
+      "MAPE": 2.29650947,
+      "maxErrorPercent": 11.80075621,
+      "rowsAbove010": 247,
+      "annualRows": 325,
+      "maxDollarError": 457617,
+      "worstCase": "50yrs_5pay_130k_avpu",
+      "worstAge": 72,
+      "worstPolicyYear": 22,
+      "leakage": "PASS"
+    },
+    "iteration1": {
+      "candidate": "ipos-approximation-independent-component-state-phase-a-iteration-1",
+      "decision": "ITERATION_1_REJECTED",
+      "holdout": {
+        "MAPE": 4.78519701,
+        "maxErrorPercent": 44.75947355,
+        "rowsAbove010": 232,
+        "annualRows": 325,
+        "maxDollarError": 4545248,
+        "worstCase": "45yrs_5pay_130k_avf_55",
+        "worstAge": 100,
+        "worstPolicyYear": 55,
+        "rowsWithImpossibleComponentAllocations": 1
+      },
+      "fiveRowComponentGate": "FAIL"
+    },
+    "iteration2": {
+      "candidate": "ipos-approximation-independent-component-state-phase-a-iteration-2-rb-annual-increment",
+      "decision": "ITERATION_2_REJECTED",
+      "holdout": {
+        "MAPE": 4.74623296,
+        "maxErrorPercent": 43.38385216,
+        "rowsAbove010": 238,
+        "annualRows": 325,
+        "maxDollarError": 4405556,
+        "worstCase": "45yrs_5pay_130k_avf_55",
+        "worstAge": 100,
+        "worstPolicyYear": 55,
+        "rowsWithImpossibleComponentAllocations": 0
+      },
+      "fiveRowComponentGate": "FAIL"
+    }
+  },
+  "decision": "ITERATION_3_REJECTED",
+  "retainedEngine": "ipos-approximation-terminal-dividend-transition-v4",
+  "reason": "Calibration falsifies the parameter-free TD annual-increment transition through a positive horizon-growing bias; the candidate does not satisfy all component, structural and frozen-holdout retention gates. v4 remains retained.",
+  "tdResult": "4 of 5 immediate rows reduce absolute TD error versus Iteration 1; calibration bias grows from HKD 3331.11331163 in years 1-5 to HKD 42564.08390607 in years 16+.",
+  "dominantRemainingFailure": "TD transition requires a different evidence-supported state law; simple additive no-withdrawal TD accrual systematically overstates genuine carried TD.",
+  "recommendedNextResearchPhase": "Phase B: identify a non-additive TD state invariant from calibration transitions before defining any new candidate or coefficient.",
+  "researchStatus": "NOT_READY_FOR_INTEGRATION",
+  "productionActivated": false,
+  "qualification": "Research approximation calibrated against genuine proposals; not an official AIA formula or exact iPOS calculation."
+}
