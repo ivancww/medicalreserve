@@ -1,0 +1,3033 @@
+{
+  "reportVersion": 1,
+  "previousHead": "958b823610d1b3c15a9d6a034f37f6b439c72282",
+  "engineVersion": "ipos-customer-total-value-carried-ratio-v1",
+  "qualification": "Research approximation calibrated against genuine proposals; not an official AIA formula or exact iPOS calculation.",
+  "architecture": {
+    "primaryState": "Projected remaining total surrender value and its ratio to the genuine no-withdrawal total curve.",
+    "firstWithdrawal": "no-withdrawal total minus current support",
+    "repeatedWithdrawal": "remaining(PY) = noWithdrawalTotal(PY) * remaining(PY-1) / noWithdrawalTotal(PY-1) - currentSupport; first support = noWithdrawalTotal - currentSupport",
+    "zeroWithdrawal": "Preserve the prior remaining/base ratio; never reset to pristine base.",
+    "components": "No customer GCV/RB/TD output and no invented component allocation.",
+    "basicAmountBoundary": "Exact premium-to-Basic metadata mapping seeds the no-withdrawal curve. Without a genuine allocation generator, later GCV-driven Basic Amount reduction is represented only through total-state depletion, not claimed as an independent component reconstruction."
+  },
+  "modelLockSHA256": "31b0e4e4ce35018353b47e40c1c430f511cc26c616b65963761014890c52de23",
+  "frozenHoldoutEvaluationCount": 1,
+  "calibrationDiagnostics": {
+    "cases": 14,
+    "rows": 765,
+    "MAPE": 0.64228503,
+    "maxErrorPercent": 2.76706424,
+    "maxDollarError": 257369,
+    "firstWithdrawal": "PASS",
+    "zeroWithdrawalPersistence": "PASS"
+  },
+  "holdout": {
+    "annualRows": 325,
+    "MAPE": 1.14609369,
+    "MAE_HKD": 44522.05230769,
+    "maxErrorPercent": 3.75423516,
+    "maxDollarError": 277602,
+    "rowsAbove": {
+      "0.01": 248,
+      "0.02": 246,
+      "0.05": 241,
+      "0.10": 235,
+      "0.25": 218,
+      "0.50": 195,
+      "1.00": 144
+    },
+    "firstThresholdBreach": {
+      "0.01": {
+        "caseId": "45yrs_5pay_130k_avf_55",
+        "age": 56,
+        "policyYear": 11,
+        "absolutePercent": 0.03974174
+      },
+      "0.02": {
+        "caseId": "45yrs_5pay_130k_avf_55",
+        "age": 56,
+        "policyYear": 11,
+        "absolutePercent": 0.03974174
+      },
+      "0.05": {
+        "caseId": "45yrs_5pay_130k_avf_55",
+        "age": 57,
+        "policyYear": 12,
+        "absolutePercent": 0.11337253
+      },
+      "0.10": {
+        "caseId": "45yrs_5pay_130k_avf_55",
+        "age": 57,
+        "policyYear": 12,
+        "absolutePercent": 0.11337253
+      },
+      "0.25": {
+        "caseId": "45yrs_5pay_130k_avf_55",
+        "age": 59,
+        "policyYear": 14,
+        "absolutePercent": 0.36619091
+      },
+      "0.50": {
+        "caseId": "45yrs_5pay_130k_avf_55",
+        "age": 61,
+        "policyYear": 16,
+        "absolutePercent": 0.63819174
+      },
+      "1.00": {
+        "caseId": "45yrs_5pay_130k_avf_55",
+        "age": 63,
+        "policyYear": 18,
+        "absolutePercent": 1.02388166
+      }
+    },
+    "worstCase": "45yrs_5pay_130k_avpu_55yr",
+    "worstAge": 79,
+    "worstPolicyYear": 34
+  },
+  "holdoutRows": [
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 46,
+      "policyYear": 1,
+      "genuine": 132,
+      "model": 132,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 47,
+      "policyYear": 2,
+      "genuine": 132,
+      "model": 132,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 48,
+      "policyYear": 3,
+      "genuine": 64477,
+      "model": 64477,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 49,
+      "policyYear": 4,
+      "genuine": 162051,
+      "model": 162051,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 50,
+      "policyYear": 5,
+      "genuine": 295170,
+      "model": 295170,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 51,
+      "policyYear": 6,
+      "genuine": 553221,
+      "model": 553221,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 52,
+      "policyYear": 7,
+      "genuine": 644692,
+      "model": 644692,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 53,
+      "policyYear": 8,
+      "genuine": 726809,
+      "model": 726809,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 54,
+      "policyYear": 9,
+      "genuine": 764993,
+      "model": 764993,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 55,
+      "policyYear": 10,
+      "genuine": 814889,
+      "model": 814889,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 56,
+      "policyYear": 11,
+      "genuine": 858040,
+      "model": 857699,
+      "dollarError": -341,
+      "absolutePercent": 0.03974174
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 57,
+      "policyYear": 12,
+      "genuine": 902335,
+      "model": 901312,
+      "dollarError": -1023,
+      "absolutePercent": 0.11337253
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 58,
+      "policyYear": 13,
+      "genuine": 954578,
+      "model": 952423,
+      "dollarError": -2155,
+      "absolutePercent": 0.22575421
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 59,
+      "policyYear": 14,
+      "genuine": 1010675,
+      "model": 1006974,
+      "dollarError": -3701,
+      "absolutePercent": 0.36619091
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 60,
+      "policyYear": 15,
+      "genuine": 1058007,
+      "model": 1052828,
+      "dollarError": -5179,
+      "absolutePercent": 0.48950527
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 61,
+      "policyYear": 16,
+      "genuine": 1108601,
+      "model": 1101526,
+      "dollarError": -7075,
+      "absolutePercent": 0.63819174
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 62,
+      "policyYear": 17,
+      "genuine": 1170812,
+      "model": 1161114,
+      "dollarError": -9698,
+      "absolutePercent": 0.82831402
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 63,
+      "policyYear": 18,
+      "genuine": 1234713,
+      "model": 1222071,
+      "dollarError": -12642,
+      "absolutePercent": 1.02388166
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 64,
+      "policyYear": 19,
+      "genuine": 1311991,
+      "model": 1295737,
+      "dollarError": -16254,
+      "absolutePercent": 1.23888045
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 65,
+      "policyYear": 20,
+      "genuine": 1401635,
+      "model": 1381104,
+      "dollarError": -20531,
+      "absolutePercent": 1.46478934
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 66,
+      "policyYear": 21,
+      "genuine": 1514836,
+      "model": 1489757,
+      "dollarError": -25079,
+      "absolutePercent": 1.65555875
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 67,
+      "policyYear": 22,
+      "genuine": 1596112,
+      "model": 1568438,
+      "dollarError": -27674,
+      "absolutePercent": 1.73383823
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 68,
+      "policyYear": 23,
+      "genuine": 1695355,
+      "model": 1664515,
+      "dollarError": -30840,
+      "absolutePercent": 1.81908804
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 69,
+      "policyYear": 24,
+      "genuine": 1781925,
+      "model": 1747115,
+      "dollarError": -34810,
+      "absolutePercent": 1.95350534
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 70,
+      "policyYear": 25,
+      "genuine": 1894652,
+      "model": 1858030,
+      "dollarError": -36622,
+      "absolutePercent": 1.93291433
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 71,
+      "policyYear": 26,
+      "genuine": 2021221,
+      "model": 1982651,
+      "dollarError": -38570,
+      "absolutePercent": 1.90825249
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 72,
+      "policyYear": 27,
+      "genuine": 2109049,
+      "model": 2070711,
+      "dollarError": -38338,
+      "absolutePercent": 1.81778612
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 73,
+      "policyYear": 28,
+      "genuine": 2201125,
+      "model": 2163306,
+      "dollarError": -37819,
+      "absolutePercent": 1.71816685
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 74,
+      "policyYear": 29,
+      "genuine": 2296317,
+      "model": 2259382,
+      "dollarError": -36935,
+      "absolutePercent": 1.60844518
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 75,
+      "policyYear": 30,
+      "genuine": 2395191,
+      "model": 2359517,
+      "dollarError": -35674,
+      "absolutePercent": 1.48940105
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 76,
+      "policyYear": 31,
+      "genuine": 2513618,
+      "model": 2479049,
+      "dollarError": -34569,
+      "absolutePercent": 1.37526864
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 77,
+      "policyYear": 32,
+      "genuine": 2638473,
+      "model": 2587754,
+      "dollarError": -50719,
+      "absolutePercent": 1.92228611
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 78,
+      "policyYear": 33,
+      "genuine": 2816436,
+      "model": 2743019,
+      "dollarError": -73417,
+      "absolutePercent": 2.60673418
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 79,
+      "policyYear": 34,
+      "genuine": 2987710,
+      "model": 2907600,
+      "dollarError": -80110,
+      "absolutePercent": 2.6813178
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 80,
+      "policyYear": 35,
+      "genuine": 3161379,
+      "model": 3082055,
+      "dollarError": -79324,
+      "absolutePercent": 2.50915819
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 81,
+      "policyYear": 36,
+      "genuine": 3344742,
+      "model": 3266979,
+      "dollarError": -77763,
+      "absolutePercent": 2.32493269
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 82,
+      "policyYear": 37,
+      "genuine": 3537818,
+      "model": 3462998,
+      "dollarError": -74820,
+      "absolutePercent": 2.11486289
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 83,
+      "policyYear": 38,
+      "genuine": 3742216,
+      "model": 3670778,
+      "dollarError": -71438,
+      "absolutePercent": 1.90897586
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 84,
+      "policyYear": 39,
+      "genuine": 3957323,
+      "model": 3891024,
+      "dollarError": -66299,
+      "absolutePercent": 1.67534973
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 85,
+      "policyYear": 40,
+      "genuine": 4199581,
+      "model": 4124486,
+      "dollarError": -75095,
+      "absolutePercent": 1.78815458
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 86,
+      "policyYear": 41,
+      "genuine": 4455020,
+      "model": 4371955,
+      "dollarError": -83065,
+      "absolutePercent": 1.86452586
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 87,
+      "policyYear": 42,
+      "genuine": 4726488,
+      "model": 4634272,
+      "dollarError": -92216,
+      "absolutePercent": 1.95104695
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 88,
+      "policyYear": 43,
+      "genuine": 5013872,
+      "model": 4912329,
+      "dollarError": -101543,
+      "absolutePercent": 2.02524117
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 89,
+      "policyYear": 44,
+      "genuine": 5318881,
+      "model": 5207068,
+      "dollarError": -111813,
+      "absolutePercent": 2.10219029
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 90,
+      "policyYear": 45,
+      "genuine": 5642158,
+      "model": 5519493,
+      "dollarError": -122665,
+      "absolutePercent": 2.17407949
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 91,
+      "policyYear": 46,
+      "genuine": 5984595,
+      "model": 5850662,
+      "dollarError": -133933,
+      "absolutePercent": 2.23796264
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 92,
+      "policyYear": 47,
+      "genuine": 6347635,
+      "model": 6201702,
+      "dollarError": -145933,
+      "absolutePercent": 2.29901373
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 93,
+      "policyYear": 48,
+      "genuine": 6731687,
+      "model": 6573804,
+      "dollarError": -157883,
+      "absolutePercent": 2.34537048
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 94,
+      "policyYear": 49,
+      "genuine": 7139291,
+      "model": 6968233,
+      "dollarError": -171058,
+      "absolutePercent": 2.39600823
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 95,
+      "policyYear": 50,
+      "genuine": 7571851,
+      "model": 7386327,
+      "dollarError": -185524,
+      "absolutePercent": 2.45018028
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 96,
+      "policyYear": 51,
+      "genuine": 8030687,
+      "model": 7829506,
+      "dollarError": -201181,
+      "absolutePercent": 2.50515305
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 97,
+      "policyYear": 52,
+      "genuine": 8515914,
+      "model": 8299277,
+      "dollarError": -216637,
+      "absolutePercent": 2.54390779
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 98,
+      "policyYear": 53,
+      "genuine": 9030609,
+      "model": 8797233,
+      "dollarError": -233376,
+      "absolutePercent": 2.58427754
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 99,
+      "policyYear": 54,
+      "genuine": 9575994,
+      "model": 9325067,
+      "dollarError": -250927,
+      "absolutePercent": 2.62037549
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avf_55",
+      "age": 100,
+      "policyYear": 55,
+      "genuine": 10154829,
+      "model": 9884571,
+      "dollarError": -270258,
+      "absolutePercent": 2.66137421
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 46,
+      "policyYear": 1,
+      "genuine": 132,
+      "model": 132,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 47,
+      "policyYear": 2,
+      "genuine": 132,
+      "model": 132,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 48,
+      "policyYear": 3,
+      "genuine": 64477,
+      "model": 64477,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 49,
+      "policyYear": 4,
+      "genuine": 162051,
+      "model": 162051,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 50,
+      "policyYear": 5,
+      "genuine": 295170,
+      "model": 295170,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 51,
+      "policyYear": 6,
+      "genuine": 553221,
+      "model": 553221,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 52,
+      "policyYear": 7,
+      "genuine": 644692,
+      "model": 644692,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 53,
+      "policyYear": 8,
+      "genuine": 726809,
+      "model": 726809,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 54,
+      "policyYear": 9,
+      "genuine": 764993,
+      "model": 764993,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 55,
+      "policyYear": 10,
+      "genuine": 809792,
+      "model": 809792,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 56,
+      "policyYear": 11,
+      "genuine": 846694,
+      "model": 846228,
+      "dollarError": -466,
+      "absolutePercent": 0.05503759
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 57,
+      "policyYear": 12,
+      "genuine": 883552,
+      "model": 882140,
+      "dollarError": -1412,
+      "absolutePercent": 0.1598095
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 58,
+      "policyYear": 13,
+      "genuine": 927200,
+      "model": 924188,
+      "dollarError": -3012,
+      "absolutePercent": 0.32484901
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 59,
+      "policyYear": 14,
+      "genuine": 973164,
+      "model": 967938,
+      "dollarError": -5226,
+      "absolutePercent": 0.53701123
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 60,
+      "policyYear": 15,
+      "genuine": 1009383,
+      "model": 1002012,
+      "dollarError": -7371,
+      "absolutePercent": 0.73024808
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 61,
+      "policyYear": 16,
+      "genuine": 1047536,
+      "model": 1037640,
+      "dollarError": -9896,
+      "absolutePercent": 0.94469307
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 62,
+      "policyYear": 17,
+      "genuine": 1094824,
+      "model": 1081883,
+      "dollarError": -12941,
+      "absolutePercent": 1.18201647
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 63,
+      "policyYear": 18,
+      "genuine": 1141167,
+      "model": 1125176,
+      "dollarError": -15991,
+      "absolutePercent": 1.40128483
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 64,
+      "policyYear": 19,
+      "genuine": 1196955,
+      "model": 1177291,
+      "dollarError": -19664,
+      "absolutePercent": 1.64283536
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 65,
+      "policyYear": 20,
+      "genuine": 1261742,
+      "model": 1237773,
+      "dollarError": -23969,
+      "absolutePercent": 1.89967521
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 66,
+      "policyYear": 21,
+      "genuine": 1343956,
+      "model": 1315366,
+      "dollarError": -28590,
+      "absolutePercent": 2.12730179
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 67,
+      "policyYear": 22,
+      "genuine": 1394789,
+      "model": 1363455,
+      "dollarError": -31334,
+      "absolutePercent": 2.24650467
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 68,
+      "policyYear": 23,
+      "genuine": 1459031,
+      "model": 1424371,
+      "dollarError": -34660,
+      "absolutePercent": 2.37554925
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 69,
+      "policyYear": 24,
+      "genuine": 1509448,
+      "model": 1470835,
+      "dollarError": -38613,
+      "absolutePercent": 2.55808746
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 70,
+      "policyYear": 25,
+      "genuine": 1579455,
+      "model": 1538573,
+      "dollarError": -40882,
+      "absolutePercent": 2.58836118
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 71,
+      "policyYear": 26,
+      "genuine": 1657333,
+      "model": 1613959,
+      "dollarError": -43374,
+      "absolutePercent": 2.61709626
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 72,
+      "policyYear": 27,
+      "genuine": 1699705,
+      "model": 1655804,
+      "dollarError": -43901,
+      "absolutePercent": 2.58285997
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 73,
+      "policyYear": 28,
+      "genuine": 1742776,
+      "model": 1698492,
+      "dollarError": -44284,
+      "absolutePercent": 2.54100355
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 74,
+      "policyYear": 29,
+      "genuine": 1784418,
+      "model": 1739953,
+      "dollarError": -44465,
+      "absolutePercent": 2.49184888
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 75,
+      "policyYear": 30,
+      "genuine": 1825402,
+      "model": 1780946,
+      "dollarError": -44456,
+      "absolutePercent": 2.43540875
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 76,
+      "policyYear": 31,
+      "genuine": 1877817,
+      "model": 1833031,
+      "dollarError": -44786,
+      "absolutePercent": 2.38500344
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 77,
+      "policyYear": 32,
+      "genuine": 1931403,
+      "model": 1873392,
+      "dollarError": -58011,
+      "absolutePercent": 3.00356787
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 78,
+      "policyYear": 33,
+      "genuine": 2061674,
+      "model": 1985795,
+      "dollarError": -75879,
+      "absolutePercent": 3.68045578
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 79,
+      "policyYear": 34,
+      "genuine": 2187050,
+      "model": 2104943,
+      "dollarError": -82107,
+      "absolutePercent": 3.75423516
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 80,
+      "policyYear": 35,
+      "genuine": 2314178,
+      "model": 2231240,
+      "dollarError": -82938,
+      "absolutePercent": 3.58390755
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 81,
+      "policyYear": 36,
+      "genuine": 2448402,
+      "model": 2365114,
+      "dollarError": -83288,
+      "absolutePercent": 3.40172896
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 82,
+      "policyYear": 37,
+      "genuine": 2589737,
+      "model": 2507021,
+      "dollarError": -82716,
+      "absolutePercent": 3.19399229
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 83,
+      "policyYear": 38,
+      "genuine": 2739360,
+      "model": 2657442,
+      "dollarError": -81918,
+      "absolutePercent": 2.99040652
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 84,
+      "policyYear": 39,
+      "genuine": 2896821,
+      "model": 2816889,
+      "dollarError": -79932,
+      "absolutePercent": 2.75930063
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 85,
+      "policyYear": 40,
+      "genuine": 3074158,
+      "model": 2985902,
+      "dollarError": -88256,
+      "absolutePercent": 2.87089993
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 86,
+      "policyYear": 41,
+      "genuine": 3261143,
+      "model": 3165056,
+      "dollarError": -96087,
+      "absolutePercent": 2.94642093
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 87,
+      "policyYear": 42,
+      "genuine": 3459862,
+      "model": 3354960,
+      "dollarError": -104902,
+      "absolutePercent": 3.03197064
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 88,
+      "policyYear": 43,
+      "genuine": 3670232,
+      "model": 3556258,
+      "dollarError": -113974,
+      "absolutePercent": 3.10536228
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 89,
+      "policyYear": 44,
+      "genuine": 3893503,
+      "model": 3769633,
+      "dollarError": -123870,
+      "absolutePercent": 3.18145382
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 90,
+      "policyYear": 45,
+      "genuine": 4130146,
+      "model": 3995811,
+      "dollarError": -134335,
+      "absolutePercent": 3.25254846
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 91,
+      "policyYear": 46,
+      "genuine": 4380816,
+      "model": 4235560,
+      "dollarError": -145256,
+      "absolutePercent": 3.31572931
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 92,
+      "policyYear": 47,
+      "genuine": 4646566,
+      "model": 4489693,
+      "dollarError": -156873,
+      "absolutePercent": 3.37610614
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 93,
+      "policyYear": 48,
+      "genuine": 4927698,
+      "model": 4759075,
+      "dollarError": -168623,
+      "absolutePercent": 3.42194266
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 94,
+      "policyYear": 49,
+      "genuine": 5226071,
+      "model": 5044619,
+      "dollarError": -181452,
+      "absolutePercent": 3.47205386
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 95,
+      "policyYear": 50,
+      "genuine": 5542712,
+      "model": 5347296,
+      "dollarError": -195416,
+      "absolutePercent": 3.52563871
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 96,
+      "policyYear": 51,
+      "genuine": 5878587,
+      "model": 5668134,
+      "dollarError": -210453,
+      "absolutePercent": 3.57999295
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 97,
+      "policyYear": 52,
+      "genuine": 6233780,
+      "model": 6008222,
+      "dollarError": -225558,
+      "absolutePercent": 3.61831826
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 98,
+      "policyYear": 53,
+      "genuine": 6610545,
+      "model": 6368715,
+      "dollarError": -241830,
+      "absolutePercent": 3.65824603
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 99,
+      "policyYear": 54,
+      "genuine": 7009775,
+      "model": 6750838,
+      "dollarError": -258937,
+      "absolutePercent": 3.69394167
+    },
+    {
+      "caseId": "45yrs_5pay_130k_avpu_55yr",
+      "age": 100,
+      "policyYear": 55,
+      "genuine": 7433491,
+      "model": 7155889,
+      "dollarError": -277602,
+      "absolutePercent": 3.73447684
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 46,
+      "policyYear": 1,
+      "genuine": 153,
+      "model": 152,
+      "dollarError": -1,
+      "absolutePercent": 0.65359477
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 47,
+      "policyYear": 2,
+      "genuine": 153,
+      "model": 152,
+      "dollarError": -1,
+      "absolutePercent": 0.65359477
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 48,
+      "policyYear": 3,
+      "genuine": 74397,
+      "model": 74397,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 49,
+      "policyYear": 4,
+      "genuine": 186982,
+      "model": 186982,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 50,
+      "policyYear": 5,
+      "genuine": 340581,
+      "model": 340581,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 51,
+      "policyYear": 6,
+      "genuine": 638332,
+      "model": 638332,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 52,
+      "policyYear": 7,
+      "genuine": 743875,
+      "model": 743875,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 53,
+      "policyYear": 8,
+      "genuine": 838625,
+      "model": 838625,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 54,
+      "policyYear": 9,
+      "genuine": 882684,
+      "model": 882684,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 55,
+      "policyYear": 10,
+      "genuine": 956446,
+      "model": 956446,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 56,
+      "policyYear": 11,
+      "genuine": 1023594,
+      "model": 1023594,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 57,
+      "policyYear": 12,
+      "genuine": 1093286,
+      "model": 1093286,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 58,
+      "policyYear": 13,
+      "genuine": 1173884,
+      "model": 1173884,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 59,
+      "policyYear": 14,
+      "genuine": 1260762,
+      "model": 1260762,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 60,
+      "policyYear": 15,
+      "genuine": 1339082,
+      "model": 1339082,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 61,
+      "policyYear": 16,
+      "genuine": 1405846,
+      "model": 1405846,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 62,
+      "policyYear": 17,
+      "genuine": 1487384,
+      "model": 1487083,
+      "dollarError": -301,
+      "absolutePercent": 0.02023687
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 63,
+      "policyYear": 18,
+      "genuine": 1571662,
+      "model": 1570777,
+      "dollarError": -885,
+      "absolutePercent": 0.05630982
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 64,
+      "policyYear": 19,
+      "genuine": 1673417,
+      "model": 1671480,
+      "dollarError": -1937,
+      "absolutePercent": 0.11575118
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 65,
+      "policyYear": 20,
+      "genuine": 1791789,
+      "model": 1788220,
+      "dollarError": -3569,
+      "absolutePercent": 0.1991864
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 66,
+      "policyYear": 21,
+      "genuine": 1941505,
+      "model": 1935948,
+      "dollarError": -5557,
+      "absolutePercent": 0.28622126
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 67,
+      "policyYear": 22,
+      "genuine": 2052320,
+      "model": 2045723,
+      "dollarError": -6597,
+      "absolutePercent": 0.3214411
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 68,
+      "policyYear": 23,
+      "genuine": 2187088,
+      "model": 2179065,
+      "dollarError": -8023,
+      "absolutePercent": 0.36683481
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 69,
+      "policyYear": 24,
+      "genuine": 2306309,
+      "model": 2295752,
+      "dollarError": -10557,
+      "absolutePercent": 0.45774439
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 70,
+      "policyYear": 25,
+      "genuine": 2460957,
+      "model": 2450706,
+      "dollarError": -10251,
+      "absolutePercent": 0.41654527
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 71,
+      "policyYear": 26,
+      "genuine": 2634682,
+      "model": 2625030,
+      "dollarError": -9652,
+      "absolutePercent": 0.36634402
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 72,
+      "policyYear": 27,
+      "genuine": 2759200,
+      "model": 2752333,
+      "dollarError": -6867,
+      "absolutePercent": 0.24887649
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 73,
+      "policyYear": 28,
+      "genuine": 2890426,
+      "model": 2886904,
+      "dollarError": -3522,
+      "absolutePercent": 0.12185055
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 74,
+      "policyYear": 29,
+      "genuine": 3026949,
+      "model": 3027420,
+      "dollarError": 471,
+      "absolutePercent": 0.01556022
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 75,
+      "policyYear": 30,
+      "genuine": 3169690,
+      "model": 3174851,
+      "dollarError": 5161,
+      "absolutePercent": 0.16282349
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 76,
+      "policyYear": 31,
+      "genuine": 3339629,
+      "model": 3349814,
+      "dollarError": 10185,
+      "absolutePercent": 0.304974
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 77,
+      "policyYear": 32,
+      "genuine": 3519564,
+      "model": 3511719,
+      "dollarError": -7845,
+      "absolutePercent": 0.22289693
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 78,
+      "policyYear": 33,
+      "genuine": 3756956,
+      "model": 3722422,
+      "dollarError": -34534,
+      "absolutePercent": 0.91920161
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 79,
+      "policyYear": 34,
+      "genuine": 3985426,
+      "model": 3945768,
+      "dollarError": -39658,
+      "absolutePercent": 0.99507556
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 80,
+      "policyYear": 35,
+      "genuine": 4217089,
+      "model": 4182514,
+      "dollarError": -34575,
+      "absolutePercent": 0.81987836
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 81,
+      "policyYear": 36,
+      "genuine": 4461684,
+      "model": 4433465,
+      "dollarError": -28219,
+      "absolutePercent": 0.6324742
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 82,
+      "policyYear": 37,
+      "genuine": 4719237,
+      "model": 4699472,
+      "dollarError": -19765,
+      "absolutePercent": 0.4188177
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 83,
+      "policyYear": 38,
+      "genuine": 4991892,
+      "model": 4981441,
+      "dollarError": -10451,
+      "absolutePercent": 0.2093595
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 84,
+      "policyYear": 39,
+      "genuine": 5278831,
+      "model": 5280327,
+      "dollarError": 1496,
+      "absolutePercent": 0.02833961
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 85,
+      "policyYear": 40,
+      "genuine": 5601988,
+      "model": 5597147,
+      "dollarError": -4841,
+      "absolutePercent": 0.08641575
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 86,
+      "policyYear": 41,
+      "genuine": 5942729,
+      "model": 5932976,
+      "dollarError": -9753,
+      "absolutePercent": 0.16411652
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 87,
+      "policyYear": 42,
+      "genuine": 6304851,
+      "model": 6288954,
+      "dollarError": -15897,
+      "absolutePercent": 0.25213919
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 88,
+      "policyYear": 43,
+      "genuine": 6688204,
+      "model": 6666292,
+      "dollarError": -21912,
+      "absolutePercent": 0.32762159
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 89,
+      "policyYear": 44,
+      "genuine": 7095068,
+      "model": 7066269,
+      "dollarError": -28799,
+      "absolutePercent": 0.40590168
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 90,
+      "policyYear": 45,
+      "genuine": 7526299,
+      "model": 7490245,
+      "dollarError": -36054,
+      "absolutePercent": 0.47904023
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 91,
+      "policyYear": 46,
+      "genuine": 7983090,
+      "model": 7939660,
+      "dollarError": -43430,
+      "absolutePercent": 0.54402493
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 92,
+      "policyYear": 47,
+      "genuine": 8467363,
+      "model": 8416040,
+      "dollarError": -51323,
+      "absolutePercent": 0.60612731
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 93,
+      "policyYear": 48,
+      "genuine": 8979665,
+      "model": 8921002,
+      "dollarError": -58663,
+      "absolutePercent": 0.65328718
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 94,
+      "policyYear": 49,
+      "genuine": 9523385,
+      "model": 9456263,
+      "dollarError": -67122,
+      "absolutePercent": 0.70481242
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 95,
+      "policyYear": 50,
+      "genuine": 10100395,
+      "model": 10023638,
+      "dollarError": -76757,
+      "absolutePercent": 0.75994058
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 96,
+      "policyYear": 51,
+      "genuine": 10712454,
+      "model": 10625057,
+      "dollarError": -87397,
+      "absolutePercent": 0.81584481
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 97,
+      "policyYear": 52,
+      "genuine": 11359718,
+      "model": 11262560,
+      "dollarError": -97158,
+      "absolutePercent": 0.85528532
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 98,
+      "policyYear": 53,
+      "genuine": 12046290,
+      "model": 11938313,
+      "dollarError": -107977,
+      "absolutePercent": 0.89635066
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 99,
+      "policyYear": 54,
+      "genuine": 12773800,
+      "model": 12654612,
+      "dollarError": -119188,
+      "absolutePercent": 0.93306612
+    },
+    {
+      "caseId": "5pay_avf_150k",
+      "age": 100,
+      "policyYear": 55,
+      "genuine": 13545931,
+      "model": 13413889,
+      "dollarError": -132042,
+      "absolutePercent": 0.97477242
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 46,
+      "policyYear": 1,
+      "genuine": 204,
+      "model": 204,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 47,
+      "policyYear": 2,
+      "genuine": 204,
+      "model": 204,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 48,
+      "policyYear": 3,
+      "genuine": 99500,
+      "model": 99500,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 49,
+      "policyYear": 4,
+      "genuine": 250074,
+      "model": 250074,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 50,
+      "policyYear": 5,
+      "genuine": 455499,
+      "model": 455499,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 51,
+      "policyYear": 6,
+      "genuine": 853718,
+      "model": 853718,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 52,
+      "policyYear": 7,
+      "genuine": 994873,
+      "model": 994873,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 53,
+      "policyYear": 8,
+      "genuine": 1121594,
+      "model": 1121594,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 54,
+      "policyYear": 9,
+      "genuine": 1180519,
+      "model": 1180519,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 55,
+      "policyYear": 10,
+      "genuine": 1279169,
+      "model": 1279169,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 56,
+      "policyYear": 11,
+      "genuine": 1368975,
+      "model": 1368975,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 57,
+      "policyYear": 12,
+      "genuine": 1462182,
+      "model": 1462182,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 58,
+      "policyYear": 13,
+      "genuine": 1569975,
+      "model": 1569975,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 59,
+      "policyYear": 14,
+      "genuine": 1686167,
+      "model": 1686167,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 60,
+      "policyYear": 15,
+      "genuine": 1790914,
+      "model": 1790914,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 61,
+      "policyYear": 16,
+      "genuine": 1876330,
+      "model": 1876330,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 62,
+      "policyYear": 17,
+      "genuine": 1980705,
+      "model": 1980237,
+      "dollarError": -468,
+      "absolutePercent": 0.02362795
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 63,
+      "policyYear": 18,
+      "genuine": 2087574,
+      "model": 2086191,
+      "dollarError": -1383,
+      "absolutePercent": 0.06624915
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 64,
+      "policyYear": 19,
+      "genuine": 2215862,
+      "model": 2212819,
+      "dollarError": -3043,
+      "absolutePercent": 0.13732805
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 65,
+      "policyYear": 20,
+      "genuine": 2365413,
+      "model": 2359762,
+      "dollarError": -5651,
+      "absolutePercent": 0.2389012
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 66,
+      "policyYear": 21,
+      "genuine": 2553889,
+      "model": 2545045,
+      "dollarError": -8844,
+      "absolutePercent": 0.34629539
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 67,
+      "policyYear": 22,
+      "genuine": 2689173,
+      "model": 2678647,
+      "dollarError": -10526,
+      "absolutePercent": 0.39142145
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 68,
+      "policyYear": 23,
+      "genuine": 2855095,
+      "model": 2842248,
+      "dollarError": -12847,
+      "absolutePercent": 0.44996751
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 69,
+      "policyYear": 24,
+      "genuine": 2999583,
+      "model": 2982641,
+      "dollarError": -16942,
+      "absolutePercent": 0.56481184
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 70,
+      "policyYear": 25,
+      "genuine": 3188384,
+      "model": 3171733,
+      "dollarError": -16651,
+      "absolutePercent": 0.52223948
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 71,
+      "policyYear": 26,
+      "genuine": 3400236,
+      "model": 3384079,
+      "dollarError": -16157,
+      "absolutePercent": 0.4751729
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 72,
+      "policyYear": 27,
+      "genuine": 3546849,
+      "model": 3534060,
+      "dollarError": -12789,
+      "absolutePercent": 0.36057357
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 73,
+      "policyYear": 28,
+      "genuine": 3701148,
+      "model": 3692416,
+      "dollarError": -8732,
+      "absolutePercent": 0.2359268
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 74,
+      "policyYear": 29,
+      "genuine": 3860216,
+      "model": 3856337,
+      "dollarError": -3879,
+      "absolutePercent": 0.1004866
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 75,
+      "policyYear": 30,
+      "genuine": 4025830,
+      "model": 4027657,
+      "dollarError": 1827,
+      "absolutePercent": 0.04538195
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 76,
+      "policyYear": 31,
+      "genuine": 4224596,
+      "model": 4223781,
+      "dollarError": -815,
+      "absolutePercent": 0.01929179
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 77,
+      "policyYear": 32,
+      "genuine": 4434671,
+      "model": 4405575,
+      "dollarError": -29096,
+      "absolutePercent": 0.65610279
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 78,
+      "policyYear": 33,
+      "genuine": 4733786,
+      "model": 4669910,
+      "dollarError": -63876,
+      "absolutePercent": 1.34936391
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 79,
+      "policyYear": 34,
+      "genuine": 5021659,
+      "model": 4950105,
+      "dollarError": -71554,
+      "absolutePercent": 1.42490759
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 80,
+      "policyYear": 35,
+      "genuine": 5313556,
+      "model": 5247111,
+      "dollarError": -66445,
+      "absolutePercent": 1.25048085
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 81,
+      "policyYear": 36,
+      "genuine": 5621747,
+      "model": 5561938,
+      "dollarError": -59809,
+      "absolutePercent": 1.06388637
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 82,
+      "policyYear": 37,
+      "genuine": 5946265,
+      "model": 5895654,
+      "dollarError": -50611,
+      "absolutePercent": 0.85113933
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 83,
+      "policyYear": 38,
+      "genuine": 6289812,
+      "model": 6249394,
+      "dollarError": -40418,
+      "absolutePercent": 0.64259472
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 84,
+      "policyYear": 39,
+      "genuine": 6651357,
+      "model": 6624357,
+      "dollarError": -27000,
+      "absolutePercent": 0.4059322
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 85,
+      "policyYear": 40,
+      "genuine": 7058537,
+      "model": 7021818,
+      "dollarError": -36719,
+      "absolutePercent": 0.52020695
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 86,
+      "policyYear": 41,
+      "genuine": 7487872,
+      "model": 7443127,
+      "dollarError": -44745,
+      "absolutePercent": 0.5975663
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 87,
+      "policyYear": 42,
+      "genuine": 7944148,
+      "model": 7889715,
+      "dollarError": -54433,
+      "absolutePercent": 0.6851962
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 88,
+      "policyYear": 43,
+      "genuine": 8427175,
+      "model": 8363098,
+      "dollarError": -64077,
+      "absolutePercent": 0.76036157
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 89,
+      "policyYear": 44,
+      "genuine": 8939826,
+      "model": 8864884,
+      "dollarError": -74942,
+      "absolutePercent": 0.83829372
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 90,
+      "policyYear": 45,
+      "genuine": 9483180,
+      "model": 9396777,
+      "dollarError": -86403,
+      "absolutePercent": 0.91111842
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 91,
+      "policyYear": 46,
+      "genuine": 10058738,
+      "model": 9960584,
+      "dollarError": -98154,
+      "absolutePercent": 0.9758083
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 92,
+      "policyYear": 47,
+      "genuine": 10668926,
+      "model": 10558219,
+      "dollarError": -110707,
+      "absolutePercent": 1.03765834
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 93,
+      "policyYear": 48,
+      "genuine": 11314429,
+      "model": 11191712,
+      "dollarError": -122717,
+      "absolutePercent": 1.08460621
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 94,
+      "policyYear": 49,
+      "genuine": 11999519,
+      "model": 11863214,
+      "dollarError": -136305,
+      "absolutePercent": 1.13592053
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 95,
+      "policyYear": 50,
+      "genuine": 12726555,
+      "model": 12575007,
+      "dollarError": -151548,
+      "absolutePercent": 1.19080144
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 96,
+      "policyYear": 51,
+      "genuine": 13497753,
+      "model": 13329508,
+      "dollarError": -168245,
+      "absolutePercent": 1.24646673
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 97,
+      "policyYear": 52,
+      "genuine": 14313309,
+      "model": 14129278,
+      "dollarError": -184031,
+      "absolutePercent": 1.28573344
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 98,
+      "policyYear": 53,
+      "genuine": 15178394,
+      "model": 14977036,
+      "dollarError": -201358,
+      "absolutePercent": 1.32660939
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 99,
+      "policyYear": 54,
+      "genuine": 16095061,
+      "model": 15875658,
+      "dollarError": -219403,
+      "absolutePercent": 1.36316973
+    },
+    {
+      "caseId": "5pay_avpu_200k",
+      "age": 100,
+      "policyYear": 55,
+      "genuine": 17067951,
+      "model": 16828197,
+      "dollarError": -239754,
+      "absolutePercent": 1.40470288
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 51,
+      "policyYear": 1,
+      "genuine": 132,
+      "model": 132,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 52,
+      "policyYear": 2,
+      "genuine": 132,
+      "model": 132,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 53,
+      "policyYear": 3,
+      "genuine": 64477,
+      "model": 64477,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 54,
+      "policyYear": 4,
+      "genuine": 162051,
+      "model": 162051,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 55,
+      "policyYear": 5,
+      "genuine": 295170,
+      "model": 295170,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 56,
+      "policyYear": 6,
+      "genuine": 553221,
+      "model": 553221,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 57,
+      "policyYear": 7,
+      "genuine": 644692,
+      "model": 644692,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 58,
+      "policyYear": 8,
+      "genuine": 726809,
+      "model": 726809,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 59,
+      "policyYear": 9,
+      "genuine": 764993,
+      "model": 764993,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 60,
+      "policyYear": 10,
+      "genuine": 828920,
+      "model": 828920,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 61,
+      "policyYear": 11,
+      "genuine": 859507,
+      "model": 859507,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 62,
+      "policyYear": 12,
+      "genuine": 889076,
+      "model": 888451,
+      "dollarError": -625,
+      "absolutePercent": 0.0702977
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 63,
+      "policyYear": 13,
+      "genuine": 923818,
+      "model": 921780,
+      "dollarError": -2038,
+      "absolutePercent": 0.22060622
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 64,
+      "policyYear": 14,
+      "genuine": 959126,
+      "model": 954872,
+      "dollarError": -4254,
+      "absolutePercent": 0.4435288
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 65,
+      "policyYear": 15,
+      "genuine": 982861,
+      "model": 976374,
+      "dollarError": -6487,
+      "absolutePercent": 0.66001194
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 66,
+      "policyYear": 16,
+      "genuine": 1005686,
+      "model": 996785,
+      "dollarError": -8901,
+      "absolutePercent": 0.88506751
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 67,
+      "policyYear": 17,
+      "genuine": 1035903,
+      "model": 1024121,
+      "dollarError": -11782,
+      "absolutePercent": 1.13736518
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 68,
+      "policyYear": 18,
+      "genuine": 1064653,
+      "model": 1050017,
+      "dollarError": -14636,
+      "absolutePercent": 1.37472021
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 69,
+      "policyYear": 19,
+      "genuine": 1101577,
+      "model": 1083536,
+      "dollarError": -18041,
+      "absolutePercent": 1.63774298
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 70,
+      "policyYear": 20,
+      "genuine": 1145676,
+      "model": 1123678,
+      "dollarError": -21998,
+      "absolutePercent": 1.9200891
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 71,
+      "policyYear": 21,
+      "genuine": 1204105,
+      "model": 1177888,
+      "dollarError": -26217,
+      "absolutePercent": 2.17730181
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 72,
+      "policyYear": 22,
+      "genuine": 1231938,
+      "model": 1203221,
+      "dollarError": -28717,
+      "absolutePercent": 2.33104263
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 73,
+      "policyYear": 23,
+      "genuine": 1269618,
+      "model": 1237883,
+      "dollarError": -31735,
+      "absolutePercent": 2.49957074
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 74,
+      "policyYear": 24,
+      "genuine": 1292313,
+      "model": 1257032,
+      "dollarError": -35281,
+      "absolutePercent": 2.73006617
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 75,
+      "policyYear": 25,
+      "genuine": 1329185,
+      "model": 1291784,
+      "dollarError": -37401,
+      "absolutePercent": 2.81382953
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 76,
+      "policyYear": 26,
+      "genuine": 1439864,
+      "model": 1400115,
+      "dollarError": -39749,
+      "absolutePercent": 2.76060795
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 77,
+      "policyYear": 27,
+      "genuine": 1525989,
+      "model": 1485648,
+      "dollarError": -40341,
+      "absolutePercent": 2.64359704
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 78,
+      "policyYear": 28,
+      "genuine": 1617898,
+      "model": 1577137,
+      "dollarError": -40761,
+      "absolutePercent": 2.51938008
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 79,
+      "policyYear": 29,
+      "genuine": 1714941,
+      "model": 1674001,
+      "dollarError": -40940,
+      "absolutePercent": 2.38725414
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 80,
+      "policyYear": 30,
+      "genuine": 1817952,
+      "model": 1777085,
+      "dollarError": -40867,
+      "absolutePercent": 2.24796914
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 81,
+      "policyYear": 31,
+      "genuine": 1938922,
+      "model": 1897899,
+      "dollarError": -41023,
+      "absolutePercent": 2.1157633
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 82,
+      "policyYear": 32,
+      "genuine": 2068292,
+      "model": 2013855,
+      "dollarError": -54437,
+      "absolutePercent": 2.63197846
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 83,
+      "policyYear": 33,
+      "genuine": 2207901,
+      "model": 2134686,
+      "dollarError": -73215,
+      "absolutePercent": 3.31604542
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 84,
+      "policyYear": 34,
+      "genuine": 2342293,
+      "model": 2262767,
+      "dollarError": -79526,
+      "absolutePercent": 3.39521998
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 85,
+      "policyYear": 35,
+      "genuine": 2478585,
+      "model": 2398533,
+      "dollarError": -80052,
+      "absolutePercent": 3.229746
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 86,
+      "policyYear": 36,
+      "genuine": 2622500,
+      "model": 2542445,
+      "dollarError": -80055,
+      "absolutePercent": 3.05262154
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 87,
+      "policyYear": 37,
+      "genuine": 2774056,
+      "model": 2694992,
+      "dollarError": -79064,
+      "absolutePercent": 2.85012271
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 88,
+      "policyYear": 38,
+      "genuine": 2934517,
+      "model": 2856692,
+      "dollarError": -77825,
+      "absolutePercent": 2.65205484
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 89,
+      "policyYear": 39,
+      "genuine": 3103405,
+      "model": 3028093,
+      "dollarError": -75312,
+      "absolutePercent": 2.42675384
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 90,
+      "policyYear": 40,
+      "genuine": 3293295,
+      "model": 3209779,
+      "dollarError": -83516,
+      "absolutePercent": 2.53594045
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 91,
+      "policyYear": 41,
+      "genuine": 3493516,
+      "model": 3402366,
+      "dollarError": -91150,
+      "absolutePercent": 2.60911929
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 92,
+      "policyYear": 42,
+      "genuine": 3706302,
+      "model": 3606508,
+      "dollarError": -99794,
+      "absolutePercent": 2.69254907
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 93,
+      "policyYear": 43,
+      "genuine": 3931564,
+      "model": 3822898,
+      "dollarError": -108666,
+      "absolutePercent": 2.76393822
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 94,
+      "policyYear": 44,
+      "genuine": 4170641,
+      "model": 4052272,
+      "dollarError": -118369,
+      "absolutePercent": 2.83814886
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 95,
+      "policyYear": 45,
+      "genuine": 4424037,
+      "model": 4295408,
+      "dollarError": -128629,
+      "absolutePercent": 2.90750281
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 96,
+      "policyYear": 46,
+      "genuine": 4692451,
+      "model": 4553133,
+      "dollarError": -139318,
+      "absolutePercent": 2.96898146
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 97,
+      "policyYear": 47,
+      "genuine": 4977014,
+      "model": 4826321,
+      "dollarError": -150693,
+      "absolutePercent": 3.02777931
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 98,
+      "policyYear": 48,
+      "genuine": 5278050,
+      "model": 5115900,
+      "dollarError": -162150,
+      "absolutePercent": 3.07215733
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 99,
+      "policyYear": 49,
+      "genuine": 5597546,
+      "model": 5422854,
+      "dollarError": -174692,
+      "absolutePercent": 3.12086761
+    },
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 100,
+      "policyYear": 50,
+      "genuine": 5936604,
+      "model": 5748141,
+      "dollarError": -188463,
+      "absolutePercent": 3.17459275
+    },
+    {
+      "caseId": "70k_original",
+      "age": 46,
+      "policyYear": 1,
+      "genuine": 71,
+      "model": 71,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 47,
+      "policyYear": 2,
+      "genuine": 71,
+      "model": 71,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 48,
+      "policyYear": 3,
+      "genuine": 34613,
+      "model": 34613,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 49,
+      "policyYear": 4,
+      "genuine": 86993,
+      "model": 86993,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 50,
+      "policyYear": 5,
+      "genuine": 158454,
+      "model": 158454,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 51,
+      "policyYear": 6,
+      "genuine": 296981,
+      "model": 296981,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 52,
+      "policyYear": 7,
+      "genuine": 346085,
+      "model": 346085,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 53,
+      "policyYear": 8,
+      "genuine": 390167,
+      "model": 390167,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 54,
+      "policyYear": 9,
+      "genuine": 410665,
+      "model": 410665,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 55,
+      "policyYear": 10,
+      "genuine": 444982,
+      "model": 444982,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 56,
+      "policyYear": 11,
+      "genuine": 476223,
+      "model": 476223,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 57,
+      "policyYear": 12,
+      "genuine": 508646,
+      "model": 508646,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 58,
+      "policyYear": 13,
+      "genuine": 546144,
+      "model": 546144,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 59,
+      "policyYear": 14,
+      "genuine": 586564,
+      "model": 586564,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 60,
+      "policyYear": 15,
+      "genuine": 623002,
+      "model": 623002,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 61,
+      "policyYear": 16,
+      "genuine": 641879,
+      "model": 641879,
+      "dollarError": 0,
+      "absolutePercent": 0
+    },
+    {
+      "caseId": "70k_original",
+      "age": 62,
+      "policyYear": 17,
+      "genuine": 665993,
+      "model": 665647,
+      "dollarError": -346,
+      "absolutePercent": 0.0519525
+    },
+    {
+      "caseId": "70k_original",
+      "age": 63,
+      "policyYear": 18,
+      "genuine": 689283,
+      "model": 688260,
+      "dollarError": -1023,
+      "absolutePercent": 0.14841509
+    },
+    {
+      "caseId": "70k_original",
+      "age": 64,
+      "policyYear": 19,
+      "genuine": 717870,
+      "model": 715617,
+      "dollarError": -2253,
+      "absolutePercent": 0.31384513
+    },
+    {
+      "caseId": "70k_original",
+      "age": 65,
+      "policyYear": 20,
+      "genuine": 751406,
+      "model": 747368,
+      "dollarError": -4038,
+      "absolutePercent": 0.53739257
+    },
+    {
+      "caseId": "70k_original",
+      "age": 66,
+      "policyYear": 21,
+      "genuine": 794396,
+      "model": 788588,
+      "dollarError": -5808,
+      "absolutePercent": 0.73112151
+    },
+    {
+      "caseId": "70k_original",
+      "age": 67,
+      "policyYear": 22,
+      "genuine": 817936,
+      "model": 811279,
+      "dollarError": -6657,
+      "absolutePercent": 0.81387786
+    },
+    {
+      "caseId": "70k_original",
+      "age": 68,
+      "policyYear": 23,
+      "genuine": 848600,
+      "model": 840908,
+      "dollarError": -7692,
+      "absolutePercent": 0.90643413
+    },
+    {
+      "caseId": "70k_original",
+      "age": 69,
+      "policyYear": 24,
+      "genuine": 870317,
+      "model": 861152,
+      "dollarError": -9165,
+      "absolutePercent": 1.05306457
+    },
+    {
+      "caseId": "70k_original",
+      "age": 70,
+      "policyYear": 25,
+      "genuine": 902435,
+      "model": 893013,
+      "dollarError": -9422,
+      "absolutePercent": 1.04406412
+    },
+    {
+      "caseId": "70k_original",
+      "age": 71,
+      "policyYear": 26,
+      "genuine": 937868,
+      "model": 928190,
+      "dollarError": -9678,
+      "absolutePercent": 1.03191494
+    },
+    {
+      "caseId": "70k_original",
+      "age": 72,
+      "policyYear": 27,
+      "genuine": 951945,
+      "model": 942877,
+      "dollarError": -9068,
+      "absolutePercent": 0.95257604
+    },
+    {
+      "caseId": "70k_original",
+      "age": 73,
+      "policyYear": 28,
+      "genuine": 965380,
+      "model": 957054,
+      "dollarError": -8326,
+      "absolutePercent": 0.86245831
+    },
+    {
+      "caseId": "70k_original",
+      "age": 74,
+      "policyYear": 29,
+      "genuine": 976729,
+      "model": 969297,
+      "dollarError": -7432,
+      "absolutePercent": 0.76090707
+    },
+    {
+      "caseId": "70k_original",
+      "age": 75,
+      "policyYear": 30,
+      "genuine": 986395,
+      "model": 980010,
+      "dollarError": -6385,
+      "absolutePercent": 0.64730661
+    },
+    {
+      "caseId": "70k_original",
+      "age": 76,
+      "policyYear": 31,
+      "genuine": 1000920,
+      "model": 995555,
+      "dollarError": -5365,
+      "absolutePercent": 0.53600687
+    },
+    {
+      "caseId": "70k_original",
+      "age": 77,
+      "policyYear": 32,
+      "genuine": 1014632,
+      "model": 1006576,
+      "dollarError": -8056,
+      "absolutePercent": 0.79398245
+    },
+    {
+      "caseId": "70k_original",
+      "age": 78,
+      "policyYear": 33,
+      "genuine": 1028428,
+      "model": 1012331,
+      "dollarError": -16097,
+      "absolutePercent": 1.56520437
+    },
+    {
+      "caseId": "70k_original",
+      "age": 79,
+      "policyYear": 34,
+      "genuine": 1090962,
+      "model": 1073070,
+      "dollarError": -17892,
+      "absolutePercent": 1.64002046
+    },
+    {
+      "caseId": "70k_original",
+      "age": 80,
+      "policyYear": 35,
+      "genuine": 1154368,
+      "model": 1137455,
+      "dollarError": -16913,
+      "absolutePercent": 1.4651307
+    },
+    {
+      "caseId": "70k_original",
+      "age": 81,
+      "policyYear": 36,
+      "genuine": 1221314,
+      "model": 1205702,
+      "dollarError": -15612,
+      "absolutePercent": 1.27829534
+    },
+    {
+      "caseId": "70k_original",
+      "age": 82,
+      "policyYear": 37,
+      "genuine": 1291804,
+      "model": 1278044,
+      "dollarError": -13760,
+      "absolutePercent": 1.06517707
+    },
+    {
+      "caseId": "70k_original",
+      "age": 83,
+      "policyYear": 38,
+      "genuine": 1366427,
+      "model": 1354727,
+      "dollarError": -11700,
+      "absolutePercent": 0.85624772
+    },
+    {
+      "caseId": "70k_original",
+      "age": 84,
+      "policyYear": 39,
+      "genuine": 1444958,
+      "model": 1436011,
+      "dollarError": -8947,
+      "absolutePercent": 0.61918755
+    },
+    {
+      "caseId": "70k_original",
+      "age": 85,
+      "policyYear": 40,
+      "genuine": 1533420,
+      "model": 1522171,
+      "dollarError": -11249,
+      "absolutePercent": 0.73358897
+    },
+    {
+      "caseId": "70k_original",
+      "age": 86,
+      "policyYear": 41,
+      "genuine": 1626696,
+      "model": 1613502,
+      "dollarError": -13194,
+      "absolutePercent": 0.81109193
+    },
+    {
+      "caseId": "70k_original",
+      "age": 87,
+      "policyYear": 42,
+      "genuine": 1725825,
+      "model": 1710312,
+      "dollarError": -15513,
+      "absolutePercent": 0.89887445
+    },
+    {
+      "caseId": "70k_original",
+      "age": 88,
+      "policyYear": 43,
+      "genuine": 1830766,
+      "model": 1812930,
+      "dollarError": -17836,
+      "absolutePercent": 0.97423701
+    },
+    {
+      "caseId": "70k_original",
+      "age": 89,
+      "policyYear": 44,
+      "genuine": 1942142,
+      "model": 1921706,
+      "dollarError": -20436,
+      "absolutePercent": 1.05224026
+    },
+    {
+      "caseId": "70k_original",
+      "age": 90,
+      "policyYear": 45,
+      "genuine": 2060189,
+      "model": 2037009,
+      "dollarError": -23180,
+      "absolutePercent": 1.12513949
+    },
+    {
+      "caseId": "70k_original",
+      "age": 91,
+      "policyYear": 46,
+      "genuine": 2185233,
+      "model": 2159229,
+      "dollarError": -26004,
+      "absolutePercent": 1.18998752
+    },
+    {
+      "caseId": "70k_original",
+      "age": 92,
+      "policyYear": 47,
+      "genuine": 2317800,
+      "model": 2288783,
+      "dollarError": -29017,
+      "absolutePercent": 1.25191992
+    },
+    {
+      "caseId": "70k_original",
+      "age": 93,
+      "policyYear": 48,
+      "genuine": 2458040,
+      "model": 2426110,
+      "dollarError": -31930,
+      "absolutePercent": 1.29900246
+    },
+    {
+      "caseId": "70k_original",
+      "age": 94,
+      "policyYear": 49,
+      "genuine": 2606880,
+      "model": 2571677,
+      "dollarError": -35203,
+      "absolutePercent": 1.3503882
+    },
+    {
+      "caseId": "70k_original",
+      "age": 95,
+      "policyYear": 50,
+      "genuine": 2764833,
+      "model": 2725977,
+      "dollarError": -38856,
+      "absolutePercent": 1.40536517
+    },
+    {
+      "caseId": "70k_original",
+      "age": 96,
+      "policyYear": 51,
+      "genuine": 2932381,
+      "model": 2889536,
+      "dollarError": -42845,
+      "absolutePercent": 1.46109936
+    },
+    {
+      "caseId": "70k_original",
+      "age": 97,
+      "policyYear": 52,
+      "genuine": 3109565,
+      "model": 3062908,
+      "dollarError": -46657,
+      "absolutePercent": 1.50043495
+    },
+    {
+      "caseId": "70k_original",
+      "age": 98,
+      "policyYear": 53,
+      "genuine": 3297510,
+      "model": 3246683,
+      "dollarError": -50827,
+      "absolutePercent": 1.54137516
+    },
+    {
+      "caseId": "70k_original",
+      "age": 99,
+      "policyYear": 54,
+      "genuine": 3496662,
+      "model": 3441483,
+      "dollarError": -55179,
+      "absolutePercent": 1.57804786
+    },
+    {
+      "caseId": "70k_original",
+      "age": 100,
+      "policyYear": 55,
+      "genuine": 3708028,
+      "model": 3647971,
+      "dollarError": -60057,
+      "absolutePercent": 1.61964796
+    }
+  ],
+  "baselineV4": {
+    "engine": "ipos-approximation-terminal-dividend-transition-v4",
+    "MAPE": 2.29650947,
+    "maxErrorPercent": 11.80075621,
+    "rowsAbove010": 247,
+    "maxDollarError": 457617,
+    "worstCase": "50yrs_5pay_130k_avpu",
+    "worstAge": 72,
+    "worstPolicyYear": 22
+  },
+  "classification": "NOT_READY",
+  "leakage": "PASS",
+  "firstWithdrawal": "PASS",
+  "zeroWithdrawalPersistence": "PASS",
+  "forwardA": "NOT_READY",
+  "reverseB": "NOT_READY",
+  "productionActivated": false,
+  "customerUiModified": false
+}
