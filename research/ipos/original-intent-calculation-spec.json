@@ -1,0 +1,249 @@
+{
+  "specVersion": "medical-reserve-original-intent-forward-v1",
+  "classification": "ORIGINAL_INTENT_SPEC_BLOCKED",
+  "exactBlockers": [
+    "PHASE SUPPORT ROUTING — DECISION REQUIRED: no approved rule selects which independent phase funds annual Medical Reserve Support.",
+    "A generic evidence-valid subsequent-year remaining-value rule is not available for an arbitrary Official Medical premium schedule after the first support year.",
+    "The application expects premium and premiumRange reads, but the committed GAS implementation exposes only health and bootstrap; the deployed Official premium response could not be verified in this environment."
+  ],
+  "selectedDirection": {
+    "mode": "FORWARD_ONLY",
+    "customerQuestion": "Given enabled Saving phases and contributions, what Medical Reserve Support is required and what genuine-data-supported reserve value remains each year?",
+    "productionActivated": false,
+    "reverseSolverIncluded": false,
+    "newApproximationModelIncluded": false
+  },
+  "customerInputs": [
+    "currentAge",
+    "phase1AnnualContribution",
+    "phase2Enabled",
+    "phase2AnnualContribution",
+    "phase3Enabled",
+    "phase3AnnualContribution",
+    "supportStartAge",
+    "supportEndAge",
+    "medicalPlanId",
+    "deductibleOrPlanOption"
+  ],
+  "inputRules": {
+    "phase1Required": true,
+    "phase2Optional": true,
+    "phase3Optional": true,
+    "phase3RequiresPhase2": true,
+    "supportStartAndEndAreManual": true,
+    "retirementAgeIsNotHardcodedAsSupportStart": true,
+    "supportAgeRangeInclusive": true
+  },
+  "phaseModel": {
+    "basis": "Each phase is an independent HKD 5Pay Saving block; phases are not synthetic 10Pay or 15Pay products.",
+    "timingEvidence": "The existing AVA Saving concept labels sequential blocks as years 1–5, 6–10 and 11–15; the research portfolio code also creates independent policies at five-year issue-age offsets.",
+    "phases": [
+      {
+        "id": "phase1",
+        "required": true,
+        "issueAgeFormula": "currentAge",
+        "offsetYears": 0,
+        "contributionYears": 5
+      },
+      {
+        "id": "phase2",
+        "required": false,
+        "issueAgeFormula": "currentAge + 5",
+        "offsetYears": 5,
+        "contributionYears": 5
+      },
+      {
+        "id": "phase3",
+        "required": false,
+        "requires": "phase2",
+        "issueAgeFormula": "currentAge + 10",
+        "offsetYears": 10,
+        "contributionYears": 5
+      }
+    ],
+    "validConfigurations": [
+      "phase1",
+      "phase1+phase2",
+      "phase1+phase2+phase3"
+    ],
+    "contributionsMayDifferByPhase": true,
+    "independentState": [
+      "issueAge",
+      "policyYear",
+      "annualContribution",
+      "BasicAmount",
+      "genuineValuePath",
+      "supportHistory",
+      "remainingValue"
+    ]
+  },
+  "customerResultViews": [
+    {
+      "id": "A",
+      "configuration": "phase1",
+      "definition": "Phase 1 calculated independently."
+    },
+    {
+      "id": "B",
+      "configuration": "phase1+phase2",
+      "definition": "Phase 1 and Phase 2 calculated independently; post-support combination requires the selected routing rule."
+    },
+    {
+      "id": "C",
+      "configuration": "phase1+phase2+phase3",
+      "definition": "All three phases calculated independently; post-support combination requires the selected routing rule."
+    }
+  ],
+  "genuineDataCoverage": {
+    "product": "AIA 環宇盈活儲蓄保險計劃",
+    "currency": "HKD",
+    "paymentTermYears": 5,
+    "auditedUsableCentralProposals": 22,
+    "frozenFixtureCases": 21,
+    "matchedAnnualComponentPairs": 1205,
+    "issueAgesDirectlyRepresented": [40, 45, 50],
+    "policyYearCoverageByIssueAge": [
+      { "issueAge": 40, "minimum": 1, "maximum": 60 },
+      { "issueAge": 45, "minimum": 1, "maximum": 55 },
+      { "issueAge": 50, "minimum": 1, "maximum": 50 }
+    ],
+    "annualContributionToBasicAmountAnchors": [
+      { "annualContribution": 40000, "BasicAmount": 404041 },
+      { "annualContribution": 70000, "BasicAmount": 710660 },
+      { "annualContribution": 100000, "BasicAmount": 1015229 },
+      { "annualContribution": 130000, "BasicAmount": 1323829 },
+      { "annualContribution": 150000, "BasicAmount": 1527495 },
+      { "annualContribution": 180000, "BasicAmount": 1832994 },
+      { "annualContribution": 200000, "BasicAmount": 2042901 }
+    ],
+    "directWithdrawalStartAges": [55, 56, 61],
+    "availableEvidence": [
+      "annual no-withdrawal GCV/RB/TD/total curves",
+      "annual post-withdrawal total and component rows",
+      "Basic Amount rows",
+      "RB/associated-TD/GCV withdrawal allocation",
+      "first-support examples",
+      "repeated-support examples",
+      "zero-support pause and later-resume examples"
+    ]
+  },
+  "contributionSupport": {
+    "direct": "Exact anchors 40000, 70000, 100000, 130000, 150000, 180000 and 200000 HKD per year, subject to represented issue age and Policy Year.",
+    "interpolated": "Between adjacent anchors, piecewise Premium-to-Basic interpolation and Basic-normalized no-withdrawal values are evidence-supported only as an explicitly INTERPOLATED path. First support may then use the validated subtraction identity. Repeated arbitrary support is not thereby validated.",
+    "unsupported": [
+      "annual contributions below HKD 40000 or above HKD 200000",
+      "issue ages other than 40, 45 and 50 without a separately validated issue-age rule",
+      "Policy Years beyond the represented issue-age range",
+      "arbitrary repeated-support schedules that do not match a genuine audited path"
+    ],
+    "noExtrapolation": true
+  },
+  "verifiedCalculationRules": [
+    {
+      "id": "policyYear",
+      "rule": "policyYear = attainedAge - issueAge"
+    },
+    {
+      "id": "noWithdrawalScale",
+      "rule": "component(PY, current Basic Amount) = genuine no-withdrawal component(PY) / original Basic Amount * current Basic Amount"
+    },
+    {
+      "id": "firstSupport",
+      "rule": "remaining value = genuine no-withdrawal total - current Medical Reserve Support"
+    },
+    {
+      "id": "allocationIdentity",
+      "rule": "support = RB support + associated TD support + GCV support"
+    },
+    {
+      "id": "basicReduction",
+      "rule": "Basic Amount reduction = GCV support / (no-withdrawal GCV(PY) / original Basic Amount)"
+    },
+    {
+      "id": "postReductionGCV",
+      "rule": "post-support GCV = no-withdrawal GCV(PY) / original Basic Amount * current Basic Amount"
+    }
+  ],
+  "annualForwardSequence": [
+    "Validate the phase configuration, contribution coverage, issue age and Policy Year coverage.",
+    "Resolve each enabled phase independently to an exact or explicitly interpolated Basic Amount and genuine no-withdrawal path.",
+    "Request a complete Official annual premium range for supportStartAge through supportEndAge, inclusive.",
+    "Before supportStartAge, apply no Medical Reserve Support.",
+    "At each support age, use that age's Official annual medical premium as required Medical Reserve Support.",
+    "Apply support to exactly one selected phase-routing rule; no rule is selected in this checkpoint.",
+    "For a first support on a phase, use the verified first-support identity.",
+    "For later support, use an exact genuine audited path only when the schedule matches; otherwise return NOT_YET_VALIDATED rather than inventing a transition.",
+    "Return age, annual premium/support, cumulative support and projected remaining value with evidence status."
+  ],
+  "annualOutput": [
+    "age",
+    "medicalReserveSupport",
+    "cumulativeMedicalReserveSupport",
+    "projectedRemainingMedicalReserveValue",
+    "evidenceStatus"
+  ],
+  "evidenceStatuses": [
+    "DIRECTLY_VALIDATED",
+    "INTERPOLATED_EVIDENCE_SUPPORTED",
+    "NOT_YET_VALIDATED",
+    "OUT_OF_SUPPORTED_RANGE",
+    "OFFICIAL_PREMIUM_DATA_UNAVAILABLE",
+    "PHASE_ROUTING_DECISION_REQUIRED"
+  ],
+  "medicalPremiumMapping": {
+    "status": "CONTRACT_IDENTIFIED_LIVE_DATA_UNVERIFIED",
+    "endpoint": "https://script.google.com/macros/s/AKfycbzq07F_WpjaCtW3BK5_Bziiq9Ap1-DOT47Z7mz5-JSN-9m7nDvn9cqfZBvw9otAeZPr/exec",
+    "sourcePriority": [
+      "Official Cloud bootstrap MedicalPlans mapping plus premiumRange",
+      "versioned cached Official response, marked stale",
+      "fail unavailable"
+    ],
+    "bootstrapMapping": "MedicalPlans: plan_id -> display name, gender where supplied, deductible, premium_sheet",
+    "rangeAction": "premiumRange",
+    "rangeParameters": {
+      "plan_id": "selected medical plan",
+      "retirement_age": "legacy API parameter carrying manually selected supportStartAge",
+      "coverage_age": "legacy API parameter carrying manually selected supportEndAge"
+    },
+    "requiredResponse": "annual_premiums containing every attained age in the inclusive requested range",
+    "missingAgeRule": "Fail unavailable; never interpolate or fabricate a medical premium.",
+    "repositoryContractGap": "app.js consumes health/bootstrap/premium/premiumRange, while committed gas/Code.gs implements health/bootstrap only.",
+    "environmentResult": "The live endpoint response was not retrievable in this Work environment, so current plan rows, deductible rows and age coverage were not asserted."
+  },
+  "phaseAggregation": {
+    "preSupport": "The display-only total available reserve may sum the independently calculated phase values at the same attained age.",
+    "postSupport": "Sum the independently updated phase remaining values only after the annual support has been allocated by an approved routing rule.",
+    "status": "PHASE SUPPORT ROUTING — DECISION REQUIRED",
+    "unselectedOptions": [
+      "oldest-issued phase first",
+      "newest-issued phase first",
+      "proportional to each phase's available value"
+    ],
+    "prohibitedDefault": "No option may be silently selected. The existing oldest-first rule is research-only and is not product evidence."
+  },
+  "validationEvidence": {
+    "firstSupportIdentity": { "rows": 22, "withinHKD1": 22, "maximumAbsoluteHKD": 0 },
+    "basicAmountReduction": { "rows": 221, "withinHKD1": 177, "maximumAbsoluteHKD": 2.168633 },
+    "postReductionGCV": { "rows": 1205, "withinHKD1": 1203, "maximumAbsoluteHKD": 1.0356 },
+    "componentIdentity": { "rows": 2410, "withinHKD1": 2410, "maximumAbsoluteHKD": 1 },
+    "allocationIdentity": { "rows": 1205, "withinHKD1": 1205, "maximumAbsoluteHKD": 1 },
+    "genericRepeatedSupport": "NOT YET VALIDATED",
+    "accuracyClaimBoundary": "The <=0.10% annual target applies only where a calculated path is directly comparable with genuine proposal evidence; no accuracy is claimed for unsupported combinations."
+  },
+  "exactNextImplementationScope": [
+    "Obtain the product decision for phase support routing and record one explicit rule.",
+    "Reconcile or document the deployed Official premiumRange implementation with the committed GAS contract, then capture a versioned complete response for supported MedicalPlans.",
+    "Implement a research-only Forward orchestrator with independent phase inputs/states, inclusive Official premium lookup, exact contribution paths, explicit interpolation labels and fail-safe evidence statuses.",
+    "Permit first-support calculation and exact audited-path replay only; return NOT_YET_VALIDATED for unmatched repeated-support paths.",
+    "Validate Phase 1 first, then validate the approved routing for Phase 1+2 and Phase 1+2+3 before any production or UI activation."
+  ],
+  "protectedAreasUnchanged": [
+    "Customer Flow",
+    "production calculation engine",
+    "Front/User/Admin UI",
+    "GAS",
+    "Official Cloud data",
+    "genuine proposal fixtures",
+    "historical research artifacts"
+  ]
+}
