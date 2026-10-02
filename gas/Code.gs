@@ -19,8 +19,10 @@ function doGet(e) {
     const action = String(e.parameter.action || '');
     if (action === 'health') return output_({ ok: true, api_version: '1.1.0', action: 'health', data_version: version_(), updated_at: updatedAt_(), data: health_() });
     if (action === 'bootstrap') return output_({ ok: true, api_version: '1.1.0', action: 'bootstrap', data_version: version_(), data: readConfig_() });
+    if (action === 'premium') return output_({ ok: true, api_version: '1.1.0', action: 'premium', data_version: version_(), data: premium_(e.parameter) });
+    if (action === 'premiumRange') return output_({ ok: true, api_version: '1.1.0', action: 'premiumRange', data_version: version_(), data: premiumRange_(e.parameter) });
     return output_(error_('Unsupported action', 'UNSUPPORTED_ACTION'));
-  } catch (error) { return output_(error_(error.message, 'READ_FAILED')); }
+  } catch (error) { return output_(error_(error.message, error.code || 'READ_FAILED')); }
 }
 function doPost(e) {
   try {
@@ -57,6 +59,73 @@ function health_() {
   return { status: control.every(item => item.exists) ? 'ok' : 'warning', spreadsheet_name: SpreadsheetApp.getActive().getName(), control_sheets: control, mapped_data_sheets: mapped };
 }
 function rowsSafe_(name) { try { return rows_(sheet_(name)); } catch (_) { return []; } }
+function readError_(code, message) { const error = new Error(message); error.code = code; return error; }
+function plan_(planId) {
+  const id = String(planId || '').trim();
+  if (!id) throw readError_('MISSING_PLAN_ID', 'plan_id is required');
+  const plan = rowsSafe_('MedicalPlans').find(row => String(row.plan_id || row.id || '').trim() === id && boolean_(row.enabled) !== false);
+  if (!plan) throw readError_('PLAN_NOT_FOUND', `Medical plan not found: ${id}`);
+  const sheetName = String(plan.premium_sheet || plan.sheet_name || '').trim();
+  if (!sheetName || !sheetNames_().includes(sheetName)) throw readError_('MAPPED_PREMIUM_SHEET_NOT_FOUND', `Mapped premium sheet not found: ${sheetName || '(blank)'}`);
+  return { row: plan, id, sheetName };
+}
+function integerAge_(value, label) {
+  const age = Number(value);
+  if (!Number.isInteger(age) || age < 0 || age > 100) throw readError_('INVALID_AGE', `${label || 'age'} must be an integer from 0 to 100`);
+  return age;
+}
+function firstField_(row, names) { for (const name of names) if (row[name] !== '' && row[name] != null) return row[name]; return undefined; }
+function premiumRows_(sheetName) {
+  const normalized = [];
+  rows_(sheet_(sheetName)).forEach(row => {
+    const rawAge = firstField_(row, ['實際年齡','age','attained_age']);
+    const rawPremium = firstField_(row, ['年繳保費(港元)','年繳保費 (港元)','annual_premium','premium']);
+    const textAge = String(rawAge == null ? '' : rawAge).trim();
+    const plus = /^(\d+)\+$/.exec(textAge);
+    const minimumAge = plus ? Number(plus[1]) : Number(rawAge);
+    const premium = Number(rawPremium);
+    if (!Number.isInteger(minimumAge) || minimumAge < 0 || minimumAge > 100 || !Number.isFinite(premium) || premium < 0) return;
+    normalized.push({ minimumAge, exact: !plus, sourceAge: plus ? `${minimumAge}+` : minimumAge, annualPremium: premium });
+  });
+  return normalized;
+}
+function premiumForAge_(rows, age) {
+  const exact = rows.find(row => row.exact && row.minimumAge === age);
+  if (exact) return exact;
+  const bands = rows.filter(row => !row.exact && row.minimumAge <= age).sort((left, right) => right.minimumAge - left.minimumAge);
+  return bands[0] || null;
+}
+function premium_(parameters) {
+  const resolved = plan_(parameters.plan_id), age = integerAge_(parameters.age, 'age');
+  const row = premiumForAge_(premiumRows_(resolved.sheetName), age);
+  if (!row) throw readError_('PREMIUM_AGE_NOT_FOUND', `Official premium is unavailable for age ${age}`);
+  return {
+    plan_id: resolved.id,
+    display_name: resolved.row.display_name || resolved.row.name || resolved.id,
+    gender: resolved.row.gender || 'ALL', deductible: Number(resolved.row.deductible || 0), premium_sheet: resolved.sheetName,
+    age, source_age: row.sourceAge, annual_premium: row.annualPremium, currency: 'HKD'
+  };
+}
+function premiumRange_(parameters) {
+  const rawStart = parameters.support_start_age ?? parameters.retirement_age;
+  const rawEnd = parameters.support_end_age ?? parameters.coverage_age;
+  const start = integerAge_(rawStart, 'support_start_age'), end = integerAge_(rawEnd, 'support_end_age');
+  if (end < start) throw readError_('INVALID_AGE_RANGE', 'support_end_age must be at or after support_start_age');
+  const annual = [];
+  for (let age = start; age <= end; age += 1) annual.push(premium_({ plan_id: parameters.plan_id, age }));
+  const checkpoints = annual.filter((row, index) => index % 5 === 0 || index === annual.length - 1).map((row, index, values) => ({
+    age: row.age, annual_premium: row.annual_premium,
+    growth_from_previous_checkpoint_percent: index === 0 ? null : (values[index - 1].annual_premium === 0 ? null : (row.annual_premium / values[index - 1].annual_premium - 1) * 100)
+  }));
+  const first = annual[0];
+  return {
+    plan_id: first.plan_id, display_name: first.display_name, gender: first.gender, deductible: first.deductible,
+    premium_sheet: first.premium_sheet, support_start_age: start, support_end_age: end,
+    retirement_age: start, coverage_age: end, years: annual.length, currency: 'HKD',
+    total_premium: annual.reduce((total, row) => total + row.annual_premium, 0),
+    annual_premiums: annual.map(row => ({ age: row.age, annual_premium: row.annual_premium, source_age: row.source_age })), checkpoints
+  };
+}
 function version_() { const rows = rowsSafe_('SystemSettings'); const row = rows.find(item => String(item.key || '') === 'medical_reserve_version' || String(item.key || '') === 'data_version'); return Number(row && row.value) || 1; }
 function updatedAt_() { const rows = rowsSafe_('SystemSettings'), row = rows.find(item => String(item.key || '') === 'medical_reserve_updated_at' || String(item.key || '') === 'updated_at'); return row ? new Date(row.value).toISOString() : new Date().toISOString(); }
 function keyOf_(row, rule) { for (const key of rule.key) if (String(row[key] ?? '').trim()) return String(row[key]).trim(); return ''; }

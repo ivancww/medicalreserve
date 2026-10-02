@@ -1,0 +1,131 @@
+{
+  "reportVersion": "original-intent-forward-checkpoint-v1",
+  "startingRemoteHead": "c3ea513e835af14b1872560132e8f17b57e8ef9c",
+  "engine": "ipos-original-intent-genuine-path-forward-v1",
+  "productionActivated": false,
+  "newActuarialModelIntroduced": false,
+  "routing": {
+    "status": "RESOLVED — 5-YEAR ROTATING PHASE SUPPORT ROUTING",
+    "formula": "activePhaseIndex = floor((attainedAge - supportStartAge) / 5) mod enabledPhaseCount",
+    "phase1": "PASS",
+    "phase1And2": "PASS",
+    "phase1And2And3": "PASS"
+  },
+  "officialMedicalPremiumSource": {
+    "spreadsheetTitle": "增值式醫保",
+    "spreadsheetId": "1OXblBBSdhnuFPP54FucxmNEVGL9d2s7fDfZqKtk_dHI",
+    "mappingSheet": "MedicalPlans",
+    "gasFile": "gas/Code.gs",
+    "contract": [
+      "premium",
+      "premiumRange"
+    ],
+    "premiumRangeStatus": "IMPLEMENTED_NOT_DEPLOYED_OR_LIVE_VERIFIED",
+    "exactPathMappings": {
+      "AVF": {
+        "planId": "flexible_m",
+        "premiumSheet": "男靈活計劃"
+      },
+      "AVPU": {
+        "planId": "prestige_16000",
+        "premiumSheet": "尊耀16000自付額"
+      },
+      "Original": {
+        "planId": "select_18000",
+        "premiumSheet": "睿選18000自付額"
+      }
+    },
+    "knownMappingDefect": "MedicalPlans select_0 maps to 睿選0自付額, while the actual premium tab is 睿選 0自付額; this plan fails safely until Official mapping is corrected."
+  },
+  "genuinePathReplay": {
+    "rows": 610,
+    "maeHKD": 0,
+    "mapePercent": 0,
+    "maximumAnnualAbsoluteErrorPercent": 0,
+    "maximumDollarErrorHKD": 0,
+    "worstPercentRow": {
+      "caseId": "40yrs_5pay_130k_avf",
+      "role": "calibration",
+      "age": 61,
+      "policyYear": 21,
+      "genuine": 1791210,
+      "model": 1791210,
+      "evidenceStatus": "DIRECTLY_VALIDATED",
+      "dollarError": 0,
+      "absoluteDollarError": 0,
+      "absoluteErrorPercent": 0
+    },
+    "worstDollarRow": {
+      "caseId": "40yrs_5pay_130k_avf",
+      "role": "calibration",
+      "age": 61,
+      "policyYear": 21,
+      "genuine": 1791210,
+      "model": 1791210,
+      "evidenceStatus": "DIRECTLY_VALIDATED",
+      "dollarError": 0,
+      "absoluteDollarError": 0,
+      "absoluteErrorPercent": 0
+    },
+    "rowsAbove010Percent": 0,
+    "firstAbove010Percent": "NEVER"
+  },
+  "evidenceSupportedInterpolationBlindCheck": {
+    "rows": 40,
+    "maeHKD": 692.4550000000105,
+    "mapePercent": 0.010391235556860869,
+    "maximumAnnualAbsoluteErrorPercent": 0.014169969660767104,
+    "maximumDollarErrorHKD": 1918.5999999996275,
+    "worstPercentRow": {
+      "caseId": "5pay_avf_150k",
+      "role": "holdout",
+      "age": 85,
+      "policyYear": 40,
+      "genuine": 5601988,
+      "model": 5602781.8,
+      "evidenceStatus": "INTERPOLATED_EVIDENCE_SUPPORTED",
+      "sourceCaseIds": [
+        "45yrs_5pay_130k_avf",
+        "5pay_180k_avf"
+      ],
+      "dollarError": 793.7999999998137,
+      "absoluteDollarError": 793.7999999998137,
+      "absoluteErrorPercent": 0.014169969660767104
+    },
+    "worstDollarRow": {
+      "caseId": "5pay_avf_150k",
+      "role": "holdout",
+      "age": 100,
+      "policyYear": 55,
+      "genuine": 13545931,
+      "model": 13547849.6,
+      "evidenceStatus": "INTERPOLATED_EVIDENCE_SUPPORTED",
+      "sourceCaseIds": [
+        "45yrs_5pay_130k_avf",
+        "5pay_180k_avf"
+      ],
+      "dollarError": 1918.5999999996275,
+      "absoluteDollarError": 1918.5999999996275,
+      "absoluteErrorPercent": 0.014163662874110515
+    },
+    "rowsAbove010Percent": 0,
+    "firstAbove010Percent": "NEVER"
+  },
+  "interpolationCase": "5pay_avf_150k",
+  "constructionRoles": [
+    "calibration",
+    "regression"
+  ],
+  "holdoutExcludedFromConstruction": true,
+  "supportedPaths": {
+    "directlyValidated": "Exact represented issue age, contribution anchor, Policy Year and matched genuine support history.",
+    "interpolatedEvidenceSupported": "Between adjacent calibration anchors only when issue age and complete support history match.",
+    "unsupported": "Unmatched repeated-support histories, out-of-range contribution, unsupported issue age or Policy Year."
+  },
+  "remainingBlockers": [
+    "Unmatched repeated-support paths return NOT_YET_VALIDATED because no new actuarial transition is authorized.",
+    "The committed read-only GAS premium/premiumRange contract must be deployed and live-verified.",
+    "The Official MedicalPlans mapping for select_0 must be corrected to its actual premium-sheet tab name."
+  ],
+  "classification": "ORIGINAL_INTENT_FORWARD_PARTIAL — UNMATCHED REPEATED-SUPPORT PATHS REMAIN NOT_YET_VALIDATED; GAS READ CONTRACT IS NOT YET DEPLOYED/VERIFIED"
+}

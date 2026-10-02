@@ -1,6 +1,6 @@
 # Medical Reserve Original-Intent Forward Calculation Specification
 
-Classification: **ORIGINAL_INTENT_SPEC_BLOCKED — PHASE SUPPORT ROUTING, GENERIC REPEATED-SUPPORT TRANSITION, AND VERIFIED OFFICIAL PREMIUM READ CONTRACT ARE REQUIRED**
+Classification: **ORIGINAL_INTENT_FORWARD_PARTIAL — UNMATCHED REPEATED-SUPPORT PATHS REMAIN NOT_YET_VALIDATED; GAS READ CONTRACT IS NOT YET DEPLOYED/VERIFIED**
 
 This checkpoint locks the original product direction. It does not add a calculation model, activate research in production, change Customer Flow, or implement a reverse solver.
 
@@ -52,8 +52,8 @@ For every attained age, each enabled phase calculates its own Policy Year, Basic
 | View | Calculation |
 | --- | --- |
 | A — Phase 1 effect | Phase 1 only. |
-| B — Phase 1 + Phase 2 effect | Calculate both independently, then sum after applying an approved support-routing rule. |
-| C — Phase 1 + Phase 2 + Phase 3 effect | Calculate all three independently, then sum after applying an approved support-routing rule. |
+| B — Phase 1 + Phase 2 effect | Calculate both independently; route consecutive five-year windows Phase 1 → Phase 2 → repeat, then sum. |
+| C — Phase 1 + Phase 2 + Phase 3 effect | Calculate all three independently; route consecutive five-year windows Phase 1 → Phase 2 → Phase 3 → repeat, then sum. |
 
 A pre-support display may sum values at the same attained age. A post-support combined result is valid only after the annual support has been routed and each affected phase has been recalculated.
 
@@ -81,7 +81,7 @@ The audited corpus contains 22 usable central HKD 5Pay proposals and 1,205 same-
 | 45 | 1–55 | 14 |
 | 50 | 1–50 | 4 |
 
-Direct withdrawal/support starts in the frozen corpus are ages 55, 56, and 61. Exact genuine paths include Original/AVF/AVPU research labels, but those labels are not customer options and are not mapped in the repository to a MedicalPlans plan/deductible.
+Direct withdrawal/support starts in the frozen corpus are ages 55, 56, and 61. Exact schedule matching against the Official Sheet established: AVF = `flexible_m` / 男靈活計劃; AVPU = `prestige_16000` / 尊耀16000自付額; and Original = `select_18000` / 睿選18000自付額. These labels remain research evidence, not extra customer options.
 
 ### Calculation coverage classes
 
@@ -109,18 +109,20 @@ The missing generic rule remains the next-year RB/TD state after support. Theref
 
 ## 7. Official Medical premium mapping
 
-The current Medical Reserve app defines this data path:
+The current Medical Reserve app defines this data path, now reconciled with the committed GAS source:
 
 1. `bootstrap` returns `MedicalPlans`.
 2. `MedicalPlans` maps `plan_id` to display name, gender when supplied, deductible, and `premium_sheet`.
-3. `premiumRange` is requested with `plan_id`, `retirement_age`, and `coverage_age`.
-4. For this specification, the legacy parameter `retirement_age` carries the manually selected support start age; it does not impose retirement as the product rule.
+3. `premiumRange` accepts `plan_id`, `support_start_age`, and `support_end_age`.
+4. Legacy `retirement_age` and `coverage_age` remain accepted for the current client; retirement does not become the product rule.
 5. `annual_premiums` must include every attained age from support start through support end, inclusive.
 6. A missing age, plan mapping, or Official response returns `OFFICIAL_PREMIUM_DATA_UNAVAILABLE`. No medical premium is interpolated or fabricated.
 
 Source priority is live Official Cloud data, then a versioned cached Official response marked stale, then an unavailable result.
 
-Status: **CONTRACT IDENTIFIED; LIVE DATA UNVERIFIED.** The app consumes `health`, `bootstrap`, `premium`, and `premiumRange`, but the committed `gas/Code.gs` implements only `health` and `bootstrap`. The deployed endpoint could not be read from this Work environment, so current plan rows, deductible rows, and age coverage are not asserted in this checkpoint.
+Official source: spreadsheet **增值式醫保** (`1OXblBBSdhnuFPP54FucxmNEVGL9d2s7fDfZqKtk_dHI`), with `MedicalPlans` as the mapping tab and plan-specific premium tabs as the annual data. Most tabs contain ages 0–100; tabs ending at `99+` explicitly cover age 100.
+
+Status: **READ CONTRACT IMPLEMENTED; NOT DEPLOYED OR LIVE-VERIFIED.** The smallest read-only `premium` and `premiumRange` actions are now implemented in `gas/Code.gs`. The deployed endpoint timed out in this environment, so no deployment claim is made. The Official `select_0` mapping currently points to `睿選0自付額`, while the actual tab is `睿選 0自付額`; that plan fails safely until Official mapping is corrected.
 
 ## 8. Annual forward sequence
 
@@ -131,22 +133,22 @@ For each enabled result view:
 3. Load a complete inclusive Official premium range for the selected plan and deductible.
 4. Before support start age, annual Medical Reserve Support is zero.
 5. From support start through support end, required support equals that attained age's Official annual medical premium.
-6. Apply the approved phase-routing rule.
+6. Apply the locked five-year rotating phase-routing rule.
 7. For a phase's first support, apply the verified first-support identity.
 8. For later support, use an exact genuine audited path only when it matches. Otherwise stop that projection with `NOT_YET_VALIDATED`; do not substitute v3/v4/component-state/carried-ratio.
 9. Return age, annual Medical Reserve Support, cumulative support, remaining Medical Reserve value, and evidence status.
 
-## 9. Phase aggregation and unresolved decision
+## 9. Phase aggregation and locked routing
 
-**PHASE SUPPORT ROUTING — DECISION REQUIRED**
+**RESOLVED — 5-YEAR ROTATING PHASE SUPPORT ROUTING**
 
-No repository evidence establishes which phase should fund annual support first. The existing oldest-issued-first behavior is explicitly a research rule, not product evidence. These options must be presented for a product decision and later validated:
+The routing cycle begins at the manually selected support start age:
 
-- oldest-issued phase first;
-- newest-issued phase first;
-- proportional to each phase's available value.
+- `supportYearIndex = attainedAge - supportStartAge`
+- `windowIndex = floor(supportYearIndex / 5)`
+- `activePhaseIndex = windowIndex mod enabledPhaseCount`
 
-No option is selected by this checkpoint. Until one is selected, Views B and C may show the individual phase values and a pre-support sum, but they may not claim a post-support combined projection.
+Enabled phases are ordered Phase 1, Phase 2, Phase 3. One phase therefore funds each consecutive five-year window; after the last enabled phase, routing returns to Phase 1. Non-active phases continue aging and retain their independent state. The rule selects the current funding phase; it does not recreate or reset any phase.
 
 ## 10. Customer-facing annual output
 
@@ -158,7 +160,7 @@ For every support age:
 | Medical Reserve Support | Official annual medical premium funded that year. |
 | Cumulative Medical Reserve Support | Sum of fully applied support through that age. |
 | Projected Remaining Medical Reserve Value | Sum of independently updated phase values, only where the path is supported. |
-| Evidence status | Direct, interpolated, not validated, out of range, premium unavailable, or routing decision required. |
+| Evidence status | Direct, interpolated, not validated, out of range, or premium unavailable. |
 
 ## 11. Validation boundary
 
@@ -178,16 +180,16 @@ No generic repeated-support accuracy claim is made. Existing genuine paths are v
 
 ## 12. Exact next implementation scope
 
-1. Obtain one explicit product decision for phase support routing.
-2. Reconcile or document the deployed Official `premiumRange` read implementation with committed GAS, then capture a versioned complete response for supported MedicalPlans.
-3. Implement a research-only Forward orchestrator with per-phase contribution inputs, independent phase states, inclusive Official premium lookup, exact contribution paths, explicit interpolation labels, and fail-safe evidence statuses.
-4. Permit the verified first-support calculation and exact audited-path replay only. Return `NOT_YET_VALIDATED` for unmatched repeated-support paths.
-5. Validate Phase 1 first. Only then validate the chosen routing for Phase 1+2 and Phase 1+2+3.
+1. Deploy and live-verify the committed read-only Official `premium` / `premiumRange` contract.
+2. Correct the Official `select_0` premium-sheet mapping or preserve its explicit fail-safe.
+3. Product-review the research Forward orchestrator and its evidence statuses using selected customer inputs.
+4. Keep exact genuine paths and narrowly supported interpolation; return `NOT_YET_VALIDATED` for unmatched repeated-support histories.
+5. Obtain additional genuine path evidence before broadening support; do not add a generic actuarial approximation.
 
 Reverse solving, production activation, Customer Flow changes, and UI redesign remain outside scope.
 
 ## 13. Decision
 
-**ORIGINAL_INTENT_SPEC_BLOCKED — PHASE SUPPORT ROUTING, GENERIC REPEATED-SUPPORT TRANSITION, AND VERIFIED OFFICIAL PREMIUM READ CONTRACT ARE REQUIRED**
+**ORIGINAL_INTENT_FORWARD_PARTIAL — UNMATCHED REPEATED-SUPPORT PATHS REMAIN NOT_YET_VALIDATED; GAS READ CONTRACT IS NOT YET DEPLOYED/VERIFIED**
 
-The product direction is now unambiguous, and the evidence-supported boundary is explicit. Broad implementation is blocked until the three named items are resolved; no new actuarial approximation is authorized by this specification.
+The product direction and routing are locked. Exact genuine-path replay and narrowly matched contribution interpolation are implementable now, while unsupported histories fail safely. No new actuarial approximation is authorized by this specification.

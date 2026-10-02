@@ -22,9 +22,10 @@ test('phase dependency and five-year offsets are explicit', () => {
   assert.equal(spec.phaseModel.contributionsMayDifferByPhase, true);
 });
 
-test('phase routing is unresolved instead of silently defaulting to oldest-first', () => {
-  assert.equal(spec.phaseAggregation.status, 'PHASE SUPPORT ROUTING — DECISION REQUIRED');
-  assert.match(spec.phaseAggregation.prohibitedDefault, /oldest-first rule is research-only/);
+test('five-year rotating phase routing is locked', () => {
+  assert.equal(spec.phaseAggregation.status, 'RESOLVED — 5-YEAR ROTATING PHASE SUPPORT ROUTING');
+  assert.match(spec.phaseAggregation.formula, /floor.*\/ 5.*mod enabledPhaseCount/);
+  assert.deepEqual(spec.phaseAggregation.orderedPhases, ['phase1', 'phase2', 'phase3']);
 });
 
 test('genuine data anchors and ranges are frozen facts', () => {
@@ -49,13 +50,15 @@ test('official medical premiums fail safe and repeated support is not overclaime
   assert.match(spec.medicalPremiumMapping.missingAgeRule, /Fail unavailable/);
   assert.equal(spec.medicalPremiumMapping.rangeAction, 'premiumRange');
   assert.equal(spec.contributionSupport.noExtrapolation, true);
-  assert.equal(spec.validationEvidence.genericRepeatedSupport, 'NOT YET VALIDATED');
+  assert.match(spec.validationEvidence.genericRepeatedSupport, /^NOT YET VALIDATED/);
   assert.ok(spec.evidenceStatuses.includes('OFFICIAL_PREMIUM_DATA_UNAVAILABLE'));
   assert.ok(spec.evidenceStatuses.includes('NOT_YET_VALIDATED'));
+  assert.match(spec.medicalPremiumMapping.status, /IMPLEMENTED_NOT_DEPLOYED/);
+  assert.equal(spec.medicalPremiumMapping.officialSource.mappingSheet, 'MedicalPlans');
 });
 
 test('protected production and evidence areas remain outside this checkpoint', () => {
-  for (const required of ['Customer Flow', 'production calculation engine', 'GAS', 'Official Cloud data', 'genuine proposal fixtures']) {
+  for (const required of ['Customer Flow', 'production calculation engine', 'GAS write behavior', 'Official Cloud data', 'genuine proposal fixtures']) {
     assert.ok(spec.protectedAreasUnchanged.includes(required));
   }
 });

@@ -1,10 +1,10 @@
 {
   "specVersion": "medical-reserve-original-intent-forward-v1",
-  "classification": "ORIGINAL_INTENT_SPEC_BLOCKED",
+  "classification": "ORIGINAL_INTENT_FORWARD_PARTIAL",
   "exactBlockers": [
-    "PHASE SUPPORT ROUTING — DECISION REQUIRED: no approved rule selects which independent phase funds annual Medical Reserve Support.",
     "A generic evidence-valid subsequent-year remaining-value rule is not available for an arbitrary Official Medical premium schedule after the first support year.",
-    "The application expects premium and premiumRange reads, but the committed GAS implementation exposes only health and bootstrap; the deployed Official premium response could not be verified in this environment."
+    "The read-only premium and premiumRange GAS contract is implemented in committed source but has not been deployed or live-verified.",
+    "MedicalPlans plan select_0 maps to 睿選0自付額 while the actual Official premium tab is 睿選 0自付額; the read contract fails safely until Official mapping is corrected."
   ],
   "selectedDirection": {
     "mode": "FORWARD_ONLY",
@@ -86,12 +86,12 @@
     {
       "id": "B",
       "configuration": "phase1+phase2",
-      "definition": "Phase 1 and Phase 2 calculated independently; post-support combination requires the selected routing rule."
+      "definition": "Phase 1 and Phase 2 calculated independently; support rotates in consecutive five-year windows from Phase 1 to Phase 2."
     },
     {
       "id": "C",
       "configuration": "phase1+phase2+phase3",
-      "definition": "All three phases calculated independently; post-support combination requires the selected routing rule."
+      "definition": "All three phases calculated independently; support rotates in consecutive five-year windows from Phase 1 to Phase 2 to Phase 3."
     }
   ],
   "genuineDataCoverage": {
@@ -170,7 +170,7 @@
     "Request a complete Official annual premium range for supportStartAge through supportEndAge, inclusive.",
     "Before supportStartAge, apply no Medical Reserve Support.",
     "At each support age, use that age's Official annual medical premium as required Medical Reserve Support.",
-    "Apply support to exactly one selected phase-routing rule; no rule is selected in this checkpoint.",
+    "Route support by five-year windows beginning at supportStartAge: activePhaseIndex = floor((attainedAge - supportStartAge) / 5) mod enabledPhaseCount.",
     "For a first support on a phase, use the verified first-support identity.",
     "For later support, use an exact genuine audited path only when the schedule matches; otherwise return NOT_YET_VALIDATED rather than inventing a transition.",
     "Return age, annual premium/support, cumulative support and projected remaining value with evidence status."
@@ -188,10 +188,10 @@
     "NOT_YET_VALIDATED",
     "OUT_OF_SUPPORTED_RANGE",
     "OFFICIAL_PREMIUM_DATA_UNAVAILABLE",
-    "PHASE_ROUTING_DECISION_REQUIRED"
+    "OFFICIAL_PREMIUM_CONTRACT_NOT_DEPLOYED"
   ],
   "medicalPremiumMapping": {
-    "status": "CONTRACT_IDENTIFIED_LIVE_DATA_UNVERIFIED",
+    "status": "READ_CONTRACT_IMPLEMENTED_NOT_DEPLOYED_OR_LIVE_VERIFIED",
     "endpoint": "https://script.google.com/macros/s/AKfycbzq07F_WpjaCtW3BK5_Bziiq9Ap1-DOT47Z7mz5-JSN-9m7nDvn9cqfZBvw9otAeZPr/exec",
     "sourcePriority": [
       "Official Cloud bootstrap MedicalPlans mapping plus premiumRange",
@@ -202,24 +202,30 @@
     "rangeAction": "premiumRange",
     "rangeParameters": {
       "plan_id": "selected medical plan",
+      "support_start_age": "manually selected supportStartAge",
+      "support_end_age": "manually selected supportEndAge",
       "retirement_age": "legacy API parameter carrying manually selected supportStartAge",
       "coverage_age": "legacy API parameter carrying manually selected supportEndAge"
     },
     "requiredResponse": "annual_premiums containing every attained age in the inclusive requested range",
     "missingAgeRule": "Fail unavailable; never interpolate or fabricate a medical premium.",
-    "repositoryContractGap": "app.js consumes health/bootstrap/premium/premiumRange, while committed gas/Code.gs implements health/bootstrap only.",
-    "environmentResult": "The live endpoint response was not retrievable in this Work environment, so current plan rows, deductible rows and age coverage were not asserted."
+    "officialSource": {
+      "spreadsheetTitle": "增值式醫保",
+      "spreadsheetId": "1OXblBBSdhnuFPP54FucxmNEVGL9d2s7fDfZqKtk_dHI",
+      "mappingSheet": "MedicalPlans",
+      "premiumCoverage": "Most premium tabs contain ages 0-100; tabs ending at 99+ explicitly cover age 100."
+    },
+    "repositoryContractGap": "RESOLVED IN SOURCE: gas/Code.gs now implements read-only premium and premiumRange actions; deployment/live verification remains pending.",
+    "environmentResult": "Official Sheet structure and plan mappings were verified through authorized connected access. The deployed GAS endpoint still timed out and was not modified or deployed.",
+    "knownMappingDefect": "MedicalPlans select_0 maps to 睿選0自付額 while the actual tab is 睿選 0自付額; fail safely until Official data is corrected."
   },
   "phaseAggregation": {
     "preSupport": "The display-only total available reserve may sum the independently calculated phase values at the same attained age.",
     "postSupport": "Sum the independently updated phase remaining values only after the annual support has been allocated by an approved routing rule.",
-    "status": "PHASE SUPPORT ROUTING — DECISION REQUIRED",
-    "unselectedOptions": [
-      "oldest-issued phase first",
-      "newest-issued phase first",
-      "proportional to each phase's available value"
-    ],
-    "prohibitedDefault": "No option may be silently selected. The existing oldest-first rule is research-only and is not product evidence."
+    "status": "RESOLVED — 5-YEAR ROTATING PHASE SUPPORT ROUTING",
+    "formula": "supportYearIndex = attainedAge - supportStartAge; windowIndex = floor(supportYearIndex / 5); activePhaseIndex = windowIndex mod enabledPhaseCount.",
+    "orderedPhases": ["phase1", "phase2", "phase3"],
+    "nonActivePhaseRule": "Every enabled non-active phase continues aging on its own issue-age and Policy-Year path; routing selects only the phase funding the current support year."
   },
   "validationEvidence": {
     "firstSupportIdentity": { "rows": 22, "withinHKD1": 22, "maximumAbsoluteHKD": 0 },
@@ -227,21 +233,21 @@
     "postReductionGCV": { "rows": 1205, "withinHKD1": 1203, "maximumAbsoluteHKD": 1.0356 },
     "componentIdentity": { "rows": 2410, "withinHKD1": 2410, "maximumAbsoluteHKD": 1 },
     "allocationIdentity": { "rows": 1205, "withinHKD1": 1205, "maximumAbsoluteHKD": 1 },
-    "genericRepeatedSupport": "NOT YET VALIDATED",
+    "genericRepeatedSupport": "NOT YET VALIDATED; exact genuine paths and narrowly matched between-anchor paths are supported without a new actuarial model.",
     "accuracyClaimBoundary": "The <=0.10% annual target applies only where a calculated path is directly comparable with genuine proposal evidence; no accuracy is claimed for unsupported combinations."
   },
   "exactNextImplementationScope": [
-    "Obtain the product decision for phase support routing and record one explicit rule.",
-    "Reconcile or document the deployed Official premiumRange implementation with the committed GAS contract, then capture a versioned complete response for supported MedicalPlans.",
-    "Implement a research-only Forward orchestrator with independent phase inputs/states, inclusive Official premium lookup, exact contribution paths, explicit interpolation labels and fail-safe evidence statuses.",
-    "Permit first-support calculation and exact audited-path replay only; return NOT_YET_VALIDATED for unmatched repeated-support paths.",
-    "Validate Phase 1 first, then validate the approved routing for Phase 1+2 and Phase 1+2+3 before any production or UI activation."
+    "Deploy and live-verify the committed read-only premium/premiumRange GAS contract without changing Official data.",
+    "Correct the Official MedicalPlans select_0 premium_sheet mapping or preserve its explicit fail-safe.",
+    "Exercise the research-only Forward orchestrator with product-selected inputs and report DIRECTLY_VALIDATED, INTERPOLATED_EVIDENCE_SUPPORTED, NOT_YET_VALIDATED, or OUT_OF_SUPPORTED_RANGE per row.",
+    "Obtain additional genuine path evidence before supporting an unmatched repeated-support history; do not introduce a generic actuarial approximation.",
+    "Keep production and UI inactive until product review accepts the evidence boundary."
   ],
   "protectedAreasUnchanged": [
     "Customer Flow",
     "production calculation engine",
     "Front/User/Admin UI",
-    "GAS",
+    "GAS write behavior",
     "Official Cloud data",
     "genuine proposal fixtures",
     "historical research artifacts"
