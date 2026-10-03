@@ -55,8 +55,9 @@ function canonicalRole(id, kind) {
   return kind || id || 'content';
 }
 function normalizeFlow(rawFlow) {
+  if (rawFlow && !Array.isArray(rawFlow) && Array.isArray(rawFlow.pages) && Array.isArray(rawFlow.hiddenRoles)) return rawFlow;
   if (rawFlow && !Array.isArray(rawFlow)) rawFlow = rawFlow.pages || rawFlow.items || rawFlow.rows;
-  if (!Array.isArray(rawFlow) || !rawFlow.length) return SAFE_FALLBACK_FLOW;
+  if (!Array.isArray(rawFlow) || !rawFlow.length) return { pages: SAFE_FALLBACK_FLOW, hiddenRoles: [] };
   const hiddenRoles = new Set();
   const rows = rawFlow.map((page, index) => {
     const id = String(page.id ?? page.page_id ?? `official-page-${index + 1}`);
@@ -64,12 +65,11 @@ function normalizeFlow(rawFlow) {
     if (page.visible === false) hiddenRoles.add(role);
     return { id, title: String(page.title ?? page.display_name ?? page.name ?? `Medical Reserve ${index + 1}`), subtitle: page.subtitle ?? '', supportingText: page.supportingText ?? page.supporting_text ?? page.description ?? '', kind: role, options: Array.isArray(page.options) ? page.options.map(normalizeOption).filter(Boolean) : [], visible: page.visible !== false, sortOrder: Number(page.sortOrder ?? page.sort_order ?? index) };
   }).filter(page => page.visible).sort((a, b) => a.sortOrder - b.sortOrder);
-  rows.hiddenRoles = hiddenRoles;
-  return rows;
+  return { pages: rows, hiddenRoles: [...hiddenRoles] };
 }
 function reconcileCustomerFlow(officialFlow) {
-  const source = Array.isArray(officialFlow) && officialFlow.length ? officialFlow : SAFE_FALLBACK_FLOW;
-  const hiddenRoles = officialFlow?.hiddenRoles || new Set();
+  const source = officialFlow?.pages?.length ? officialFlow.pages : SAFE_FALLBACK_FLOW;
+  const hiddenRoles = new Set(officialFlow?.hiddenRoles || []);
   const seen = new Set(), result = [];
   for (const page of source) {
     const role = canonicalRole(page.id, page.kind);
@@ -88,7 +88,7 @@ function normalizeBootstrap(data) {
   const flow = normalizeFlow(config.AppFlow || config.appFlow || config.app_flow || config.flow || config.pages);
   return { systemSettings: config.SystemSettings || config.systemSettings || config.system_settings || {}, appFlow: flow, flowOptions: normalizeFlowOptions(config.FlowOptions || config.flowOptions || config.flow_options || {}), medicalPlans: Array.isArray(plans) ? plans : Object.values(plans), reserveStrategies: config.ReserveStrategies || config.reserveStrategies || config.reserve_strategies || [], visualization: config.Visualization || config.visualization || {} };
 }
-function applyOfficialConfig(config) { const officialFlow = normalizeFlow(config.appFlow); state.officialConfig = { ...SAFE_FALLBACK_CONFIG, ...config, appFlow: officialFlow, flowOptions: normalizeFlowOptions(config.flowOptions) }; state.flow = reconcileCustomerFlow(officialFlow); state.plans = (state.officialConfig.medicalPlans || []).map(plan => ({ ...plan, plan_id: plan.plan_id ?? plan.planId ?? plan.id, premium_sheet: plan.premium_sheet ?? plan.premiumSheet ?? plan.sheet })); state.reserveStrategies = normalizeReserveRows(state.officialConfig.reserveStrategies); }
+function applyOfficialConfig(config) { const officialFlow = config.appFlow?.pages ? config.appFlow : normalizeFlow(config.appFlow); state.officialConfig = { ...SAFE_FALLBACK_CONFIG, ...config, appFlow: officialFlow, flowOptions: normalizeFlowOptions(config.flowOptions) }; state.flow = reconcileCustomerFlow(officialFlow); state.plans = (state.officialConfig.medicalPlans || []).map(plan => ({ ...plan, plan_id: plan.plan_id ?? plan.planId ?? plan.id, premium_sheet: plan.premium_sheet ?? plan.premiumSheet ?? plan.sheet })); state.reserveStrategies = normalizeReserveRows(state.officialConfig.reserveStrategies); }
 function apiUrl(action, params = {}) { const url = new URL(CONFIG.api); url.searchParams.set('action', action); Object.entries(params).forEach(([key, value]) => { if (value !== '' && value != null) url.searchParams.set(key, value); }); return url; }
 async function api(action, params = {}) { const response = await fetch(apiUrl(action, params), { headers: { Accept: 'application/json' } }); const json = await response.json(); if (!json.ok) throw new Error(json.error?.message || '官方資料暫時無法使用'); return json; }
 function cacheOfficial(data) { localStorage.setItem(CONFIG.cacheKey, JSON.stringify(data)); }
