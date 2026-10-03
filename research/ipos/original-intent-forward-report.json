@@ -1,6 +1,6 @@
 {
   "reportVersion": "original-intent-forward-checkpoint-v1",
-  "startingRemoteHead": "c3ea513e835af14b1872560132e8f17b57e8ef9c",
+  "startingRemoteHead": "6a5433006557bcdee7a2975514940a970a7fe06a",
   "engine": "ipos-original-intent-genuine-path-forward-v1",
   "productionActivated": false,
   "newActuarialModelIntroduced": false,
@@ -20,7 +20,40 @@
       "premium",
       "premiumRange"
     ],
-    "premiumRangeStatus": "IMPLEMENTED_NOT_DEPLOYED_OR_LIVE_VERIFIED",
+    "premiumRangeStatus": "SOURCE_IMPLEMENTED_LIVE_DEPLOYMENT_STALE",
+    "officialSheetVerification": {
+      "status": "FAIL",
+      "spreadsheetTitle": "增值式醫保",
+      "spreadsheetId": "1OXblBBSdhnuFPP54FucxmNEVGL9d2s7fDfZqKtk_dHI",
+      "mappingSheet": "MedicalPlans",
+      "select_0": {
+        "premium_sheet": "睿選0自付額",
+        "enabled": "睿選 0自付額",
+        "targetTabExists": true,
+        "exactMismatch": "premium_sheet is missing the required space; the corrected tab is 睿選 0自付額, and the enabled cell contains that tab name instead of a boolean."
+      },
+      "flexible_m": { "premium_sheet": "男靈活計劃", "targetTabExists": true, "enabled": true },
+      "prestige_16000": { "premium_sheet": "尊耀16000自付額", "targetTabExists": true, "enabled": true },
+      "select_18000": { "premium_sheet": "睿選18000自付額", "targetTabExists": true, "enabled": true },
+      "boundaryRows": {
+        "flexible_m": "99+ present; no explicit age-100 row",
+        "prestige_16000": "99+ present; no explicit age-100 row",
+        "select_0": "explicit ages 99 and 100 present",
+        "select_18000": "explicit ages 99 and 100 present"
+      }
+    },
+    "liveDeployment": {
+      "status": "FAIL",
+      "observedApiVersion": "1.0.0",
+      "repositoryApiVersion": "1.1.0",
+      "observedHealthMapping": "select_0 -> 睿選0自付額 (missing target tab)",
+      "premiumRangeNewParameters": "FAIL — support_start_age/support_end_age rejected",
+      "legacyPremiumRangeParameters": "PASS — retirement_age/coverage_age accepted",
+      "age99PlusAnd100": "FAIL — 99+/100 missing for flexible_m/prestige_16000 on live deployment",
+      "select_0": "FAIL — plan unavailable",
+      "invalidPlanAndRange": "PASS — rejected safely",
+      "deploymentAction": "BLOCKED — authenticated Apps Script deployment capability is not available in this environment"
+    },
     "exactPathMappings": {
       "AVF": {
         "planId": "flexible_m",
@@ -35,7 +68,7 @@
         "premiumSheet": "睿選18000自付額"
       }
     },
-    "knownMappingDefect": "MedicalPlans select_0 maps to 睿選0自付額, while the actual premium tab is 睿選 0自付額; this plan fails safely until Official mapping is corrected."
+    "knownMappingDefect": "CURRENTLY CONFIRMED: MedicalPlans select_0 still maps premium_sheet to 睿選0自付額, while the actual tab is 睿選 0自付額; its enabled field also contains the tab name rather than a boolean. No external Sheet repair was applied."
   },
   "genuinePathReplay": {
     "rows": 610,
@@ -111,6 +144,22 @@
     "rowsAbove010Percent": 0,
     "firstAbove010Percent": "NEVER"
   },
+  "realMedicalPremiumForwardValidation": {
+    "status": "PARTIAL",
+    "source": "Live Official premium ranges from the documented endpoint, consumed through its legacy retirement_age/coverage_age contract",
+    "scenarios": [
+      { "planId": "flexible_m", "supportStartAge": 55, "supportEndAge": 90, "phase1": "NOT_YET_VALIDATED from age 56 / policy year 11", "phase1And2": "NOT_YET_VALIDATED from age 56 / policy year 11", "phase1And2And3": "OUT_OF_SUPPORTED_RANGE from age 65 / policy year 20", "routes": "P1; P1→P2; P1→P2→P3" },
+      { "planId": "flexible_m", "supportStartAge": 60, "supportEndAge": 92, "phase1": "NOT_YET_VALIDATED from age 61 / policy year 16", "phase1And2": "OUT_OF_SUPPORTED_RANGE", "phase1And2And3": "OUT_OF_SUPPORTED_RANGE from age 70 / policy year 25", "routes": "P1; P1→P2; P1→P2→P3; partial final windows exercised" },
+      { "planId": "prestige_16000", "supportStartAge": 55, "supportEndAge": 90, "phase1": "NOT_YET_VALIDATED from age 56 / policy year 11", "phase1And2": "NOT_YET_VALIDATED from age 56 / policy year 11", "phase1And2And3": "OUT_OF_SUPPORTED_RANGE from age 65 / policy year 20", "routes": "P1; P1→P2; P1→P2→P3" },
+      { "planId": "select_18000", "supportStartAge": 60, "supportEndAge": 92, "phase1": "NOT_YET_VALIDATED from age 61 / policy year 21", "phase1And2": "OUT_OF_SUPPORTED_RANGE", "phase1And2And3": "OUT_OF_SUPPORTED_RANGE from age 61 / policy year 21", "routes": "P1; P1→P2; P1→P2→P3" }
+    ],
+    "unsupportedPathPolicy": "Numerical output is not claimed as genuine validation; first unmatched support state is exposed and classified."
+  },
+  "productionIntegrationReadiness": {
+    "status": "BLOCKED",
+    "productionActivated": false,
+    "reason": "The current production app remains safely disconnected from the research engine. Activation is not justified while select_0 mapping is malformed, the deployed GAS is stale, and repeated-support states lack genuine iPOS evidence."
+  },
   "interpolationCase": "5pay_avf_150k",
   "constructionRoles": [
     "calibration",
@@ -125,7 +174,7 @@
   "remainingBlockers": [
     "Unmatched repeated-support paths return NOT_YET_VALIDATED because no new actuarial transition is authorized.",
     "The committed read-only GAS premium/premiumRange contract must be deployed and live-verified.",
-    "The Official MedicalPlans mapping for select_0 must be corrected to its actual premium-sheet tab name."
+    "Current Official MedicalPlans select_0 row must be corrected by the Sheet owner: premium_sheet must be exactly 睿選 0自付額 and enabled must be boolean true."
   ],
-  "classification": "ORIGINAL_INTENT_FORWARD_PARTIAL — UNMATCHED REPEATED-SUPPORT PATHS REMAIN NOT_YET_VALIDATED; GAS READ CONTRACT IS NOT YET DEPLOYED/VERIFIED"
+  "classification": "ORIGINAL_INTENT_FORWARD_PARTIAL — CORE RESEARCH ENGINE PASSES; OFFICIAL select_0 MAPPING AND LIVE GAS CONTRACT FAIL; REAL PREMIUM REPEATED-SUPPORT PATHS REMAIN NOT_YET_VALIDATED"
 }
