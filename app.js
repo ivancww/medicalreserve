@@ -7,21 +7,21 @@ const CONFIG = Object.freeze({
   cacheKey: 'medical-reserve:official-cache:v2', userKey: 'medical-reserve:user-layer:v1', backupSchema: 'medical-reserve-backup-v1'
 });
 
-const CUSTOMER_FLOW = Object.freeze([
+const SAFE_FALLBACK_FLOW = Object.freeze([
   { id: 'entry', title: '開始規劃醫療儲備', kind: 'entry' }, { id: 'funding', title: '資金來源', kind: 'funding' },
   { id: 'timeline', title: '你的退休時間線', kind: 'timeline' }, { id: 'coverage', title: '醫療保障至幾多歲？', kind: 'coverage' },
   { id: 'plan', title: '選擇醫療計劃', kind: 'plan' }, { id: 'premium', title: '看見未來醫療保費', kind: 'premium' },
   { id: 'transition', title: '從醫療需要到 Medical Reserve', kind: 'transition' }, { id: 'build', title: '建立 Medical Reserve', kind: 'build' },
   { id: 'support', title: 'Medical Reserve Support', kind: 'support' }, { id: 'summary', title: '你的醫療儲備重點', kind: 'summary' }
 ]);
-const SAFE_FALLBACK_CONFIG = Object.freeze({ systemSettings: { currency: 'HKD', checkpointInterval: 5 }, flowOptions: { funding: ['銀行存款', '投資資產', '家庭財務', '退休生活資金'], retirementAge: [55, 60, 65, 70], coverageAge: [80, 85, 90, 95, 100] }, medicalPlans: [], reserveStrategies: [], visualization: {} });
+const SAFE_FALLBACK_CONFIG = Object.freeze({ systemSettings: { currency: 'HKD', checkpointInterval: 5 }, appFlow: SAFE_FALLBACK_FLOW, flowOptions: { funding: ['銀行存款', '投資資產', '家庭財務', '退休生活資金'], retirementAge: [55, 60, 65, 70], coverageAge: [80, 85, 90, 95, 100] }, medicalPlans: [], reserveStrategies: [], visualization: {} });
 const entry = new URLSearchParams(location.search).get('avaEntry');
 const state = {
   step: 0, mode: entry === 'user' ? 'edit' : new URLSearchParams(location.search).get('mode') === 'presentation' ? 'presentation' : 'use',
   dev: ['1', 'user', 'admin'].includes(new URLSearchParams(location.search).get('dev') || entry),
   currentAge: 40, retirementAge: 65, coverageAge: 90, funding: '', planId: '', plans: [], premiumRange: null,
   supportStartAge: 65, supportEndAge: 90, selectedSupportAge: 65, arrangement: 5,
-  phaseContributions: { phase1: 100000, phase2: 130000, phase3: 150000 }, flow: CUSTOMER_FLOW, officialConfig: SAFE_FALLBACK_CONFIG,
+  phaseContributions: { phase1: 100000, phase2: 130000, phase3: 150000 }, flow: SAFE_FALLBACK_FLOW, officialConfig: SAFE_FALLBACK_CONFIG,
   official: { status: 'not_loaded', version: null, updatedAt: null, warnings: [] }, user: loadUser(),
   forward: { status: 'blocked', reason: '現有官方部署尚未提供支援期範圍及已驗證的生產 Forward Calculation。' }
 };
@@ -40,12 +40,55 @@ function normalizeFlowOptions(rawOptions) {
   const read = (...keys) => { for (const key of keys) if (source[key] != null) return Array.isArray(source[key]) ? source[key].map(normalizeOption).filter(Boolean) : source[key]; return undefined; };
   return { ...source, funding: read('funding', 'fundingSource', 'funding_source') || SAFE_FALLBACK_CONFIG.flowOptions.funding, retirementAge: read('retirementAge', 'retirement_age', 'retirementAges', 'retirement_ages') || SAFE_FALLBACK_CONFIG.flowOptions.retirementAge, coverageAge: read('coverageAge', 'coverage_age', 'coverageAges', 'coverage_ages') || SAFE_FALLBACK_CONFIG.flowOptions.coverageAge };
 }
+function canonicalRole(id, kind) {
+  const key = String(kind || id || '').toLowerCase();
+  if (['entry', 'e0', 'start'].includes(key)) return 'entry';
+  if (['funding', 'choice'].includes(key)) return 'funding';
+  if (key === 'timeline') return 'timeline';
+  if (key === 'coverage') return 'coverage';
+  if (key === 'plan') return 'plan';
+  if (['journey', 'total', 'premium'].includes(key)) return 'premium';
+  if (['transition', 'reserve-transition'].includes(key)) return 'transition';
+  if (['strategy', 'build'].includes(key)) return 'build';
+  if (key === 'support') return 'support';
+  if (key === 'summary') return 'summary';
+  return kind || id || 'content';
+}
+function normalizeFlow(rawFlow) {
+  if (rawFlow && !Array.isArray(rawFlow)) rawFlow = rawFlow.pages || rawFlow.items || rawFlow.rows;
+  if (!Array.isArray(rawFlow) || !rawFlow.length) return SAFE_FALLBACK_FLOW;
+  const hiddenRoles = new Set();
+  const rows = rawFlow.map((page, index) => {
+    const id = String(page.id ?? page.page_id ?? `official-page-${index + 1}`);
+    const role = canonicalRole(id, page.kind ?? page.page_type ?? page.type);
+    if (page.visible === false) hiddenRoles.add(role);
+    return { id, title: String(page.title ?? page.display_name ?? page.name ?? `Medical Reserve ${index + 1}`), subtitle: page.subtitle ?? '', supportingText: page.supportingText ?? page.supporting_text ?? page.description ?? '', kind: role, options: Array.isArray(page.options) ? page.options.map(normalizeOption).filter(Boolean) : [], visible: page.visible !== false, sortOrder: Number(page.sortOrder ?? page.sort_order ?? index) };
+  }).filter(page => page.visible).sort((a, b) => a.sortOrder - b.sortOrder);
+  rows.hiddenRoles = hiddenRoles;
+  return rows;
+}
+function reconcileCustomerFlow(officialFlow) {
+  const source = Array.isArray(officialFlow) && officialFlow.length ? officialFlow : SAFE_FALLBACK_FLOW;
+  const hiddenRoles = officialFlow?.hiddenRoles || new Set();
+  const seen = new Set(), result = [];
+  for (const page of source) {
+    const role = canonicalRole(page.id, page.kind);
+    if (seen.has(role)) continue;
+    seen.add(role); result.push({ ...page, kind: role });
+  }
+  if (!seen.has('entry')) result.unshift({ ...SAFE_FALLBACK_FLOW[0] });
+  for (const fallback of SAFE_FALLBACK_FLOW) {
+    if (!seen.has(fallback.kind) && !hiddenRoles.has(fallback.kind)) result.push({ ...fallback });
+  }
+  return result;
+}
 function normalizeBootstrap(data) {
   const root = data?.data || data || {}, config = root.config || root.configuration || root;
   const plans = config.MedicalPlans || config.medicalPlans || config.medical_plans || [];
-  return { systemSettings: config.SystemSettings || config.systemSettings || {}, flowOptions: normalizeFlowOptions(config.FlowOptions || config.flowOptions || config.flow_options || {}), medicalPlans: Array.isArray(plans) ? plans : Object.values(plans), reserveStrategies: config.ReserveStrategies || config.reserveStrategies || [], visualization: config.Visualization || config.visualization || {} };
+  const flow = normalizeFlow(config.AppFlow || config.appFlow || config.app_flow || config.flow || config.pages);
+  return { systemSettings: config.SystemSettings || config.systemSettings || config.system_settings || {}, appFlow: flow, flowOptions: normalizeFlowOptions(config.FlowOptions || config.flowOptions || config.flow_options || {}), medicalPlans: Array.isArray(plans) ? plans : Object.values(plans), reserveStrategies: config.ReserveStrategies || config.reserveStrategies || config.reserve_strategies || [], visualization: config.Visualization || config.visualization || {} };
 }
-function applyOfficialConfig(config) { state.officialConfig = { ...SAFE_FALLBACK_CONFIG, ...config, flowOptions: normalizeFlowOptions(config.flowOptions) }; state.plans = (state.officialConfig.medicalPlans || []).map(plan => ({ ...plan, plan_id: plan.plan_id ?? plan.planId ?? plan.id, premium_sheet: plan.premium_sheet ?? plan.premiumSheet ?? plan.sheet })); state.reserveStrategies = normalizeReserveRows(state.officialConfig.reserveStrategies); }
+function applyOfficialConfig(config) { const officialFlow = normalizeFlow(config.appFlow); state.officialConfig = { ...SAFE_FALLBACK_CONFIG, ...config, appFlow: officialFlow, flowOptions: normalizeFlowOptions(config.flowOptions) }; state.flow = reconcileCustomerFlow(officialFlow); state.plans = (state.officialConfig.medicalPlans || []).map(plan => ({ ...plan, plan_id: plan.plan_id ?? plan.planId ?? plan.id, premium_sheet: plan.premium_sheet ?? plan.premiumSheet ?? plan.sheet })); state.reserveStrategies = normalizeReserveRows(state.officialConfig.reserveStrategies); }
 function apiUrl(action, params = {}) { const url = new URL(CONFIG.api); url.searchParams.set('action', action); Object.entries(params).forEach(([key, value]) => { if (value !== '' && value != null) url.searchParams.set(key, value); }); return url; }
 async function api(action, params = {}) { const response = await fetch(apiUrl(action, params), { headers: { Accept: 'application/json' } }); const json = await response.json(); if (!json.ok) throw new Error(json.error?.message || '官方資料暫時無法使用'); return json; }
 function cacheOfficial(data) { localStorage.setItem(CONFIG.cacheKey, JSON.stringify(data)); }
@@ -88,9 +131,9 @@ function renderCustomPages(position) { return state.user.pages.filter(page => pa
 function renderEditPanel(page) { if (state.mode !== 'edit') return ''; return `<div class="edit-panel"><strong>Customer Presentation content</strong><div class="form-grid"><div class="field"><label class="label" for="edit-title">Page title</label><input class="input" id="edit-title" data-edit-field="title" data-page-id="${page.id}" value="${escapeHtml(getTitle(page))}"></div><div class="field"><label class="label" for="edit-subtitle">Supporting label</label><input class="input" id="edit-subtitle" data-edit-field="subtitle" data-page-id="${page.id}" value="${escapeHtml(getSubtitle(page))}"></div></div><div class="field"><label class="label" for="edit-support">Supporting explanation</label><textarea class="textarea" id="edit-support" data-edit-field="supportingText" data-page-id="${page.id}">${escapeHtml(getSupport(page))}</textarea></div></div>`; }
 function render() {
   const page = currentPage(), isEntry = page.kind === 'entry', progress = isEntry ? 0 : Math.round((state.step / (state.flow.length - 1)) * 100), statusText = state.official.status === 'unavailable' ? '官方資料暫時無法載入；未有官方資料時不會顯示假設保費。' : state.official.status === 'local' ? '已使用本機官方資料快取。' : state.official.status === 'cloud' ? '官方資料已更新。' : '正在讀取官方資料…';
-  document.title = `${getTitle(page)} · AVA Medical Reserve`; const devControls = state.dev ? `<button class="button subtle agent-only" data-action="mode" data-mode="edit">User Edit</button>` : ''; const devFooter = state.dev ? `<button class="button subtle agent-only" data-action="backup">匯出備份</button><label class="button subtle agent-only">匯入備份<input hidden type="file" accept="application/json" data-action="restore"></label>` : '';
+  document.title = `${getTitle(page)} · AVA Medical Reserve`; const devControls = state.dev ? `<button class="button subtle agent-only" data-action="mode" data-mode="edit">User Edit</button>` : ''; const devFooter = state.dev ? `<button class="button subtle agent-only" data-action="backup">匯出備份</button><label class="button subtle agent-only">匯入備份<input hidden type="file" accept="application/json" data-action="restore"></label><button class="button subtle agent-only" data-action="media" data-media-type="image">新增 IMAGE PAGE</button><button class="button subtle agent-only" data-action="media" data-media-type="video">新增 VIDEO PAGE</button>` : '';
   document.getElementById('app').dataset.avaMode = state.mode; document.getElementById('app').className = `ava-front ${state.mode === 'presentation' ? 'presentation' : ''}`;
-  document.getElementById('app').innerHTML = `<div class="shell"><header class="header"><div class="header-identity"><a class="brand" href="./" aria-label="AVA Medical Reserve"><img class="brand-mark" src="icon.svg" alt=""><span>AVA MEDICAL RESERVE · v${CONFIG.version}</span></a><span class="journey-title">${escapeHtml(getTitle(page))}</span></div><div class="header-actions"><a class="button secondary return-ava" href="${CONFIG.returnToAva}">← 返回 AVA</a><button class="button subtle agent-only" data-action="mode" data-mode="presentation">Customer View</button>${devControls}</div></header><div class="container">${state.mode !== 'use' ? `<div class="modebar ${state.mode}"><strong>${state.mode === 'presentation' ? 'Customer Presentation' : state.mode === 'edit' ? 'User Edit Mode' : 'Preview Mode'}</strong><div class="actions">${state.mode === 'edit' ? '<button class="button primary" data-action="save">Save Local</button>' : ''}<button class="button secondary" data-action="mode" data-mode="use">返回使用模式</button></div></div>` : ''}${!isEntry ? `<div class="journey-nav"><button class="back-link" data-action="prev" ${state.step <= 1 ? 'disabled' : ''}>← 返回</button><div class="progress-wrap"><span>${state.step} / ${state.flow.length - 1}</span><div class="progress" role="progressbar" aria-valuenow="${progress}" aria-valuemin="0" aria-valuemax="100"><span style="width:${progress}%"></span></div></div></div>` : ''}${renderCustomPages(`before:${page.id}`)}${renderPage(page)}${renderEditPanel(page)}${renderCustomPages(`after:${page.id}`)}<p class="status ${state.official.status === 'unavailable' ? 'error' : ''}">${statusText}</p><footer class="footer"><span class="caption">AVA Medical Reserve · v${CONFIG.version}</span><div class="actions">${devFooter}</div></footer></div></div>`;
+  document.getElementById('app').innerHTML = `<div class="shell"><header class="header"><div class="header-identity"><a class="brand" href="./" aria-label="AVA Medical Reserve"><img class="brand-mark" src="icon.svg" alt=""><span>AVA MEDICAL RESERVE · v${CONFIG.version}</span></a><span class="journey-title">${escapeHtml(getTitle(page))}</span></div><div class="header-actions"><a class="button secondary return-ava" href="${CONFIG.returnToAva}">返回 AVA</a><button class="button subtle agent-only" data-action="mode" data-mode="presentation">Customer View</button>${devControls}</div></header><div class="container">${state.mode !== 'use' ? `<div class="modebar ${state.mode}"><strong>${state.mode === 'presentation' ? 'Customer Presentation' : state.mode === 'edit' ? 'User Edit Mode' : 'Preview Mode'}</strong><div class="actions">${state.mode === 'edit' ? '<button class="button primary" data-action="save">Save Local</button>' : ''}<button class="button secondary" data-action="mode" data-mode="use">返回使用模式</button></div></div>` : ''}${!isEntry ? `<div class="journey-nav"><button class="back-link" data-action="prev" ${state.step === 0 ? 'disabled' : ''}>← 返回</button><div class="progress-wrap"><span>${state.step} / ${state.flow.length - 1}</span><div class="progress" role="progressbar" aria-valuenow="${progress}" aria-valuemin="0" aria-valuemax="100"><span style="width:${progress}%"></span></div></div></div>` : ''}${renderCustomPages(`before:${page.id}`)}${renderPage(page)}${renderEditPanel(page)}${renderCustomPages(`after:${page.id}`)}<p class="status ${state.official.status === 'unavailable' ? 'error' : ''}">${statusText}</p><footer class="footer"><span class="caption">AVA Medical Reserve · v${CONFIG.version}</span><div class="actions">${devFooter}</div></footer></div></div>`;
 }
 
 document.addEventListener('click', async event => {
@@ -101,19 +144,22 @@ document.addEventListener('click', async event => {
   if (action === 'support-select') { state.selectedSupportAge = Number(el.dataset.value); render(); }
   if (action === 'retry') { if (state.step === 4) await loadPremiumRange(); else await loadOfficial(); }
   if (action === 'next') { if (!validateStep()) return; state.step = Math.min(state.flow.length - 1, state.step + 1); render(); }
-  if (action === 'prev') { state.step = Math.max(1, state.step - 1); render(); }
+  if (action === 'prev') { state.step = Math.max(0, state.step - 1); render(); }
   if (action === 'edit-journey') { state.step = 1; render(); }
   if (action === 'return-ava') location.href = CONFIG.returnToAva;
   if (action === 'mode') { state.mode = el.dataset.mode; render(); }
   if (action === 'save') { document.querySelectorAll('[data-edit-field]').forEach(node => { const pageId = node.dataset.pageId; state.user.overrides[pageId] = { ...(state.user.overrides[pageId] || {}), [node.dataset.editField]: node.value }; }); saveUser(); state.mode = 'preview'; render(); }
   if (action === 'backup') exportBackup();
+  if (action === 'media') addUnavailableMediaPage(el.dataset.mediaType);
 });
 document.addEventListener('input', event => { const el = event.target; if (el.dataset.action === 'contribution') state.phaseContributions[el.dataset.phase] = Number(el.value); });
 document.addEventListener('change', async event => { const el = event.target; if (el.dataset.action === 'restore' && el.files[0]) await restoreBackup(el.files[0]); if (el.dataset.action === 'number') { state[el.dataset.key] = Number(el.value); render(); } if (el.dataset.action === 'support-age') { state[el.dataset.key] = Number(el.value); state.selectedSupportAge = state.supportStartAge; render(); } });
 function validateStep() { const page = currentPage(); if (page.kind === 'timeline' && (!Number.isInteger(state.currentAge) || state.currentAge < 18 || state.retirementAge < state.currentAge)) { alert('請確認目前年齡和退休年齡。'); return false; } if (page.kind === 'build') { const values = Object.entries(state.phaseContributions).slice(0, state.arrangement / 5); if (values.some(([, value]) => !Number.isFinite(value) || value < 40000 || value > 200000)) { alert('每個啟用階段的年度儲蓄金額需為 HKD 40,000–200,000。'); return false; } } if (page.kind === 'support' && (state.supportStartAge < state.currentAge || state.supportEndAge < state.supportStartAge)) { alert('請確認 Support 開始及結束年齡。'); return false; } return true; }
-async function exportBackup() { const payload = { schema: CONFIG.backupSchema, appVersion: CONFIG.version, createdAt: new Date().toISOString(), user: { overrides: state.user.overrides, pages: state.user.pages } }; const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = 'medical-reserve-backup.json'; link.click(); URL.revokeObjectURL(link.href); }
-async function restoreBackup(file) { try { const data = JSON.parse(await file.text()); if (!validateBackup(data, CONFIG.backupSchema)) throw new Error('備份內容不完整'); state.user = data.user; saveUser(); render(); alert('備份已還原。官方資料及計算來源沒有被覆蓋。'); } catch (error) { alert(`備份未能還原：${error.message}`); } }
+function sanitizePortable(value) { if (Array.isArray(value)) return value.map(sanitizePortable); if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).filter(([key]) => !['mediaBinary', 'blob', 'base64', 'binary'].includes(key)).map(([key, item]) => [key, sanitizePortable(item)])); return value; }
+async function exportBackup() { const payload = { schema: CONFIG.backupSchema, appVersion: CONFIG.version, createdAt: new Date().toISOString(), user: sanitizePortable({ overrides: state.user.overrides, pages: state.user.pages }) }; const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = 'medical-reserve-backup.json'; link.click(); URL.revokeObjectURL(link.href); }
+async function restoreBackup(file) { try { const data = JSON.parse(await file.text()); if (!validateBackup(data, CONFIG.backupSchema)) throw new Error('備份內容不完整'); state.user = sanitizePortable({ overrides: data.user.overrides || {}, pages: data.user.pages }); saveUser(); render(); alert('備份已還原。官方資料及計算來源沒有被覆蓋。'); } catch (error) { alert(`備份未能還原：${error.message}`); } }
+function addUnavailableMediaPage(type) { const pageType = type === 'video' ? 'video' : 'image'; state.user.pages.push({ id: `page-${crypto.randomUUID()}`, pageType, title: `新增 ${pageType === 'image' ? 'IMAGE' : 'VIDEO'} PAGE`, subtitle: `${pageType === 'image' ? 'IMAGE PAGE' : 'VIDEO PAGE'} — 需要連接 Cloud Storage`, content: '媒體上載能力目前未連接。未有二進制資料會儲存在本機。', flowPosition: 'after:summary', sortOrder: state.user.pages.length, visible: true, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), media: [] }); saveUser(); render(); }
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => {});
 loadOfficial();
 
-export { CONFIG, CUSTOMER_FLOW, money };
+export { CONFIG, SAFE_FALLBACK_FLOW, money };
