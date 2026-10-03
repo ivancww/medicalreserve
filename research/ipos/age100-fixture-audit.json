@@ -1,0 +1,12 @@
+{
+  "auditVersion": "age100-fixture-audit-v1",
+  "head": "be61fcd6c36e8432024d6f19a0e5e097c62e73a1",
+  "result": "THREE_INTENTIONAL_BENCHMARK_PRESERVATIONS",
+  "sourceBasis": "Committed evidence-gap-matrix source records, source hashes, central allocation tables and post-withdrawal tables.",
+  "fixturesChanged": false,
+  "cases": [
+    {"caseId":"50yrs_5pay_130k_avpu","sourceId":"ipos-c4648de5cd771a6a","issueAge":50,"policyYear":50,"attainedAge":100,"recordedSupportAmount":85,"recordedRemainingValue":5936604,"sourceAllocationAmount":0,"sourceRemainingValue":5936604,"allocationPage":16,"postPage":18,"classification":"INTENTIONAL_BENCHMARK_PRESERVATION","reason":"The source allocation and post-withdrawal table both record zero; the frozen 85 schedule value is deliberately retained for benchmark comparability."},
+    {"caseId":"50yrs_5pay_180k_avpu","sourceId":"ipos-097be310d0f7d0d1","issueAge":50,"policyYear":50,"attainedAge":100,"recordedSupportAmount":8,"recordedRemainingValue":10117982,"sourceAllocationAmount":0,"sourceRemainingValue":10117982,"allocationPage":16,"postPage":18,"classification":"INTENTIONAL_BENCHMARK_PRESERVATION","reason":"The source allocation and post-withdrawal table both record zero; the frozen 8 schedule value is deliberately retained for benchmark comparability."},
+    {"caseId":"70k_original","sourceId":"ipos-130e729fbd4565ec","issueAge":45,"policyYear":55,"attainedAge":100,"recordedSupportAmount":2,"recordedRemainingValue":3708028,"sourceAllocationAmount":0,"sourceRemainingValue":3708028,"allocationPage":16,"postPage":18,"classification":"INTENTIONAL_BENCHMARK_PRESERVATION","reason":"The source allocation and post-withdrawal table both record zero; the frozen 2 schedule value is deliberately retained for benchmark comparability."}
+  ]
+}

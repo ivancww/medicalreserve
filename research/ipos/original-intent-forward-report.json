@@ -1,6 +1,6 @@
 {
   "reportVersion": "original-intent-forward-checkpoint-v1",
-  "startingRemoteHead": "2a0c1b297b1b64ef3797c77ec2acc7ffc16d0b70",
+  "startingRemoteHead": "be61fcd6c36e8432024d6f19a0e5e097c62e73a1",
   "engine": "ipos-original-intent-genuine-path-forward-v1",
   "productionActivated": false,
   "newActuarialModelIntroduced": false,
@@ -163,7 +163,17 @@
       { "planId": "select_18000", "supportStartAge": 60, "supportEndAge": 92, "phase1": "NOT_YET_VALIDATED from age 61 / policy year 21", "phase1And2": "OUT_OF_SUPPORTED_RANGE", "phase1And2And3": "OUT_OF_SUPPORTED_RANGE from age 61 / policy year 21", "routes": "P1; P1→P2; P1→P2→P3" },
       { "planId": "select_0", "supportStartAge": 65, "supportEndAge": 92, "phase1": "NOT_YET_VALIDATED from age 66 / policy year 26; first support history age 65 = HKD 68,696", "phase1And2": "NOT_YET_VALIDATED from age 70 / phase-2 policy year 25", "phase1And2And3": "NOT_YET_VALIDATED from age 70 / phase-2 policy year 25", "routes": "P1; P1→P2; P1→P2→P3; age-65 start and partial final window exercised" }
     ],
-    "unsupportedPathPolicy": "Numerical output is not claimed as genuine validation; first unmatched support state is exposed and classified."
+    "unsupportedPathPolicy": "Numerical output is not claimed as genuine validation; first unmatched support state is exposed and classified.",
+    "evidenceAudit": "research/ipos/repeated-support-evidence-audit.json",
+    "completeHistoryMatches": 0,
+    "promotedStates": []
+  },
+  "age100FixtureAudit": {
+    "status": "INTENTIONAL_BENCHMARK_PRESERVATION",
+    "artifact": "research/ipos/age100-fixture-audit.json",
+    "cases": 3,
+    "fixturesChanged": false,
+    "sourceAllocationAndPostTableConfirmZero": true
   },
   "productionIntegrationReadiness": {
     "status": "BLOCKED",
@@ -184,7 +194,8 @@
   "remainingBlockers": [
     "Unmatched repeated-support paths return NOT_YET_VALIDATED because no new actuarial transition is authorized.",
     "The committed read-only GAS premium/premiumRange contract must be deployed and live-verified.",
-    "Current GAS v1.1.0 must be deployed to the existing Web App and live-verified."
+    "Current GAS v1.1.0 must be deployed to the existing Web App and live-verified.",
+    "Three frozen age-100 benchmark rows remain a known fixture-validator FAIL by intentional preservation policy; the source tables themselves confirm zero allocation."
   ],
   "classification": "ORIGINAL_INTENT_FORWARD_PARTIAL — OFFICIAL MAPPING PASS; GAS v1.1.0 DEPLOYMENT/LIVE CONTRACT BLOCKED; REAL PREMIUM REPEATED-SUPPORT PATHS REMAIN NOT_YET_VALIDATED"
 }

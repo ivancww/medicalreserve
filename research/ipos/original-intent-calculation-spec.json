@@ -191,7 +191,7 @@
     "OFFICIAL_PREMIUM_CONTRACT_NOT_DEPLOYED"
   ],
   "medicalPremiumMapping": {
-    "status": "MAPPING_VERIFIED_LIVE_GAS_STALE",
+    "status": "IMPLEMENTED_NOT_DEPLOYED — MAPPING_VERIFIED_LIVE_GAS_STALE",
     "endpoint": "https://script.google.com/macros/s/AKfycbzq07F_WpjaCtW3BK5_Bziiq9Ap1-DOT47Z7mz5-JSN-9m7nDvn9cqfZBvw9otAeZPr/exec",
     "sourcePriority": [
       "Official Cloud bootstrap MedicalPlans mapping plus premiumRange",

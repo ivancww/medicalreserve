@@ -1,0 +1,43 @@
+{
+  "auditVersion": "repeated-support-evidence-audit-v1",
+  "head": "be61fcd6c36e8432024d6f19a0e5e097c62e73a1",
+  "matchingRule": "A genuine match requires issue age, contribution anchor, attained age, policy year, current support amount, phase state, and the complete prior support history from issue age through the candidate row.",
+  "corpusAudit": {
+    "committedGenuineSourceRecordsAudited": true,
+    "completeHistoryMatches": 0,
+    "promotions": [],
+    "result": "NO_EXISTING_COMPLETE_HISTORY_MATCH"
+  },
+  "firstUnsupportedStates": [
+    {"planId":"flexible_m","phases":"P1","supportStartAge":65,"supportEndAge":92,"attainedAge":66,"overallPolicyYear":26,"phasePolicyYear":26,"supportAmountHKD":23905,"previousSupportAmountHKD":22820,"priorSupportHistory":"age 65 only","evidenceStatus":"NOT_YET_VALIDATED"},
+    {"planId":"flexible_m","phases":"P1+P2","supportStartAge":65,"supportEndAge":92,"attainedAge":70,"overallPolicyYear":30,"phasePolicyYear":25,"supportAmountHKD":29329,"priorSupportHistory":"phase 2 has no prior support; phase 1 has ages 65-69","evidenceStatus":"NOT_YET_VALIDATED"},
+    {"planId":"flexible_m","phases":"P1+P2+P3","supportStartAge":65,"supportEndAge":92,"attainedAge":70,"overallPolicyYear":30,"phasePolicyYear":25,"supportAmountHKD":29329,"priorSupportHistory":"phase 2 has no prior support; phase 1 has ages 65-69","evidenceStatus":"NOT_YET_VALIDATED"},
+    {"planId":"prestige_16000","phases":"P1","supportStartAge":65,"supportEndAge":92,"attainedAge":66,"overallPolicyYear":26,"phasePolicyYear":26,"supportAmountHKD":41208,"previousSupportAmountHKD":37816,"priorSupportHistory":"age 65 only","evidenceStatus":"NOT_YET_VALIDATED"},
+    {"planId":"prestige_16000","phases":"P1+P2","supportStartAge":65,"supportEndAge":92,"attainedAge":70,"overallPolicyYear":30,"phasePolicyYear":25,"supportAmountHKD":50328,"priorSupportHistory":"phase 2 has no prior support; phase 1 has ages 65-69","evidenceStatus":"NOT_YET_VALIDATED"},
+    {"planId":"prestige_16000","phases":"P1+P2+P3","supportStartAge":65,"supportEndAge":92,"attainedAge":70,"overallPolicyYear":30,"phasePolicyYear":25,"supportAmountHKD":50328,"priorSupportHistory":"phase 2 has no prior support; phase 1 has ages 65-69","evidenceStatus":"NOT_YET_VALIDATED"},
+    {"planId":"select_18000","phases":"P1","supportStartAge":65,"supportEndAge":92,"attainedAge":66,"overallPolicyYear":26,"phasePolicyYear":26,"supportAmountHKD":30512,"previousSupportAmountHKD":28000,"priorSupportHistory":"age 65 only","evidenceStatus":"NOT_YET_VALIDATED"},
+    {"planId":"select_18000","phases":"P1+P2","supportStartAge":65,"supportEndAge":92,"attainedAge":70,"overallPolicyYear":30,"phasePolicyYear":25,"supportAmountHKD":37264,"priorSupportHistory":"phase 2 has no prior support; phase 1 has ages 65-69","evidenceStatus":"NOT_YET_VALIDATED"},
+    {"planId":"select_18000","phases":"P1+P2+P3","supportStartAge":65,"supportEndAge":92,"attainedAge":70,"overallPolicyYear":30,"phasePolicyYear":25,"supportAmountHKD":37264,"priorSupportHistory":"phase 2 has no prior support; phase 1 has ages 65-69","evidenceStatus":"NOT_YET_VALIDATED"},
+    {"planId":"select_0","phases":"P1","supportStartAge":65,"supportEndAge":92,"attainedAge":66,"overallPolicyYear":26,"phasePolicyYear":26,"supportAmountHKD":74544,"previousSupportAmountHKD":68696,"priorSupportHistory":"age 65 only","evidenceStatus":"NOT_YET_VALIDATED"},
+    {"planId":"select_0","phases":"P1+P2","supportStartAge":65,"supportEndAge":92,"attainedAge":70,"overallPolicyYear":30,"phasePolicyYear":25,"supportAmountHKD":90504,"priorSupportHistory":"phase 2 has no prior support; phase 1 has ages 65-69","evidenceStatus":"NOT_YET_VALIDATED"},
+    {"planId":"select_0","phases":"P1+P2+P3","supportStartAge":65,"supportEndAge":92,"attainedAge":70,"overallPolicyYear":30,"phasePolicyYear":25,"supportAmountHKD":90504,"priorSupportHistory":"phase 2 has no prior support; phase 1 has ages 65-69","evidenceStatus":"NOT_YET_VALIDATED"}
+  ],
+  "requiredGenuineIposEvidenceMatrix": {
+    "principle": "Smallest useful staged set: one proposal per official medical path and phase slot. Phase 1 is the priority; phase 2 and phase 3 proposals resolve the distinct offset policy states.",
+    "annualSupportSchedule": "Use the current Official MedicalPlans premium series for the named plan, with the existing support amount rounding rule; this is a request for genuine iPOS evidence, not an invented expected-value fixture.",
+    "proposals": [
+      {"priority":1,"planId":"flexible_m","path":"AVF","phaseSlot":"P1","issueAge":40,"annualSavingHKD":130000,"supportStartAge":65,"supportEndAge":92,"policyYears":"26-53","annualRows":28},
+      {"priority":1,"planId":"prestige_16000","path":"AVPU","phaseSlot":"P1","issueAge":40,"annualSavingHKD":130000,"supportStartAge":65,"supportEndAge":92,"policyYears":"26-53","annualRows":28},
+      {"priority":1,"planId":"select_18000","path":"Original","phaseSlot":"P1","issueAge":40,"annualSavingHKD":130000,"supportStartAge":65,"supportEndAge":92,"policyYears":"26-53","annualRows":28},
+      {"priority":1,"planId":"select_0","path":"Original","phaseSlot":"P1","issueAge":40,"annualSavingHKD":130000,"supportStartAge":65,"supportEndAge":92,"policyYears":"26-53","annualRows":28},
+      {"priority":2,"planId":"flexible_m","path":"AVF","phaseSlot":"P2","issueAge":45,"annualSavingHKD":180000,"supportStartAge":70,"supportEndAge":92,"policyYears":"26-48","annualRows":23},
+      {"priority":2,"planId":"prestige_16000","path":"AVPU","phaseSlot":"P2","issueAge":45,"annualSavingHKD":180000,"supportStartAge":70,"supportEndAge":92,"policyYears":"26-48","annualRows":23},
+      {"priority":2,"planId":"select_18000","path":"Original","phaseSlot":"P2","issueAge":45,"annualSavingHKD":180000,"supportStartAge":70,"supportEndAge":92,"policyYears":"26-48","annualRows":23},
+      {"priority":2,"planId":"select_0","path":"Original","phaseSlot":"P2","issueAge":45,"annualSavingHKD":180000,"supportStartAge":70,"supportEndAge":92,"policyYears":"26-48","annualRows":23},
+      {"priority":3,"planId":"flexible_m","path":"AVF","phaseSlot":"P3","issueAge":50,"annualSavingHKD":150000,"supportStartAge":75,"supportEndAge":92,"policyYears":"26-43","annualRows":18},
+      {"priority":3,"planId":"prestige_16000","path":"AVPU","phaseSlot":"P3","issueAge":50,"annualSavingHKD":150000,"supportStartAge":75,"supportEndAge":92,"policyYears":"26-43","annualRows":18},
+      {"priority":3,"planId":"select_18000","path":"Original","phaseSlot":"P3","issueAge":50,"annualSavingHKD":150000,"supportStartAge":75,"supportEndAge":92,"policyYears":"26-43","annualRows":18},
+      {"priority":3,"planId":"select_0","path":"Original","phaseSlot":"P3","issueAge":50,"annualSavingHKD":150000,"supportStartAge":75,"supportEndAge":92,"policyYears":"26-43","annualRows":18}
+    ]
+  }
+}

@@ -2,7 +2,7 @@
 
 Classification: **ORIGINAL_INTENT_FORWARD_PARTIAL — OFFICIAL MAPPING PASS; GAS v1.1.0 DEPLOYMENT/LIVE CONTRACT BLOCKED; REAL PREMIUM REPEATED-SUPPORT PATHS REMAIN NOT_YET_VALIDATED**
 
-Validated against PR #2 head `2a0c1b297b1b64ef3797c77ec2acc7ffc16d0b70`. Production remains inactive.
+Validated against PR #2 head `be61fcd6c36e8432024d6f19a0e5e097c62e73a1`. Production remains inactive.
 
 ## Current status
 
@@ -70,6 +70,31 @@ Real-premium evidence remains partial:
 | `select_0`, 65 | NOT_YET_VALIDATED age 66 / PY26; prior support age 65 = HKD 68,696 | NOT_YET_VALIDATED age 70 / phase-2 PY25 | NOT_YET_VALIDATED age 70 / phase-2 PY25 |
 
 The first unsupported rows are reported, not hidden. No reverse solver, v3/v4 model, component-state model, carried-ratio model, or new actuarial formula was introduced.
+
+### Repeated-support evidence audit
+
+The committed genuine iPOS corpus was audited using complete prior support history, not age or Policy Year alone. No currently unsupported real-premium state has a complete genuine history match, so no state was promoted. The audit is recorded in [`repeated-support-evidence-audit.json`](repeated-support-evidence-audit.json).
+
+The smallest useful evidence request is staged by phase slot: four Phase-1 proposals first (one for each Official Medical path), followed by four Phase-2 offset proposals and four Phase-3 offset proposals. Each proposal must use the named plan's exact Official premium-derived support schedule and provide genuine iPOS annual values. The matrix contains the issue age, contribution, support range, policy-year range, and row count; it is an evidence request, not a new formula or fixture.
+
+The first complete-history gaps in the primary age-65 run are:
+
+| Plan | Configuration | First gap | Support | Evidence |
+| --- | --- | --- | ---: | --- |
+| `flexible_m` | P1 | age 66 / PY26 | HKD 23,905 | NOT_YET_VALIDATED |
+| `flexible_m` | P1+P2 | age 70 / P2 PY25 | HKD 29,329 | NOT_YET_VALIDATED |
+| `prestige_16000` | P1 | age 66 / PY26 | HKD 41,208 | NOT_YET_VALIDATED |
+| `prestige_16000` | P1+P2 | age 70 / P2 PY25 | HKD 50,328 | NOT_YET_VALIDATED |
+| `select_18000` | P1 | age 66 / PY26 | HKD 30,512 | NOT_YET_VALIDATED |
+| `select_18000` | P1+P2 | age 70 / P2 PY25 | HKD 37,264 | NOT_YET_VALIDATED |
+| `select_0` | P1 | age 66 / PY26 | HKD 74,544 | NOT_YET_VALIDATED |
+| `select_0` | P1+P2 | age 70 / P2 PY25 | HKD 90,504 | NOT_YET_VALIDATED |
+
+P1+P2+P3 reaches the same first P2 gap at age 70. Numerical output remains available only as explicitly classified research output; it is not claimed as genuine validation.
+
+### Age-100 frozen fixture audit
+
+The three preserved inconsistencies are source-confirmed zero allocations, not unresolved actuarial mismatches. Their frozen schedule values (85, 8, and 2) remain unchanged intentionally for benchmark comparability. Each source post-withdrawal value agrees with the frozen remaining value. The detailed audit is [`age100-fixture-audit.json`](age100-fixture-audit.json). The fixture validator therefore remains a known FAIL on these preserved benchmark rows; no genuine evidence was edited.
 
 ## Genuine iPOS regression
 
