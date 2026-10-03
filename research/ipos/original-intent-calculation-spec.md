@@ -122,7 +122,7 @@ Source priority is live Official Cloud data, then a versioned cached Official re
 
 Official source: spreadsheet **增值式醫保** (`1OXblBBSdhnuFPP54FucxmNEVGL9d2s7fDfZqKtk_dHI`), with `MedicalPlans` as the mapping tab and plan-specific premium tabs as the annual data. Most tabs contain ages 0–100; tabs ending at `99+` explicitly cover age 100.
 
-Status: **READ CONTRACT IMPLEMENTED; NOT DEPLOYED OR LIVE-VERIFIED.** The smallest read-only `premium` and `premiumRange` actions are now implemented in `gas/Code.gs`. The deployed endpoint timed out in this environment, so no deployment claim is made. The Official `select_0` mapping currently points to `睿選0自付額`, while the actual tab is `睿選 0自付額`; that plan fails safely until Official mapping is corrected.
+Status: **MAPPING VERIFIED; GAS DEPLOYMENT BLOCKED.** The smallest read-only `premium` and `premiumRange` actions are implemented in `gas/Code.gs` v1.1.0. The Official `select_0` mapping was corrected to `睿選 0自付額` with `enabled = TRUE` and read-after-write verified. The canonical endpoint still serves v1.0.0 and requires an authenticated deployment of the current source.
 
 ## 8. Annual forward sequence
 
@@ -180,8 +180,8 @@ No generic repeated-support accuracy claim is made. Existing genuine paths are v
 
 ## 12. Exact next implementation scope
 
-1. Deploy and live-verify the committed read-only Official `premium` / `premiumRange` contract.
-2. Correct the Official `select_0` premium-sheet mapping or preserve its explicit fail-safe.
+1. Deploy and live-verify the committed read-only Official `premium` / `premiumRange` v1.1.0 contract.
+2. Preserve `NOT_YET_VALIDATED` for unmatched repeated-support histories without adding a generic actuarial approximation.
 3. Product-review the research Forward orchestrator and its evidence statuses using selected customer inputs.
 4. Keep exact genuine paths and narrowly supported interpolation; return `NOT_YET_VALIDATED` for unmatched repeated-support histories.
 5. Obtain additional genuine path evidence before broadening support; do not add a generic actuarial approximation.

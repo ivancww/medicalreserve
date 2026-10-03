@@ -3,8 +3,8 @@
   "classification": "ORIGINAL_INTENT_FORWARD_PARTIAL",
   "exactBlockers": [
     "A generic evidence-valid subsequent-year remaining-value rule is not available for an arbitrary Official Medical premium schedule after the first support year.",
-    "The read-only premium and premiumRange GAS contract is implemented in committed source but has not been deployed or live-verified.",
-    "MedicalPlans plan select_0 maps to 睿選0自付額 while the actual Official premium tab is 睿選 0自付額; the read contract fails safely until Official mapping is corrected."
+    "The read-only premium and premiumRange GAS v1.1.0 contract is implemented in committed source but the canonical Web App still serves v1.0.0.",
+    "Unmatched repeated-support histories remain NOT_YET_VALIDATED because genuine iPOS evidence does not cover those states."
   ],
   "selectedDirection": {
     "mode": "FORWARD_ONLY",
@@ -191,7 +191,7 @@
     "OFFICIAL_PREMIUM_CONTRACT_NOT_DEPLOYED"
   ],
   "medicalPremiumMapping": {
-    "status": "READ_CONTRACT_IMPLEMENTED_NOT_DEPLOYED_OR_LIVE_VERIFIED",
+    "status": "MAPPING_VERIFIED_LIVE_GAS_STALE",
     "endpoint": "https://script.google.com/macros/s/AKfycbzq07F_WpjaCtW3BK5_Bziiq9Ap1-DOT47Z7mz5-JSN-9m7nDvn9cqfZBvw9otAeZPr/exec",
     "sourcePriority": [
       "Official Cloud bootstrap MedicalPlans mapping plus premiumRange",
@@ -215,9 +215,9 @@
       "mappingSheet": "MedicalPlans",
       "premiumCoverage": "Most premium tabs contain ages 0-100; tabs ending at 99+ explicitly cover age 100."
     },
-    "repositoryContractGap": "RESOLVED IN SOURCE: gas/Code.gs now implements read-only premium and premiumRange actions; deployment/live verification remains pending.",
-    "environmentResult": "Official Sheet structure and plan mappings were verified through authorized connected access. The deployed GAS endpoint still timed out and was not modified or deployed.",
-    "knownMappingDefect": "MedicalPlans select_0 maps to 睿選0自付額 while the actual tab is 睿選 0自付額; fail safely until Official data is corrected."
+    "repositoryContractGap": "RESOLVED IN SOURCE: gas/Code.gs implements read-only premium and premiumRange actions; canonical deployment remains v1.0.0 and must be updated.",
+    "environmentResult": "Official Sheet mapping was corrected through authorized connected access and read-after-write verified. The existing deployed endpoint reflects the correction but remains v1.0.0.",
+    "knownMappingDefect": "RESOLVED: MedicalPlans select_0 maps to 睿選 0自付額 and is enabled true."
   },
   "phaseAggregation": {
     "preSupport": "The display-only total available reserve may sum the independently calculated phase values at the same attained age.",
@@ -238,7 +238,7 @@
   },
   "exactNextImplementationScope": [
     "Deploy and live-verify the committed read-only premium/premiumRange GAS contract without changing Official data.",
-    "Correct the Official MedicalPlans select_0 premium_sheet mapping or preserve its explicit fail-safe.",
+    "Deploy and live-verify the current GAS v1.1.0 source to the existing canonical Web App.",
     "Exercise the research-only Forward orchestrator with product-selected inputs and report DIRECTLY_VALIDATED, INTERPOLATED_EVIDENCE_SUPPORTED, NOT_YET_VALIDATED, or OUT_OF_SUPPORTED_RANGE per row.",
     "Obtain additional genuine path evidence before supporting an unmatched repeated-support history; do not introduce a generic actuarial approximation.",
     "Keep production and UI inactive until product review accepts the evidence boundary."
