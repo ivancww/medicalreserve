@@ -1,0 +1,90 @@
+# Year-to-Year Component Evidence
+
+346 genuine consecutive positive-withdrawal pairs. Each JSON row contains complete t and t+1 component values, allocations, impacts and changes.
+
+Post-withdrawal impact is compared with the same-policy no-withdrawal counterfactual. `nextImpactBeforeCurrentComponentWithdrawal` adds back only the displayed current allocation; it is an accounting decomposition, not a new AIA formula. Capital reduction confounding is flagged.
+
+| Priority case / transition | ΔGCV impact | ΔRB impact | ΔTD impact | Basic reduction confounded |
+| --- | --- | --- | --- | --- |
+| 45yrs_5pay_130k_avpu_55yr / PY10→11 | 0 | -15817 | -5476 | False |
+| 45yrs_5pay_130k_avpu_55yr / PY11→12 | 0 | -16851 | -6691 | False |
+| 45yrs_5pay_130k_avpu_55yr / PY12→13 | 0 | -17794 | -8410 | False |
+| 45yrs_5pay_130k_avpu_55yr / PY13→14 | 0 | -18967 | -10362 | False |
+| 45yrs_5pay_130k_avpu_55yr / PY14→15 | -6106 | -9965 | -15587 | True |
+| 45yrs_5pay_130k_avpu_55yr / PY15→16 | -11408 | -2837 | -20844 | True |
+| 45yrs_5pay_130k_avpu_55yr / PY16→17 | -12510 | -2907 | -25067 | True |
+| 45yrs_5pay_130k_avpu_55yr / PY17→18 | -13927 | -2977 | -28931 | True |
+| 45yrs_5pay_130k_avpu_55yr / PY18→19 | -15436 | -3051 | -35341 | True |
+| 45yrs_5pay_130k_avpu_55yr / PY19→20 | -16990 | -3125 | -42289 | True |
+| 45yrs_5pay_130k_avpu_55yr / PY20→21 | -16734 | -3202 | -56269 | True |
+| 45yrs_5pay_130k_avpu_55yr / PY21→22 | -17486 | -3280 | -54464 | True |
+| 45yrs_5pay_130k_avpu_55yr / PY22→23 | -17898 | -3361 | -65576 | True |
+| 45yrs_5pay_130k_avpu_55yr / PY23→24 | -24246 | -3443 | -60090 | True |
+| 45yrs_5pay_130k_avpu_55yr / PY24→25 | -15027 | -3527 | -89985 | True |
+| 45yrs_5pay_130k_avpu_55yr / PY25→26 | -14860 | -3614 | -105154 | True |
+| 45yrs_5pay_130k_avpu_55yr / PY26→27 | -14917 | -3702 | -98108 | True |
+| 45yrs_5pay_130k_avpu_55yr / PY27→28 | -14699 | -3793 | -108616 | True |
+| 45yrs_5pay_130k_avpu_55yr / PY28→29 | -14792 | -3886 | -119854 | True |
+| 45yrs_5pay_130k_avpu_55yr / PY29→30 | -14783 | -3981 | -131999 | True |
+| 45yrs_5pay_130k_avf_55 / PY10→11 | 0 | -11166 | -3877 | False |
+| 45yrs_5pay_130k_avf_55 / PY11→12 | 0 | -11508 | -4599 | False |
+| 45yrs_5pay_130k_avf_55 / PY12→13 | 0 | -11916 | -5691 | False |
+| 45yrs_5pay_130k_avf_55 / PY13→14 | 0 | -12344 | -6854 | False |
+| 45yrs_5pay_130k_avf_55 / PY14→15 | 0 | -12933 | -7610 | False |
+| 45yrs_5pay_130k_avf_55 / PY15→16 | 0 | -13698 | -8951 | False |
+| 45yrs_5pay_130k_avf_55 / PY16→17 | 0 | -14373 | -11189 | False |
+| 45yrs_5pay_130k_avf_55 / PY17→18 | -6881 | -4116 | -17279 | True |
+| 45yrs_5pay_130k_avf_55 / PY18→19 | -8149 | -3051 | -21139 | True |
+| 45yrs_5pay_130k_avf_55 / PY19→20 | -9006 | -3125 | -25416 | True |
+| 45yrs_5pay_130k_avf_55 / PY20→21 | -8890 | -3202 | -33126 | True |
+| 45yrs_5pay_130k_avf_55 / PY21→22 | -9272 | -3280 | -32234 | True |
+| 45yrs_5pay_130k_avf_55 / PY22→23 | -9547 | -3361 | -38926 | True |
+| 45yrs_5pay_130k_avf_55 / PY23→24 | -12285 | -3443 | -35898 | True |
+| 45yrs_5pay_130k_avf_55 / PY24→25 | -8587 | -3527 | -53705 | True |
+| 45yrs_5pay_130k_avf_55 / PY25→26 | -8469 | -3614 | -62854 | True |
+| 45yrs_5pay_130k_avf_55 / PY26→27 | -8513 | -3702 | -59056 | True |
+| 45yrs_5pay_130k_avf_55 / PY27→28 | -8490 | -3793 | -65820 | True |
+| 45yrs_5pay_130k_avf_55 / PY28→29 | -8485 | -3886 | -72611 | True |
+| 45yrs_5pay_130k_avf_55 / PY29→30 | -8536 | -3981 | -80355 | True |
+| 50yrs_5pay_130k_avpu / PY11→12 | 0 | -22453 | -8378 | False |
+| 50yrs_5pay_130k_avpu / PY12→13 | 0 | -24339 | -10771 | False |
+| 50yrs_5pay_130k_avpu / PY13→14 | -1623 | -23716 | -14646 | True |
+| 50yrs_5pay_130k_avpu / PY14→15 | -15575 | -2769 | -25798 | True |
+| 50yrs_5pay_130k_avpu / PY15→16 | -17614 | -2837 | -29966 | True |
+| 50yrs_5pay_130k_avpu / PY16→17 | -19038 | -2907 | -35610 | True |
+| 50yrs_5pay_130k_avpu / PY17→18 | -20422 | -2977 | -40029 | True |
+| 50yrs_5pay_130k_avpu / PY18→19 | -21892 | -3051 | -47749 | True |
+| 50yrs_5pay_130k_avpu / PY19→20 | -23639 | -3125 | -56327 | True |
+| 50yrs_5pay_130k_avpu / PY20→21 | -22565 | -3202 | -74224 | True |
+| 50yrs_5pay_130k_avpu / PY21→22 | -23557 | -3280 | -71393 | True |
+| 50yrs_5pay_130k_avpu / PY22→23 | -24086 | -3361 | -85950 | True |
+| 50yrs_5pay_130k_avpu / PY23→24 | -33423 | -3443 | -78635 | True |
+| 50yrs_5pay_130k_avpu / PY24→25 | -19886 | -3527 | -118262 | True |
+| 5pay_avpu_200k / PY16→17 | 0 | -19837 | -11236 | False |
+| 5pay_avpu_200k / PY17→18 | 0 | -21418 | -13960 | False |
+| 5pay_avpu_200k / PY18→19 | 0 | -23058 | -17810 | False |
+| 5pay_avpu_200k / PY19→20 | 0 | -24368 | -22360 | False |
+| 5pay_avpu_200k / PY20→21 | 0 | -25689 | -30304 | False |
+| 5pay_avpu_200k / PY21→22 | 0 | -26808 | -32443 | False |
+| 5pay_avpu_200k / PY22→23 | -2276 | -23713 | -41227 | True |
+| 5pay_avpu_200k / PY23→24 | -15219 | -5313 | -48242 | True |
+| 5pay_avpu_200k / PY24→25 | -14688 | -5443 | -66596 | True |
+| 5pay_avpu_200k / PY25→26 | -14497 | -5577 | -79033 | True |
+| 5pay_avpu_200k / PY26→27 | -14528 | -5713 | -78664 | True |
+| 5pay_avpu_200k / PY27→28 | -14342 | -5853 | -88122 | True |
+| 5pay_avpu_200k / PY28→29 | -14410 | -5997 | -98566 | True |
+| 5pay_avpu_200k / PY29→30 | -14372 | -6144 | -109769 | True |
+| 70k_original / PY16→17 | 0 | -14686 | -8317 | False |
+| 70k_original / PY17→18 | 0 | -15857 | -10336 | False |
+| 70k_original / PY18→19 | -2838 | -12549 | -14871 | True |
+| 70k_original / PY19→20 | -10447 | -1678 | -22618 | True |
+| 70k_original / PY20→21 | -11012 | -1719 | -29322 | True |
+| 70k_original / PY21→22 | -11569 | -1760 | -30804 | True |
+| 70k_original / PY22→23 | -11886 | -1805 | -36747 | True |
+| 70k_original / PY23→24 | -14704 | -1848 | -35918 | True |
+| 70k_original / PY24→25 | -11138 | -1893 | -50697 | True |
+| 70k_original / PY25→26 | -11002 | -1940 | -59799 | True |
+| 70k_original / PY26→27 | -11032 | -1988 | -58311 | True |
+| 70k_original / PY27→28 | -10882 | -2036 | -65002 | True |
+| 70k_original / PY28→29 | -10941 | -2086 | -72346 | True |
+| 70k_original / PY29→30 | -10922 | -2137 | -80208 | True |

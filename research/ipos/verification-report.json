@@ -1,0 +1,94 @@
+{
+  "verifiedAtUTC": "2026-09-30T17:16:47.789411+00:00",
+  "startingHead": "1a3e2e18ceedf9f25ac98476aae12e3ec82a0597",
+  "nodeTests": {
+    "command": [
+      "npm",
+      "test"
+    ],
+    "exitCode": 0,
+    "status": "PASS",
+    "output": "> medicalreserve@1.0.1 test\n> node --test\n\n\u2714 Admin validation protects required AppFlow IDs (2.558152ms)\n\u2714 Admin validation rejects invalid MedicalPlans mapping (0.36073ms)\n\u2714 Admin validation rejects protected SystemSettings keys (0.229118ms)\n\u2714 ReserveStrategies uses the common normalized mapping boundary (0.162692ms)\n\u2714 normalizes official reserve rows and rejects incomplete rows (1.651712ms)\n\u2714 totals only complete official annual premium data (0.385345ms)\n\u2714 remaining cost is safe and never negative (0.128644ms)\n\u2714 backup validation requires the app schema and user pages (0.162753ms)\n\u2714 Policy Year mapping is canonical (2.066417ms)\n\u2714 one engine accepts Original, AVF, and AVPU (5.2296ms)\n\u2714 age-55 first-year displayed values are present and predictions stay non-negative (3.95688ms)\n\u2714 zero-withdrawal continuation keeps persistent state (3.809561ms)\n\u2714 terminal-dividend state transition is calibrated separately (0.862437ms)\n\u2714 portfolio keeps independent policy histories (5.845381ms)\n\u2714 malformed and unsupported inputs fail safely (0.559342ms)\n\u2714 anchor premiums, interpolation, exhaustion, and deterministic repeat are covered (17.5097ms)\n\u2714 proposal-supported first-withdrawal anchors remain exact in frozen holdouts (8.329737ms)\n\u2714 affected zero-withdrawal continuation does not reset to unaffected base (1.416124ms)\n\u2714 v4 predictions reproduce the frozen best holdout metrics (19.786045ms)\n\u2714 TD fitting excludes interpolated bases, capital reduction and frozen holdouts (167.933668ms)\n\u2714 mutating holdout targets and components cannot alter TD coefficients or blind projections (445.215953ms)\n\u2139 tests 21\n\u2139 suites 0\n\u2139 pass 21\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 754.533632\nnpm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm."
+  },
+  "syntax": {
+    "command": [
+      "npm",
+      "run",
+      "check"
+    ],
+    "exitCode": 0,
+    "status": "PASS",
+    "output": "> medicalreserve@1.0.1 check\n> node --check app.js && node --check domain.js && node --check research/ipos/engine.js && node --check research/ipos/validate.js && node --check research/ipos/td-transition.js && node --check research/ipos/td-transition-research.js && node --check research/ipos/sync-reports.js\n\nnpm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm."
+  },
+  "fixtureValidation": {
+    "command": [
+      "npm",
+      "run",
+      "validate:fixtures"
+    ],
+    "exitCode": 1,
+    "status": "FAIL",
+    "output": "> medicalreserve@1.0.1 validate:fixtures\n> python3 research/ipos/validate_fixtures.py\n\n{\"status\": \"FAIL\", \"schemaValidation\": \"PASS\", \"frozenAssignment\": \"PASS\", \"componentRounding\": \"PASS\", \"scheduleConsistency\": \"FAIL\", \"cases\": 21, \"annualRows\": 1150, \"fixtureSHA256\": \"4111e99433bcef96acc7a4bdbc0150b549728d4fb961c7a96de2db2f4f1bba2c\", \"inconsistencies\": [{\"caseId\": \"50yrs_5pay_130k_avpu\", \"age\": 100, \"policyYear\": 50, \"rowWithdrawal\": 0, \"scheduleWithdrawal\": 85}, {\"caseId\": \"50yrs_5pay_180k_avpu\", \"age\": 100, \"policyYear\": 50, \"rowWithdrawal\": 0, \"scheduleWithdrawal\": 8}, {\"caseId\": \"70k_original\", \"age\": 100, \"policyYear\": 55, \"rowWithdrawal\": 0, \"scheduleWithdrawal\": 2}], \"action\": \"Frozen fixture preserved; recheck genuine proposals before correcting ambiguous final-year schedules.\"}\nnpm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm."
+  },
+  "pythonSyntax": {
+    "command": [
+      "python3",
+      "-m",
+      "py_compile",
+      "research/ipos/validate_offline.py",
+      "research/ipos/validate_fixtures.py",
+      "research/ipos/verify_research.py"
+    ],
+    "exitCode": 0,
+    "status": "PASS",
+    "output": ""
+  },
+  "diffWhitespace": {
+    "command": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exitCode": 0,
+    "status": "PASS",
+    "output": ""
+  },
+  "productionDiff": {
+    "command": [
+      "git",
+      "diff",
+      "--exit-code",
+      "1a3e2e18ceedf9f25ac98476aae12e3ec82a0597",
+      "--",
+      "app.js",
+      "domain.js",
+      "admin.js",
+      "gas",
+      "index.html",
+      "styles.css",
+      "sw.js",
+      "manifest.webmanifest",
+      "icon.svg"
+    ],
+    "exitCode": 0,
+    "status": "PASS",
+    "output": ""
+  },
+  "frozenFixtureDiff": {
+    "command": [
+      "git",
+      "diff",
+      "--exit-code",
+      "1a3e2e18ceedf9f25ac98476aae12e3ec82a0597",
+      "--",
+      "research/ipos/fixtures/dataset.json"
+    ],
+    "exitCode": 0,
+    "status": "PASS",
+    "output": ""
+  },
+  "browserPhysicalDeviceQA": {
+    "status": "NOT VERIFIED",
+    "reason": "Research-only change; production UI/deployment unchanged. No integration readiness certification."
+  }
+}

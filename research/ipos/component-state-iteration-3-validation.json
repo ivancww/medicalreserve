@@ -1,0 +1,39 @@
+{
+  "phase": "A",
+  "iteration": 3,
+  "finalPhaseAIteration": true,
+  "candidate": "ipos-approximation-independent-component-state-phase-a-iteration-3-td-annual-increment",
+  "classification": "MODEL_REJECTION",
+  "checks": {
+    "nodeRegression": { "status": "PASS", "passed": 32, "failed": 0 },
+    "iteration3ComponentRegression": { "status": "PASS", "passed": 3, "failed": 0 },
+    "savedArtifactValidation": { "status": "PASS", "newHoldoutProjectionRuns": 0 },
+    "evidenceSchemaValidation": { "status": "PASS", "sourceRows": 1205, "matchedPairs": 1205, "transitions": 346 },
+    "fixtureSchemaValidation": { "status": "PASS" },
+    "fixtureScheduleConsistency": {
+      "status": "FAIL",
+      "classification": "KNOWN_FROZEN_SOURCE_ANOMALY",
+      "rows": [
+        { "caseId": "50yrs_5pay_130k_avpu", "age": 100, "frozenScheduleWithdrawal": 85, "genuineAnnualRowWithdrawal": 0 },
+        { "caseId": "50yrs_5pay_180k_avpu", "age": 100, "frozenScheduleWithdrawal": 8, "genuineAnnualRowWithdrawal": 0 },
+        { "caseId": "70k_original", "age": 100, "frozenScheduleWithdrawal": 2, "genuineAnnualRowWithdrawal": 0 }
+      ],
+      "action": "Frozen benchmark preserved; no component allocation invented and no correction counted as model improvement."
+    },
+    "firstWithdrawal": { "status": "PASS" },
+    "fiveRowComponentGate": { "status": "FAIL", "classification": "MODEL_REJECTION" },
+    "zeroWithdrawalPersistence": { "status": "PASS" },
+    "frozenRoles": { "status": "PASS" },
+    "leakage": { "status": "PASS" },
+    "modelLock": { "status": "PASS", "sha256": "fce66985c0c82da55e1f4578268922a0684be9b9a739a6f10a259e2cf23e75f2" },
+    "candidateHoldoutEvaluation": { "status": "PASS", "runsAfterLock": 1 },
+    "impossibleComponentStates": { "status": "FAIL", "count": 6, "classification": "MODEL_REJECTION" },
+    "protectedProductionFiles": { "status": "PASS" },
+    "frozenFixtureDiff": { "status": "PASS" },
+    "nodeSyntax": { "status": "PASS" },
+    "pythonSyntax": { "status": "PASS" },
+    "gitDiffCheck": { "status": "PASS" }
+  },
+  "implementationFailure": false,
+  "productionRegression": false
+}

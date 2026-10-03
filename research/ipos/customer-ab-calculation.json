@@ -1,0 +1,100 @@
+{
+  "engineVersion": "ipos-customer-total-value-carried-ratio-v1",
+  "medicalPremiumBoundary": {
+    "status": "OFFICIAL_VALUES_NOT_AVAILABLE_IN_REPOSITORY_OR_THIS_WORK_ENVIRONMENT",
+    "evidence": "Production app loads premiumRange dynamically from Official Cloud. The repository contains mappings and fetch logic, not annual premium values. Direct endpoint retrieval timed out in this Work environment.",
+    "rule": "No medical premium has been invented or copied from an AIA support schedule."
+  },
+  "portfolio": {
+    "fiveYear": {
+      "policies": 1,
+      "status": "NOT_READY"
+    },
+    "tenYear": {
+      "policies": 2,
+      "status": "NOT_READY",
+      "reason": "Second policy issue age and oldest-first multi-policy routing lack genuine combined-portfolio validation."
+    },
+    "fifteenYear": {
+      "policies": 3,
+      "status": "NOT_READY",
+      "reason": "Second/third issue ages and oldest-first multi-policy routing lack genuine combined-portfolio validation."
+    },
+    "routing": "Oldest issued policy first; explicit deterministic research rule, not an AIA-validated portfolio rule."
+  },
+  "genuineScheduleValidation": {
+    "warning": "Uses a genuine AIA proposal withdrawal schedule solely as a deterministic solver test; it is not relabelled as an official medical-premium schedule.",
+    "forward": {
+      "supportYears": 30,
+      "lastFullySupportedAge": 90,
+      "firstShortfallAge": null,
+      "totalSupport": 689520,
+      "remainingAtTarget": 5506120,
+      "calibrationStatus": "IN_CALIBRATION_RANGE"
+    },
+    "reverse": {
+      "requiredAnnualContribution": 182300,
+      "totalContribution": 911500,
+      "feasible": true,
+      "calibrationStatus": "INTERPOLATED_WITHIN_PREMIUM_ANCHORS",
+      "abConsistency": "PASS",
+      "tolerance": 100,
+      "iterations": 11,
+      "targetRemainingValue": 5612890
+    }
+  },
+  "age50OfficialExample": {
+    "currentAge": 50,
+    "supportStartAge": 65,
+    "targetSupportAge": 90,
+    "medicalPremiumYearsIncluded": 26,
+    "ageConvention": "Inclusive attained ages 65 through 90; an age counts only when that full annual premium is funded.",
+    "totalMedicalPremiumRequirement": null,
+    "fiveYear": {
+      "requiredAnnualContribution": null,
+      "totalContribution": null,
+      "remainingValueAtTarget": null,
+      "reason": "Official annual medical-premium schedule unavailable."
+    },
+    "tenYear": {
+      "requiredAnnualContribution": null,
+      "totalContribution": null,
+      "remainingValueAtTarget": null,
+      "reason": "Official annual medical-premium schedule unavailable; portfolio validation also incomplete."
+    },
+    "fifteenYear": {
+      "requiredAnnualContribution": null,
+      "totalContribution": null,
+      "remainingValueAtTarget": null,
+      "reason": "Official annual medical-premium schedule unavailable; portfolio validation also incomplete."
+    }
+  },
+  "abConsistency": "PASS",
+  "validation": {
+    "nodeRegression": "PASS (43/43)",
+    "nodeSyntax": "PASS",
+    "pythonArtifactValidation": "PASS",
+    "schemaValidation": "PASS",
+    "frozenRoleValidation": "PASS",
+    "leakage": "PASS",
+    "modelLock": "PASS",
+    "frozenHoldoutOrder": "PASS — exactly one full evaluation after lock",
+    "protectedProductionFiles": "PASS — no production/UI/GAS file changed",
+    "frozenFixtureDiff": "PASS — dataset unchanged",
+    "fixtureScheduleConsistency": "KNOWN_FROZEN_ANOMALY_FAIL — age-100 historical 85/8/2 schedule values remain intentionally unchanged; genuine source rows are zero",
+    "gitDiffCheck": "PASS",
+    "officialPremiumRetrieval": "BLOCKED — Official Cloud endpoint timed out in this Work environment"
+  },
+  "testsRequired": [
+    "Forward A",
+    "Reverse B",
+    "A/B consistency",
+    "5/10/15 independent policies",
+    "first/repeated/zero withdrawals",
+    "reserve exhaustion",
+    "target-age boundary",
+    "interpolation/range",
+    "monotonicity",
+    "leakage/model lock/protected files/frozen fixtures"
+  ]
+}

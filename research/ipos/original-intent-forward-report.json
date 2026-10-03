@@ -1,0 +1,201 @@
+{
+  "reportVersion": "original-intent-forward-checkpoint-v1",
+  "startingRemoteHead": "be61fcd6c36e8432024d6f19a0e5e097c62e73a1",
+  "engine": "ipos-original-intent-genuine-path-forward-v1",
+  "productionActivated": false,
+  "newActuarialModelIntroduced": false,
+  "routing": {
+    "status": "RESOLVED — 5-YEAR ROTATING PHASE SUPPORT ROUTING",
+    "formula": "activePhaseIndex = floor((attainedAge - supportStartAge) / 5) mod enabledPhaseCount",
+    "phase1": "PASS",
+    "phase1And2": "PASS",
+    "phase1And2And3": "PASS"
+  },
+  "officialMedicalPremiumSource": {
+    "spreadsheetTitle": "增值式醫保",
+    "spreadsheetId": "1OXblBBSdhnuFPP54FucxmNEVGL9d2s7fDfZqKtk_dHI",
+    "mappingSheet": "MedicalPlans",
+    "gasFile": "gas/Code.gs",
+    "contract": [
+      "premium",
+      "premiumRange"
+    ],
+    "premiumRangeStatus": "SOURCE_IMPLEMENTED_LIVE_DEPLOYMENT_STALE",
+    "officialSheetVerification": {
+      "status": "PASS",
+      "spreadsheetTitle": "增值式醫保",
+      "spreadsheetId": "1OXblBBSdhnuFPP54FucxmNEVGL9d2s7fDfZqKtk_dHI",
+      "mappingSheet": "MedicalPlans",
+      "select_0": {
+        "premium_sheet": "睿選 0自付額",
+        "enabled": true,
+        "targetTabExists": true,
+        "readAfterWrite": "PASS",
+        "completeRow": {
+          "plan_id": "select_0",
+          "display_name": "睿選計劃",
+          "gender": "ALL",
+          "deductible": 0,
+          "premium_sheet": "睿選 0自付額",
+          "enabled": true,
+          "sort_order": 30
+        }
+      },
+      "flexible_m": { "premium_sheet": "男靈活計劃", "targetTabExists": true, "enabled": true },
+      "prestige_16000": { "premium_sheet": "尊耀16000自付額", "targetTabExists": true, "enabled": true },
+      "select_18000": { "premium_sheet": "睿選18000自付額", "targetTabExists": true, "enabled": true },
+      "boundaryRows": {
+        "flexible_m": "99+ present; no explicit age-100 row",
+        "prestige_16000": "99+ present; no explicit age-100 row",
+        "select_0": "explicit ages 99 and 100 present",
+        "select_18000": "explicit ages 99 and 100 present"
+      }
+    },
+    "liveDeployment": {
+      "status": "FAIL",
+      "observedApiVersion": "1.0.0",
+      "repositoryApiVersion": "1.1.0",
+      "observedHealthMapping": "select_0 -> 睿選 0自付額 (target tab exists)",
+      "premiumRangeNewParameters": "FAIL — support_start_age/support_end_age rejected",
+      "legacyPremiumRangeParameters": "PASS — retirement_age/coverage_age accepted",
+      "age99PlusAnd100": "FAIL — 99+/100 missing for flexible_m/prestige_16000 on live deployment",
+      "select_0": "PASS — normal, age 99, age 100, and legacy range values match the Official tab",
+      "invalidPlanAndRange": "PASS — rejected safely",
+      "deploymentAction": "BLOCKED — authenticated Apps Script deployment capability is not available in this environment"
+    },
+    "exactPathMappings": {
+      "AVF": {
+        "planId": "flexible_m",
+        "premiumSheet": "男靈活計劃"
+      },
+      "AVPU": {
+        "planId": "prestige_16000",
+        "premiumSheet": "尊耀16000自付額"
+      },
+      "Original": {
+        "planId": "select_18000",
+        "premiumSheet": "睿選18000自付額"
+      }
+    },
+    "knownMappingDefect": "RESOLVED — select_0 premium_sheet is 睿選 0自付額 and enabled is boolean true; complete-row read-after-write verification passed."
+  },
+  "genuinePathReplay": {
+    "rows": 610,
+    "maeHKD": 0,
+    "mapePercent": 0,
+    "maximumAnnualAbsoluteErrorPercent": 0,
+    "maximumDollarErrorHKD": 0,
+    "worstPercentRow": {
+      "caseId": "40yrs_5pay_130k_avf",
+      "role": "calibration",
+      "age": 61,
+      "policyYear": 21,
+      "genuine": 1791210,
+      "model": 1791210,
+      "evidenceStatus": "DIRECTLY_VALIDATED",
+      "dollarError": 0,
+      "absoluteDollarError": 0,
+      "absoluteErrorPercent": 0
+    },
+    "worstDollarRow": {
+      "caseId": "40yrs_5pay_130k_avf",
+      "role": "calibration",
+      "age": 61,
+      "policyYear": 21,
+      "genuine": 1791210,
+      "model": 1791210,
+      "evidenceStatus": "DIRECTLY_VALIDATED",
+      "dollarError": 0,
+      "absoluteDollarError": 0,
+      "absoluteErrorPercent": 0
+    },
+    "rowsAbove010Percent": 0,
+    "firstAbove010Percent": "NEVER"
+  },
+  "evidenceSupportedInterpolationBlindCheck": {
+    "rows": 40,
+    "maeHKD": 692.4550000000105,
+    "mapePercent": 0.010391235556860869,
+    "maximumAnnualAbsoluteErrorPercent": 0.014169969660767104,
+    "maximumDollarErrorHKD": 1918.5999999996275,
+    "worstPercentRow": {
+      "caseId": "5pay_avf_150k",
+      "role": "holdout",
+      "age": 85,
+      "policyYear": 40,
+      "genuine": 5601988,
+      "model": 5602781.8,
+      "evidenceStatus": "INTERPOLATED_EVIDENCE_SUPPORTED",
+      "sourceCaseIds": [
+        "45yrs_5pay_130k_avf",
+        "5pay_180k_avf"
+      ],
+      "dollarError": 793.7999999998137,
+      "absoluteDollarError": 793.7999999998137,
+      "absoluteErrorPercent": 0.014169969660767104
+    },
+    "worstDollarRow": {
+      "caseId": "5pay_avf_150k",
+      "role": "holdout",
+      "age": 100,
+      "policyYear": 55,
+      "genuine": 13545931,
+      "model": 13547849.6,
+      "evidenceStatus": "INTERPOLATED_EVIDENCE_SUPPORTED",
+      "sourceCaseIds": [
+        "45yrs_5pay_130k_avf",
+        "5pay_180k_avf"
+      ],
+      "dollarError": 1918.5999999996275,
+      "absoluteDollarError": 1918.5999999996275,
+      "absoluteErrorPercent": 0.014163662874110515
+    },
+    "rowsAbove010Percent": 0,
+    "firstAbove010Percent": "NEVER"
+  },
+  "realMedicalPremiumForwardValidation": {
+    "status": "PARTIAL",
+    "source": "Live Official premium ranges from the documented endpoint, consumed through its legacy retirement_age/coverage_age contract",
+    "scenarios": [
+      { "planId": "flexible_m", "supportStartAge": 55, "supportEndAge": 90, "phase1": "NOT_YET_VALIDATED from age 56 / policy year 11", "phase1And2": "NOT_YET_VALIDATED from age 56 / policy year 11", "phase1And2And3": "OUT_OF_SUPPORTED_RANGE from age 65 / policy year 20", "routes": "P1; P1→P2; P1→P2→P3" },
+      { "planId": "flexible_m", "supportStartAge": 60, "supportEndAge": 92, "phase1": "NOT_YET_VALIDATED from age 61 / policy year 16", "phase1And2": "OUT_OF_SUPPORTED_RANGE", "phase1And2And3": "OUT_OF_SUPPORTED_RANGE from age 70 / policy year 25", "routes": "P1; P1→P2; P1→P2→P3; partial final windows exercised" },
+      { "planId": "prestige_16000", "supportStartAge": 55, "supportEndAge": 90, "phase1": "NOT_YET_VALIDATED from age 56 / policy year 11", "phase1And2": "NOT_YET_VALIDATED from age 56 / policy year 11", "phase1And2And3": "OUT_OF_SUPPORTED_RANGE from age 65 / policy year 20", "routes": "P1; P1→P2; P1→P2→P3" },
+      { "planId": "select_18000", "supportStartAge": 60, "supportEndAge": 92, "phase1": "NOT_YET_VALIDATED from age 61 / policy year 21", "phase1And2": "OUT_OF_SUPPORTED_RANGE", "phase1And2And3": "OUT_OF_SUPPORTED_RANGE from age 61 / policy year 21", "routes": "P1; P1→P2; P1→P2→P3" },
+      { "planId": "select_0", "supportStartAge": 65, "supportEndAge": 92, "phase1": "NOT_YET_VALIDATED from age 66 / policy year 26; first support history age 65 = HKD 68,696", "phase1And2": "NOT_YET_VALIDATED from age 70 / phase-2 policy year 25", "phase1And2And3": "NOT_YET_VALIDATED from age 70 / phase-2 policy year 25", "routes": "P1; P1→P2; P1→P2→P3; age-65 start and partial final window exercised" }
+    ],
+    "unsupportedPathPolicy": "Numerical output is not claimed as genuine validation; first unmatched support state is exposed and classified.",
+    "evidenceAudit": "research/ipos/repeated-support-evidence-audit.json",
+    "completeHistoryMatches": 0,
+    "promotedStates": []
+  },
+  "age100FixtureAudit": {
+    "status": "INTENTIONAL_BENCHMARK_PRESERVATION",
+    "artifact": "research/ipos/age100-fixture-audit.json",
+    "cases": 3,
+    "fixturesChanged": false,
+    "sourceAllocationAndPostTableConfirmZero": true
+  },
+  "productionIntegrationReadiness": {
+    "status": "BLOCKED",
+    "productionActivated": false,
+    "reason": "The current production app remains safely disconnected from the research engine. Activation is not justified while the deployed GAS is stale and repeated-support states lack genuine iPOS evidence."
+  },
+  "interpolationCase": "5pay_avf_150k",
+  "constructionRoles": [
+    "calibration",
+    "regression"
+  ],
+  "holdoutExcludedFromConstruction": true,
+  "supportedPaths": {
+    "directlyValidated": "Exact represented issue age, contribution anchor, Policy Year and matched genuine support history.",
+    "interpolatedEvidenceSupported": "Between adjacent calibration anchors only when issue age and complete support history match.",
+    "unsupported": "Unmatched repeated-support histories, out-of-range contribution, unsupported issue age or Policy Year."
+  },
+  "remainingBlockers": [
+    "Unmatched repeated-support paths return NOT_YET_VALIDATED because no new actuarial transition is authorized.",
+    "The committed read-only GAS premium/premiumRange contract must be deployed and live-verified.",
+    "Current GAS v1.1.0 must be deployed to the existing Web App and live-verified.",
+    "Three frozen age-100 benchmark rows remain a known fixture-validator FAIL by intentional preservation policy; the source tables themselves confirm zero allocation."
+  ],
+  "classification": "ORIGINAL_INTENT_FORWARD_PARTIAL — OFFICIAL MAPPING PASS; GAS v1.1.0 DEPLOYMENT/LIVE CONTRACT BLOCKED; REAL PREMIUM REPEATED-SUPPORT PATHS REMAIN NOT_YET_VALIDATED"
+}

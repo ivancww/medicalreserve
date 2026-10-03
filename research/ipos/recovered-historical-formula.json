@@ -1,0 +1,475 @@
+{
+  "reportVersion": "historical-formula-recovery-v1",
+  "startingRemoteHead": "01310d52f1ff659da796cb33ca6e5e3845bc2f3e",
+  "recoveredFormulaName": "ipos-historical-evidence-rule-set-recovery-v1",
+  "purpose": "Recovery and reproduction only; this is not a new approximation candidate and is not production-active.",
+  "historyInventory": [
+    {
+      "commit": "0b76a7c588d028c0ae624894e471233376b45f89",
+      "finding": "First committed research engine: policy-year mapping, premium-to-Basic anchors, normalized components, allocation and persistent-state attempt; holdout max 57.11395611%."
+    },
+    {
+      "commit": "525669e74566f3228962c5428809a492563aa521",
+      "finding": "Normalized policy-year transition v2 and GCV-per-Basic reduction structure; holdout max remained 56.85795543%."
+    },
+    {
+      "commit": "06cc4722ba90777fa331472f0ae20823d8e45788",
+      "finding": "v3 base-curve diagnostics; holdout max 35.97650942%."
+    },
+    {
+      "commit": "217eed4e2d3287bfa93402065b35acfe2713efe4",
+      "finding": "v4 TD transition; holdout max 11.80075621%."
+    },
+    {
+      "commit": "d0311fc4b786c8f3ea17c2699a4f43f4da886565",
+      "finding": "Genuine evidence audit committed complete paired annual GCV/RB/TD/allocation evidence."
+    },
+    {
+      "commit": "01310d52f1ff659da796cb33ca6e5e3845bc2f3e",
+      "finding": "Later carried-ratio total-value candidate; explicitly excluded from recovery."
+    }
+  ],
+  "recoveredRules": [
+    {
+      "id": "policyYear",
+      "equation": "policyYear = attainedAge - issueAge",
+      "sources": [
+        "historical code 0b76a7c",
+        "genuine proposal annual tables"
+      ]
+    },
+    {
+      "id": "basicAmount",
+      "equation": "Basic Amount is resolved by exact premium anchor; interpolation was present historically but is not needed for anchor reproduction.",
+      "sources": [
+        "historical code 0b76a7c",
+        "fixture metadata",
+        "genuine proposal metadata"
+      ]
+    },
+    {
+      "id": "noWithdrawalNormalization",
+      "equation": "component(PY, Basic) = genuine no-withdrawal component(PY) / original Basic Amount * current Basic Amount",
+      "sources": [
+        "historical code 0b76a7c and 525669e",
+        "genuine proposal evidence"
+      ]
+    },
+    {
+      "id": "firstWithdrawal",
+      "equation": "remaining total = no-withdrawal total - current withdrawal",
+      "sources": [
+        "historical code 217eed4",
+        "committed regression tests",
+        "genuine proposal evidence"
+      ]
+    },
+    {
+      "id": "allocationIdentity",
+      "equation": "withdrawal = RB withdrawal + associated TD withdrawal + GCV withdrawal",
+      "sources": [
+        "genuine allocation tables d0311fc"
+      ]
+    },
+    {
+      "id": "basicReduction",
+      "equation": "Basic reduction = GCV withdrawal / (no-withdrawal GCV(PY) / original Basic Amount)",
+      "sources": [
+        "historical code 525669e",
+        "genuine proposal evidence d0311fc"
+      ]
+    },
+    {
+      "id": "postReductionGCV",
+      "equation": "post GCV = no-withdrawal GCV(PY) / original Basic Amount * current Basic Amount",
+      "sources": [
+        "genuine proposal evidence d0311fc"
+      ]
+    }
+  ],
+  "missingHistoricalRules": [
+    "How depleted RB is replenished/carried from one policy year to the next after the first withdrawal.",
+    "How associated TD depletion changes the next-year TD state, including through zero-withdrawal years.",
+    "A complete deterministic subsequent-year total-value equation using those RB/TD states."
+  ],
+  "historicalReproduction": {
+    "status": "PARTIAL_RULES_REPRODUCED_COMPLETE_TOTAL_PATH_NOT_FOUND",
+    "examples": {
+      "py15NoWithdrawalNormalization": [
+        {
+          "caseId": "40k_base",
+          "annualPremium": 40000,
+          "initialBasicAmount": 404041,
+          "noWithdrawalTotal": 354203,
+          "totalPerBasicAmount": 0.87665113194
+        },
+        {
+          "caseId": "70k_avf",
+          "annualPremium": 70000,
+          "initialBasicAmount": 710660,
+          "noWithdrawalTotal": 623002,
+          "totalPerBasicAmount": 0.87665268905
+        },
+        {
+          "caseId": "100k_original",
+          "annualPremium": 100000,
+          "initialBasicAmount": 1015229,
+          "noWithdrawalTotal": 890003,
+          "totalPerBasicAmount": 0.876652459691
+        },
+        {
+          "caseId": "45yrs_5pay_130k_avpu_55yr",
+          "annualPremium": 130000,
+          "initialBasicAmount": 1323829,
+          "noWithdrawalTotal": 1160538,
+          "totalPerBasicAmount": 0.87665249817
+        },
+        {
+          "caseId": "5pay_avf_150k",
+          "annualPremium": 150000,
+          "initialBasicAmount": 1527495,
+          "noWithdrawalTotal": 1339082,
+          "totalPerBasicAmount": 0.876652296734
+        },
+        {
+          "caseId": "50yrs_5pay_180k_avpu",
+          "annualPremium": 180000,
+          "initialBasicAmount": 1832994,
+          "noWithdrawalTotal": 1606898,
+          "totalPerBasicAmount": 0.876652078512
+        },
+        {
+          "caseId": "5pay_avpu_200k",
+          "annualPremium": 200000,
+          "initialBasicAmount": 2042901,
+          "noWithdrawalTotal": 1790914,
+          "totalPerBasicAmount": 0.876652368372
+        }
+      ],
+      "basicReduction": [
+        {
+          "caseId": "70k_original",
+          "sourceId": "ipos-130e729fbd4565ec",
+          "policyYear": 19,
+          "age": 64,
+          "previousBasic": 710660,
+          "displayedBasic": 703450,
+          "GCVWithdrawal": 2837,
+          "noWithdrawalGCV": 279645,
+          "gcvPerOriginalBasic": 0.393500408071,
+          "observedReduction": 7210,
+          "genuine": 7210,
+          "model": 7209.649448,
+          "dollarError": -0.350552,
+          "signedPercent": -0.00486202,
+          "absolutePercent": 0.00486202
+        },
+        {
+          "caseId": "70k_original",
+          "sourceId": "ipos-130e729fbd4565ec",
+          "policyYear": 20,
+          "age": 65,
+          "previousBasic": 703450,
+          "displayedBasic": 678593,
+          "GCVWithdrawal": 10298,
+          "noWithdrawalGCV": 294426,
+          "gcvPerOriginalBasic": 0.414299383672,
+          "observedReduction": 24857,
+          "genuine": 24857,
+          "model": 24856.42124,
+          "dollarError": -0.57876,
+          "signedPercent": -0.00232836,
+          "absolutePercent": 0.00232836
+        }
+      ],
+      "firstWithdrawal": [
+        {
+          "caseId": "45yrs_5pay_130k_avpu_55yr",
+          "sourceId": "ipos-7416b1594a53d1bd",
+          "policyYear": 10,
+          "age": 55,
+          "genuine": 809792,
+          "model": 809792,
+          "dollarError": 0,
+          "signedPercent": 0,
+          "absolutePercent": 0
+        },
+        {
+          "caseId": "45yrs_5pay_130k_avf_55",
+          "sourceId": "ipos-c7cd776365d2e8b5",
+          "policyYear": 10,
+          "age": 55,
+          "genuine": 814889,
+          "model": 814889,
+          "dollarError": 0,
+          "signedPercent": 0,
+          "absolutePercent": 0
+        },
+        {
+          "caseId": "40yrs_5pay_130k_avf",
+          "sourceId": "ipos-43aef1e32fa3e42d",
+          "policyYear": 21,
+          "age": 61,
+          "genuine": 1791210,
+          "model": 1791210,
+          "dollarError": 0,
+          "signedPercent": 0,
+          "absolutePercent": 0
+        },
+        {
+          "caseId": "40yrs_5pay_130k_avpu",
+          "sourceId": "ipos-b1272f8eb1f797f5",
+          "policyYear": 21,
+          "age": 61,
+          "genuine": 1781347,
+          "model": 1781347,
+          "dollarError": 0,
+          "signedPercent": 0,
+          "absolutePercent": 0
+        },
+        {
+          "caseId": "50yrs_5pay_180k_avpu",
+          "sourceId": "ipos-097be310d0f7d0d1",
+          "policyYear": 11,
+          "age": 61,
+          "genuine": 1200705,
+          "model": 1200705,
+          "dollarError": 0,
+          "signedPercent": 0,
+          "absolutePercent": 0
+        },
+        {
+          "caseId": "50yrs_5pay_130k_avpu",
+          "sourceId": "ipos-c4648de5cd771a6a",
+          "policyYear": 11,
+          "age": 61,
+          "genuine": 859507,
+          "model": 859507,
+          "dollarError": 0,
+          "signedPercent": 0,
+          "absolutePercent": 0
+        },
+        {
+          "caseId": "50yrs_5pay_130k_avf",
+          "sourceId": "ipos-ec240d657705979a",
+          "policyYear": 11,
+          "age": 61,
+          "genuine": 869370,
+          "model": 869370,
+          "dollarError": 0,
+          "signedPercent": 0,
+          "absolutePercent": 0
+        },
+        {
+          "caseId": "50yrs_5pay_180k_avf",
+          "sourceId": "ipos-34ec372fa4c903db",
+          "policyYear": 11,
+          "age": 61,
+          "genuine": 1210568,
+          "model": 1210568,
+          "dollarError": 0,
+          "signedPercent": 0,
+          "absolutePercent": 0
+        },
+        {
+          "caseId": "45yrs_5pay_180k_56_60",
+          "sourceId": "ipos-3afcb35b16f2ab2f",
+          "policyYear": 11,
+          "age": 56,
+          "genuine": 1213913,
+          "model": 1213913,
+          "dollarError": 0,
+          "signedPercent": 0,
+          "absolutePercent": 0
+        },
+        {
+          "caseId": "45yrs_5pay_130k_avf_56_60",
+          "sourceId": "ipos-cf93323294f22530",
+          "policyYear": 11,
+          "age": 56,
+          "genuine": 872715,
+          "model": 872715,
+          "dollarError": 0,
+          "signedPercent": 0,
+          "absolutePercent": 0
+        },
+        {
+          "caseId": "45yrs_5pay_130k_avf",
+          "sourceId": "ipos-fb8b45d0c3d329ff",
+          "policyYear": 16,
+          "age": 61,
+          "genuine": 1216034,
+          "model": 1216034,
+          "dollarError": 0,
+          "signedPercent": 0,
+          "absolutePercent": 0
+        },
+        {
+          "caseId": "5pay_180k_avf",
+          "sourceId": "ipos-c6cbc4082bd01470",
+          "policyYear": 16,
+          "age": 61,
+          "genuine": 1690565,
+          "model": 1690565,
+          "dollarError": 0,
+          "signedPercent": 0,
+          "absolutePercent": 0
+        },
+        {
+          "caseId": "5pay_180k_avpu",
+          "sourceId": "ipos-1b1268c5907ee30d",
+          "policyYear": 16,
+          "age": 61,
+          "genuine": 1680702,
+          "model": 1680702,
+          "dollarError": 0,
+          "signedPercent": 0,
+          "absolutePercent": 0
+        },
+        {
+          "caseId": "ipos-5bb64a1c9b773f1d",
+          "sourceId": "ipos-5bb64a1c9b773f1d",
+          "policyYear": 16,
+          "age": 61,
+          "genuine": 1206171,
+          "model": 1206171,
+          "dollarError": 0,
+          "signedPercent": 0,
+          "absolutePercent": 0
+        },
+        {
+          "caseId": "5pay_avpu_200k",
+          "sourceId": "ipos-2102fab5c1e4cfff",
+          "policyYear": 16,
+          "age": 61,
+          "genuine": 1876330,
+          "model": 1876330,
+          "dollarError": 0,
+          "signedPercent": 0,
+          "absolutePercent": 0
+        },
+        {
+          "caseId": "5pay_avf_200k",
+          "sourceId": "ipos-1c3651fc71e1a245",
+          "policyYear": 16,
+          "age": 61,
+          "genuine": 1886193,
+          "model": 1886193,
+          "dollarError": 0,
+          "signedPercent": 0,
+          "absolutePercent": 0
+        },
+        {
+          "caseId": "5pay_avf_150k",
+          "sourceId": "ipos-e7156a5b2f0392ab",
+          "policyYear": 16,
+          "age": 61,
+          "genuine": 1405846,
+          "model": 1405846,
+          "dollarError": 0,
+          "signedPercent": 0,
+          "absolutePercent": 0
+        },
+        {
+          "caseId": "70k_avf",
+          "sourceId": "ipos-19aab67938abfd5f",
+          "policyYear": 16,
+          "age": 61,
+          "genuine": 644574,
+          "model": 644574,
+          "dollarError": 0,
+          "signedPercent": 0,
+          "absolutePercent": 0
+        },
+        {
+          "caseId": "70k_avpu",
+          "sourceId": "ipos-d9689d78fa5440fd",
+          "policyYear": 16,
+          "age": 61,
+          "genuine": 634711,
+          "model": 634711,
+          "dollarError": 0,
+          "signedPercent": 0,
+          "absolutePercent": 0
+        },
+        {
+          "caseId": "100k_original",
+          "sourceId": "ipos-8100b5272f80c956",
+          "policyYear": 16,
+          "age": 61,
+          "genuine": 925731,
+          "model": 925731,
+          "dollarError": 0,
+          "signedPercent": 0,
+          "absolutePercent": 0
+        },
+        {
+          "caseId": "70k_original",
+          "sourceId": "ipos-130e729fbd4565ec",
+          "policyYear": 16,
+          "age": 61,
+          "genuine": 641879,
+          "model": 641879,
+          "dollarError": 0,
+          "signedPercent": 0,
+          "absolutePercent": 0
+        },
+        {
+          "caseId": "40k_base",
+          "sourceId": "ipos-500fbc7cf3a698d8",
+          "policyYear": 21,
+          "age": 61,
+          "genuine": 531665,
+          "model": 531665,
+          "dollarError": 0,
+          "signedPercent": 0,
+          "absolutePercent": 0
+        }
+      ]
+    },
+    "summaries": {
+      "firstWithdrawal": {
+        "rows": 22,
+        "rowsWithinHKD1": 22,
+        "meanAbsoluteHKD": 0,
+        "maxAbsoluteHKD": 0
+      },
+      "basicReduction": {
+        "rows": 221,
+        "rowsWithinHKD1": 177,
+        "meanAbsoluteHKD": 0.641456,
+        "maxAbsoluteHKD": 2.168633
+      },
+      "postReductionGCV": {
+        "rows": 1205,
+        "rowsWithinHKD1": 1203,
+        "meanAbsoluteHKD": 0.182992,
+        "maxAbsoluteHKD": 1.0356
+      },
+      "componentIdentity": {
+        "rows": 2410,
+        "rowsWithinHKD1": 2410,
+        "meanAbsoluteHKD": 0.30332,
+        "maxAbsoluteHKD": 1
+      },
+      "allocationIdentity": {
+        "rows": 1205,
+        "rowsWithinHKD1": 1205,
+        "meanAbsoluteHKD": 0.044813,
+        "maxAbsoluteHKD": 1
+      }
+    }
+  },
+  "expandedValidation": {
+    "status": "NOT_RUN_PREREQUISITE_FAILED",
+    "reason": "No committed or recoverable complete historical RB/TD transition path exists. Running a full total-value holdout would require substituting or inventing a new rule, prohibited by this recovery task.",
+    "MAPE": null,
+    "maximumAnnualAbsoluteError": null,
+    "maximumDollarError": null,
+    "worstCase": null,
+    "firstAbove010": null
+  },
+  "leakage": "PASS",
+  "productionActivated": false,
+  "classification": "RECOVERED_FORMULA_PARTIAL — SPECIFIC RULE STILL MISSING"
+}

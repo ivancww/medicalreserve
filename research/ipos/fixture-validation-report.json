@@ -1,0 +1,34 @@
+{
+  "status": "FAIL",
+  "schemaValidation": "PASS",
+  "frozenAssignment": "PASS",
+  "componentRounding": "PASS",
+  "scheduleConsistency": "FAIL",
+  "cases": 21,
+  "annualRows": 1150,
+  "fixtureSHA256": "4111e99433bcef96acc7a4bdbc0150b549728d4fb961c7a96de2db2f4f1bba2c",
+  "inconsistencies": [
+    {
+      "caseId": "50yrs_5pay_130k_avpu",
+      "age": 100,
+      "policyYear": 50,
+      "rowWithdrawal": 0,
+      "scheduleWithdrawal": 85
+    },
+    {
+      "caseId": "50yrs_5pay_180k_avpu",
+      "age": 100,
+      "policyYear": 50,
+      "rowWithdrawal": 0,
+      "scheduleWithdrawal": 8
+    },
+    {
+      "caseId": "70k_original",
+      "age": 100,
+      "policyYear": 55,
+      "rowWithdrawal": 0,
+      "scheduleWithdrawal": 2
+    }
+  ],
+  "action": "Frozen fixture preserved; recheck genuine proposals before correcting ambiguous final-year schedules."
+}

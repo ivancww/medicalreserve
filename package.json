@@ -3,5 +3,13 @@
   "version": "1.0.1",
   "private": true,
   "type": "module",
-  "scripts": { "test": "node --test", "check": "node --check app.js && node --check domain.js" }
+  "scripts": {
+    "test": "node --test",
+    "check": "node --check app.js && node --check domain.js && node --check research/ipos/engine.js && node --check research/ipos/validate.js && node --check research/ipos/td-transition.js && node --check research/ipos/td-transition-research.js && node --check research/ipos/sync-reports.js && node --check research/ipos/customer-total-value-engine.js && node --check research/ipos/customer-ab-calculation.js && node --check research/ipos/customer-total-value-checkpoint.js && node --check research/ipos/recover-historical-formula.js && node --check research/ipos/original-intent-forward.js && node --check research/ipos/original-intent-forward-checkpoint.js",
+    "validate:ipos": "python3 research/ipos/validate_offline.py && node research/ipos/validate.js && node research/ipos/sync-reports.js",
+    "research:td": "node research/ipos/td-transition-research.js",
+    "validate:fixtures": "python3 research/ipos/validate_fixtures.py",
+    "validate:customer-ab": "python3 research/ipos/validate_customer_ab.py",
+    "recover:historical-formula": "node research/ipos/recover-historical-formula.js"
+  }
 }
