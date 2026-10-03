@@ -159,7 +159,21 @@ function sanitizePortable(value) { if (Array.isArray(value)) return value.map(sa
 async function exportBackup() { const payload = { schema: CONFIG.backupSchema, appVersion: CONFIG.version, createdAt: new Date().toISOString(), user: sanitizePortable({ overrides: state.user.overrides, pages: state.user.pages }) }; const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = 'medical-reserve-backup.json'; link.click(); URL.revokeObjectURL(link.href); }
 async function restoreBackup(file) { try { const data = JSON.parse(await file.text()); if (!validateBackup(data, CONFIG.backupSchema)) throw new Error('備份內容不完整'); state.user = sanitizePortable({ overrides: data.user.overrides || {}, pages: data.user.pages }); saveUser(); render(); alert('備份已還原。官方資料及計算來源沒有被覆蓋。'); } catch (error) { alert(`備份未能還原：${error.message}`); } }
 function addUnavailableMediaPage(type) { const pageType = type === 'video' ? 'video' : 'image'; state.user.pages.push({ id: `page-${crypto.randomUUID()}`, pageType, title: `新增 ${pageType === 'image' ? 'IMAGE' : 'VIDEO'} PAGE`, subtitle: `${pageType === 'image' ? 'IMAGE PAGE' : 'VIDEO PAGE'} — 需要連接 Cloud Storage`, content: '媒體上載能力目前未連接。未有二進制資料會儲存在本機。', flowPosition: 'after:summary', sortOrder: state.user.pages.length, visible: true, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), media: [] }); saveUser(); render(); }
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => {});
+function registerShellUpdates() {
+  if (!('serviceWorker' in navigator)) return;
+  let reloadInProgress = false;
+  const hadController = Boolean(navigator.serviceWorker.controller);
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!hadController || reloadInProgress) return;
+    reloadInProgress = true;
+    location.reload();
+  });
+  navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).then(registration => {
+    registration.update().catch(() => {});
+    if (registration.waiting) registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+  }).catch(() => {});
+}
+registerShellUpdates();
 loadOfficial();
 
 export { CONFIG, SAFE_FALLBACK_FLOW, money };
