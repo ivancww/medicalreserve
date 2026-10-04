@@ -1,0 +1,69 @@
+{
+  "auditDate": "2026-10-04",
+  "repository": "ivancww/medicalreserve",
+  "currentMain": "0e48af83ef2c74c80fff6439e4d2fefd3bdf259a",
+  "motherRepository": "ivancww/avaplatform",
+  "motherMain": "468e7d38282314a69cbc5749fcba0724709e6c5a",
+  "sheet": {
+    "title": "增值式醫保",
+    "spreadsheetId": "1OXblBBSdhnuFPP54FucxmNEVGL9d2s7fDfZqKtk_dHI",
+    "readOnly": true,
+    "autoAccumulation": {
+      "headers": ["保單年度", "領取百分比", "倍數"],
+      "nonHeaderRows": 33,
+      "policyYears": "8-25, then 30-100 in five-year checkpoints",
+      "withdrawalPercentage": "0% in all observed rows",
+      "sampleMultipliers": {"8": 1.16, "15": 1.86, "20": 2.71, "30": 5.85, "50": 20.63, "100": 480.3},
+      "interpretation": "No-withdrawal accumulation multiplier reference; insufficient alone for production Forward handoff"
+    },
+    "fixedWithdrawalTabs": {
+      "tabs": ["8年領取", "15年領取", "20年領取", "25年領取", "30年領取"],
+      "commonHeaders": ["保單年度", "領取百分比", "倍數"],
+      "interpretation": "Historical fixed-withdrawal MedSave scenario tables"
+    }
+  },
+  "statuses": {
+    "AUTO_ACCUMULATION_TAB_AUDITED": "PASS",
+    "AUTO_ACCUMULATION_AS_PRE_SUPPORT_BASE": "PARTIAL",
+    "PRE_SUPPORT_TO_FORWARD_HANDOFF": "PARTIAL",
+    "FORWARD_ENGINE_BASE_DATA_IDENTIFIED": "PASS",
+    "INDEPENDENT_PHASE_CONTRIBUTIONS": "PARTIAL",
+    "PHASE_1_ONLY": "PARTIAL",
+    "PHASE_1_2": "PARTIAL",
+    "PHASE_1_2_3": "PARTIAL",
+    "40K_TO_200K_RANGE": "PARTIAL",
+    "FIXED_WITHDRAWAL_TABS": "LEGACY",
+    "GOOGLE_SHEET_LAYER_2_SCHEMA": "NEEDS_MORE_EVIDENCE",
+    "CALCULATION_LOGIC_REMAINS_IN_APP": "YES",
+    "GOOGLE_SHEET_CAN_UPDATE_RETURN_DATA_WITHOUT_ENGINE_REWRITE": "PARTIAL"
+  },
+  "contributionAnchors": [40000, 70000, 100000, 130000, 150000, 180000, 200000],
+  "recommendedLayer2Tab": "SavingPlanReturns",
+  "recommendedLayer2PrimaryKey": "return_data_id",
+  "requiredHandoffFields": [
+    "phase_id",
+    "product_id",
+    "currency",
+    "pay_term_years",
+    "annual_contribution",
+    "issue_age",
+    "attained_age",
+    "policy_year",
+    "base_value",
+    "basic_amount_or_normalized_state",
+    "official_medical_premium",
+    "support_history",
+    "data_version"
+  ],
+  "legacyTabs": ["8年領取", "15年領取", "20年領取", "25年領取", "30年領取"],
+  "productionRecommendation": "Use 自動滾存 as the intended no-support/base-path source only after official mapping and handoff-state enrichment; keep the Forward engine and all calculation logic protected in the App; exclude fixed-withdrawal tabs from the new runtime contract.",
+  "verification": {
+    "sheetModified": false,
+    "appModified": false,
+    "gasModified": false,
+    "calculationModified": false,
+    "prCreated": false,
+    "testsExecuted": false,
+    "testBlocker": "node/npm unavailable in audit environment"
+  }
+}
