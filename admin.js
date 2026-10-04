@@ -20,7 +20,7 @@ function adminRows(resource) {
   if (!rows.length) return `<div class="admin-empty">官方目前沒有可編輯資料；空白狀態不代表可安全新增任意欄位。</div>`;
   return `<div class="admin-table-wrap"><table class="admin-table"><thead><tr>${fields.map(field => `<th>${escapeHtml(field)}</th>`).join('')}<th>狀態</th></tr></thead><tbody>${rows.map((row, index) => `<tr>${fields.map(field => `<td data-label="${escapeHtml(field)}"><input class="input" data-admin-resource="${escapeHtml(resource)}" data-admin-row="${index}" data-admin-field="${escapeHtml(field)}" value="${escapeHtml(row[field])}" ${isReadOnly(resource, field) ? 'readonly' : ''}></td>`).join('')}<td data-label="狀態"><span class="caption">官方資料</span></td></tr>`).join('')}</tbody></table></div>`;
 }
-function isReadOnly(resource, field) { return resource === 'SystemSettings' && !['checkpoint_interval', 'chart_type', 'allowed_visibility'].includes(field); }
+function isReadOnly(resource, field) { return resource === 'SystemSettings' && !['checkpoint_interval', 'chart_type', 'allowed_visibility', 'default_result_mode'].includes(field); }
 function render() {
   const app = document.getElementById('app');
   if (state.status === 'authorizing') { app.innerHTML = shell('<section class="card"><h1 class="title">Medical Reserve Admin</h1><p class="support">正在驗證 AVA Admin 授權…</p></section>'); return; }
@@ -36,7 +36,7 @@ function collect(resource) {
 }
 async function save(resource) {
   const status = document.getElementById(`admin-status-${resource}`); status.textContent = '正在驗證並同步…';
-  const rows = collect(resource), validation = validateAdminRows(resource, rows, { requiredFlowIds: ['funding', 'timeline', 'coverage', 'plan', 'journey', 'total', 'transition', 'strategy', 'support', 'summary'], writableSystemKeys: ['checkpoint_interval', 'chart_type', 'allowed_visibility'] });
+  const rows = collect(resource), validation = validateAdminRows(resource, rows, { requiredFlowIds: ['protection_importance', 'premium_budget_awareness', 'premium_need_setup', 'premium_need_result', 'funding_source', 'reserve_intro', 'reserve_setup', 'reserve_result', 'summary'], writableSystemKeys: ['checkpoint_interval', 'chart_type', 'allowed_visibility', 'default_result_mode'] });
   if (!validation.ok) { status.textContent = `未同步：${validation.errors.join('；')}`; status.className = 'status error'; return; }
   try {
     const result = await jsonRequest({ action: 'writeOfficial', appId: APP_ID, appGrant: state.grant, resource, rows });

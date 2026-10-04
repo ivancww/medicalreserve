@@ -9,14 +9,14 @@ const SAVING_RETURN_CURRENCY = 'HKD';
 const SAVING_RETURN_PAY_TERM = 5;
 const SAVING_RETURN_FIELDS = ['return_data_id','dataset_id','data_version','product_id','medical_plan_id','currency','pay_term_years','annual_contribution','issue_age','policy_year','base_value','basic_amount','guaranteed_cash_value','reversionary_bonus_cash_value','terminal_dividend_cash_value','source_case_id','evidence_class','enabled'];
 const SAVING_RETURN_EVIDENCE = ['DIRECT','HOLDOUT_REFERENCE','INTERPOLATED_REFERENCE'];
-const REQUIRED_FLOW_IDS = ['funding','timeline','coverage','plan','journey','total','transition','strategy','support','summary'];
+const REQUIRED_FLOW_IDS = ['protection_importance','premium_budget_awareness','premium_need_setup','premium_need_result','funding_source','reserve_intro','reserve_setup','reserve_result','summary'];
 const RESOURCE_RULES = {
   AppFlow: { key: ['step_id','page_id','id'], writable: ['step_id','page_id','id','title','subtitle','enabled','visible','sort_order'], required: REQUIRED_FLOW_IDS },
   FlowOptions: { key: ['option_id','id'], writable: ['step_id','flow_id','option_id','id','label','value','sort_order','enabled'] },
   MedicalPlans: { key: ['plan_id','id'], writable: ['plan_id','id','display_name','name','gender','deductible','premium_sheet','sheet_name','enabled','sort_order'] },
   ReserveStrategies: { key: ['strategy_id','id'], writable: ['strategy_id','id','display_name','name','sheet_name','strategy_sheet','start_year','enabled','sort_order'] },
   Visualization: { key: ['key','setting_key'], writable: ['key','setting_key','value','enabled'] },
-  SystemSettings: { key: ['key'], writable: ['key','value'], allowedKeys: ['checkpoint_interval','chart_type','allowed_visibility','saving_return_data_version','saving_return_dataset','saving_return_updated_at'] }
+  SystemSettings: { key: ['key'], writable: ['key','value'], allowedKeys: ['checkpoint_interval','chart_type','allowed_visibility','saving_return_data_version','saving_return_dataset','saving_return_updated_at','default_result_mode'] }
 };
 
 function output_(value) { return ContentService.createTextOutput(JSON.stringify(value)).setMimeType(ContentService.MimeType.JSON); }
@@ -24,10 +24,10 @@ function error_(message, code) { return { success: false, error: { code: code ||
 function doGet(e) {
   try {
     const action = String(e.parameter.action || '');
-    if (action === 'health') return output_({ ok: true, api_version: '1.1.0', action: 'health', data_version: version_(), updated_at: updatedAt_(), data: health_() });
-    if (action === 'bootstrap') return output_({ ok: true, api_version: '1.1.0', action: 'bootstrap', data_version: version_(), data: readConfig_() });
-    if (action === 'premium') return output_({ ok: true, api_version: '1.1.0', action: 'premium', data_version: version_(), data: premium_(e.parameter) });
-    if (action === 'premiumRange') return output_({ ok: true, api_version: '1.1.0', action: 'premiumRange', data_version: version_(), data: premiumRange_(e.parameter) });
+    if (action === 'health') return output_({ ok: true, api_version: '1.2.0', action: 'health', data_version: version_(), updated_at: updatedAt_(), data: health_() });
+    if (action === 'bootstrap') return output_({ ok: true, api_version: '1.2.0', action: 'bootstrap', data_version: version_(), data: readConfig_() });
+    if (action === 'premium') return output_({ ok: true, api_version: '1.2.0', action: 'premium', data_version: version_(), data: premium_(e.parameter) });
+    if (action === 'premiumRange') return output_({ ok: true, api_version: '1.2.0', action: 'premiumRange', data_version: version_(), data: premiumRange_(e.parameter) });
     if (action === 'savingPlanReturns') return output_({ ok: true, api_version: '1.2.0', action: 'savingPlanReturns', data_version: savingReturnVersion_(), data: savingPlanReturns_() });
     return output_(error_('Unsupported action', 'UNSUPPORTED_ACTION'));
   } catch (error) { return output_(error_(error.message, error.code || 'READ_FAILED')); }
