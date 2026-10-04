@@ -1,5 +1,7 @@
 import { CONTRIBUTION_ANCHORS, EVIDENCE, runOriginalIntentForward } from './research/ipos/original-intent-forward.js';
 
+export { EVIDENCE };
+
 export const LAYER2_DATASET_ID = 'SavingPlanReturns';
 export const LAYER2_DATA_VERSION = 1;
 export const SAVING_PRODUCT_ID = 'aia_hk_5pay';
