@@ -35,7 +35,7 @@ test('customer runtime keeps result navigation, dual modes, and app-only header 
   assert.match(app, /resultMode: 'medical_support'/);
   assert.match(app, /data-mode="auto_accumulation"/);
   assert.match(app, /AVA MEDICAL RESERVE · v\$\{CONFIG\.version\}/);
-  assert.doesNotMatch(app, /footer[^\n]*AVA Medical Reserve · v\$\{CONFIG\.version\}/);
+  assert.doesNotMatch(app, /<footer[^>]*>[\s\S]*v\$\{CONFIG\.version\}/);
   assert.match(app, /data-action="contribution"/);
   assert.match(app, /inputmode="numeric"/);
 });
