@@ -1,6 +1,7 @@
-// Research-only original-intent Forward calculation.
-// It reuses genuine annual paths and verified identities; it is never imported by production.
-import fs from 'node:fs';
+// Original-intent Forward calculation.
+// It reuses genuine annual paths and verified identities. Production calls it
+// through saving-plan-returns.js after hydrating official SavingPlanReturns.
+import DEFAULT_DATASET from './fixtures/dataset.json' assert { type: 'json' };
 
 export const ENGINE_VERSION = 'ipos-original-intent-genuine-path-forward-v1';
 export const ROUTING_RULE = 'FIVE_YEAR_ROTATING_PHASE_SUPPORT';
@@ -13,7 +14,6 @@ export const EVIDENCE = Object.freeze({
   NOT_VALIDATED: 'NOT_YET_VALIDATED', OUT_OF_RANGE: 'OUT_OF_SUPPORTED_RANGE', NOT_ISSUED: 'NOT_ISSUED'
 });
 
-const DEFAULT_DATASET = JSON.parse(fs.readFileSync(new URL('./fixtures/dataset.json', import.meta.url), 'utf8'));
 const CONSTRUCTION_ROLES = new Set(['calibration', 'regression']);
 const OFFSETS = Object.freeze({ phase1: 0, phase2: 5, phase3: 10 });
 

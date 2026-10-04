@@ -9,14 +9,15 @@ const SAVING_RETURN_CURRENCY = 'HKD';
 const SAVING_RETURN_PAY_TERM = 5;
 const SAVING_RETURN_FIELDS = ['return_data_id','dataset_id','data_version','product_id','medical_plan_id','currency','pay_term_years','annual_contribution','issue_age','policy_year','base_value','basic_amount','guaranteed_cash_value','reversionary_bonus_cash_value','terminal_dividend_cash_value','source_case_id','evidence_class','enabled'];
 const SAVING_RETURN_EVIDENCE = ['DIRECT','HOLDOUT_REFERENCE','INTERPOLATED_REFERENCE'];
-const REQUIRED_FLOW_IDS = ['funding','timeline','coverage','plan','journey','total','transition','strategy','support','summary'];
+const REQUIRED_FLOW_IDS = ['protection_importance','premium_budget_awareness','premium_need_setup','premium_need_result','funding_source','reserve_intro','reserve_setup','reserve_result','summary'];
+const BOOTSTRAP_RESOURCES = ['AppFlow', 'FlowOptions', 'MedicalPlans', 'Visualization', 'SystemSettings'];
 const RESOURCE_RULES = {
   AppFlow: { key: ['step_id','page_id','id'], writable: ['step_id','page_id','id','title','subtitle','enabled','visible','sort_order'], required: REQUIRED_FLOW_IDS },
   FlowOptions: { key: ['option_id','id'], writable: ['step_id','flow_id','option_id','id','label','value','sort_order','enabled'] },
   MedicalPlans: { key: ['plan_id','id'], writable: ['plan_id','id','display_name','name','gender','deductible','premium_sheet','sheet_name','enabled','sort_order'] },
   ReserveStrategies: { key: ['strategy_id','id'], writable: ['strategy_id','id','display_name','name','sheet_name','strategy_sheet','start_year','enabled','sort_order'] },
   Visualization: { key: ['key','setting_key'], writable: ['key','setting_key','value','enabled'] },
-  SystemSettings: { key: ['key'], writable: ['key','value'], allowedKeys: ['checkpoint_interval','chart_type','allowed_visibility','saving_return_data_version','saving_return_dataset','saving_return_updated_at'] }
+  SystemSettings: { key: ['key'], writable: ['key','value'], allowedKeys: ['checkpoint_interval','chart_type','allowed_visibility','saving_return_data_version','saving_return_dataset','saving_return_updated_at','default_result_mode'] }
 };
 
 function output_(value) { return ContentService.createTextOutput(JSON.stringify(value)).setMimeType(ContentService.MimeType.JSON); }
@@ -24,10 +25,10 @@ function error_(message, code) { return { success: false, error: { code: code ||
 function doGet(e) {
   try {
     const action = String(e.parameter.action || '');
-    if (action === 'health') return output_({ ok: true, api_version: '1.1.0', action: 'health', data_version: version_(), updated_at: updatedAt_(), data: health_() });
-    if (action === 'bootstrap') return output_({ ok: true, api_version: '1.1.0', action: 'bootstrap', data_version: version_(), data: readConfig_() });
-    if (action === 'premium') return output_({ ok: true, api_version: '1.1.0', action: 'premium', data_version: version_(), data: premium_(e.parameter) });
-    if (action === 'premiumRange') return output_({ ok: true, api_version: '1.1.0', action: 'premiumRange', data_version: version_(), data: premiumRange_(e.parameter) });
+    if (action === 'health') return output_({ ok: true, api_version: '1.2.0', action: 'health', data_version: version_(), updated_at: updatedAt_(), data: health_() });
+    if (action === 'bootstrap') return output_({ ok: true, api_version: '1.2.0', action: 'bootstrap', data_version: version_(), data: readConfig_() });
+    if (action === 'premium') return output_({ ok: true, api_version: '1.2.0', action: 'premium', data_version: version_(), data: premium_(e.parameter) });
+    if (action === 'premiumRange') return output_({ ok: true, api_version: '1.2.0', action: 'premiumRange', data_version: version_(), data: premiumRange_(e.parameter) });
     if (action === 'savingPlanReturns') return output_({ ok: true, api_version: '1.2.0', action: 'savingPlanReturns', data_version: savingReturnVersion_(), data: savingPlanReturns_() });
     return output_(error_('Unsupported action', 'UNSUPPORTED_ACTION'));
   } catch (error) { return output_(error_(error.message, error.code || 'READ_FAILED')); }
@@ -60,9 +61,9 @@ function verifyGrant_(body) {
 function sheet_(name) { const value = SpreadsheetApp.getActive().getSheetByName(name); if (!value) throw new Error(`Sheet not found: ${name}`); return value; }
 function rows_(sheet) { const values = sheet.getDataRange().getValues(); if (!values.length) return []; const headers = values.shift().map(String); return values.filter(row => row.some(value => value !== '')).map(row => Object.fromEntries(headers.map((key, index) => [key, row[index]]))); }
 function sheetNames_() { return SpreadsheetApp.getActive().getSheets().map(sheet => sheet.getName()); }
-function readConfig_() { const data = {}, missing = []; Object.keys(RESOURCE_RULES).forEach(name => { try { data[name] = rows_(sheet_(name)); } catch (_) { data[name] = []; missing.push(name); } }); return { config: data, missing }; }
+function readConfig_() { const data = {}, missing = []; BOOTSTRAP_RESOURCES.forEach(name => { try { data[name] = rows_(sheet_(name)); } catch (_) { data[name] = []; missing.push(name); } }); return { config: data, missing }; }
 function health_() {
-  const names = sheetNames_(), control = Object.keys(RESOURCE_RULES).map(sheet => ({ sheet, exists: names.includes(sheet) }));
+  const names = sheetNames_(), control = BOOTSTRAP_RESOURCES.map(sheet => ({ sheet, exists: names.includes(sheet) }));
   const mapped = []; if (names.length) rowsSafe_('MedicalPlans').forEach(row => mapped.push({ type: 'premium', id: String(row.plan_id || row.id || ''), sheet: String(row.premium_sheet || row.sheet_name || ''), exists: names.includes(String(row.premium_sheet || row.sheet_name || '')) }));
   const savingReturnSheet = names.includes(SAVING_RETURN_SHEET), savingReturnVersion = savingReturnVersion_();
   return { status: control.every(item => item.exists) && savingReturnSheet && savingReturnVersion != null ? 'ok' : 'warning', spreadsheet_name: SpreadsheetApp.getActive().getName(), control_sheets: control, mapped_data_sheets: mapped, saving_return_dataset: { sheet: SAVING_RETURN_SHEET, exists: savingReturnSheet, data_version: savingReturnVersion } };
