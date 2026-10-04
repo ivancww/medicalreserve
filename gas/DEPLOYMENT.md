@@ -13,4 +13,10 @@ GAS DEPLOYMENT REQUIRED
 5. Deploy a new version of the same Web App deployment.
 6. Obtain a fresh Platform Admin launch ticket and verify exchange, invalid/expired grant rejection, one write per allowlisted resource, read-back, and version increment against the deployed endpoint.
 
+For Layer 2, also verify `GET ?action=savingPlanReturns` returns `SavingPlanReturns`,
+`data_version = saving_return_data_version`, product `aia_hk_5pay`, currency HKD,
+pay term 5, the expected enabled row count, unique keys, and the expected direct
+anchor contributions. Do not describe the Layer 2 runtime as live until this
+read-back succeeds against the deployed Web App.
+
 The live endpoint must not be described as write-enabled until those steps and read-back verification succeed.
