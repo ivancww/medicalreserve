@@ -1,6 +1,10 @@
 const SHELL_CACHE = 'medical-reserve-shell';
 const SHELL_CACHE_PREFIX = 'medical-reserve-shell';
-const SHELL = ['./', './index.html', './styles.css', './app.js', './domain.js', './reserve-runtime.js', './admin.js', './manifest.webmanifest', './icon.svg', './sw.js'];
+const SHELL = [
+  './', './index.html', './styles.css', './app.js', './domain.js', './reserve-runtime.js', './saving-plan-returns.js',
+  './research/ipos/original-intent-forward.js', './research/ipos/fixtures/dataset.json', './admin.js',
+  './manifest.webmanifest', './icon.svg', './sw.js'
+];
 
 function isOwnedShellRequest(request) {
   const url = new URL(request.url);
@@ -17,7 +21,7 @@ self.addEventListener('activate', event => {
   event.waitUntil(caches.keys().then(keys => Promise.all(keys
     .filter(key => key.startsWith(SHELL_CACHE_PREFIX) && key !== SHELL_CACHE)
     .map(key => caches.delete(key))
-  )).then(() => self.clients.claim())));
+  )).then(() => self.clients.claim()));
 });
 
 self.addEventListener('message', event => {

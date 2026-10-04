@@ -1,7 +1,9 @@
 // Original-intent Forward calculation.
 // It reuses genuine annual paths and verified identities. Production calls it
 // through saving-plan-returns.js after hydrating official SavingPlanReturns.
-import DEFAULT_DATASET from './fixtures/dataset.json' assert { type: 'json' };
+import DEFAULT_DATASET from './fixtures/dataset.json' with { type: 'json' };
+
+export { DEFAULT_DATASET as default };
 
 export const ENGINE_VERSION = 'ipos-original-intent-genuine-path-forward-v1';
 export const ROUTING_RULE = 'FIVE_YEAR_ROTATING_PHASE_SUPPORT';

@@ -64,7 +64,7 @@ async function loadMedicalSupport() {
   } catch (error) { state.medicalResult = null; state.forward = { status: 'blocked', reason: error.message }; }
 }
 
-function currentPage() { return state.flow[state.step] || state.flow[0]; }
+function currentPage() { const page = state.flow[state.step] || state.flow[0]; return { ...page, title: getTitle(page), subtitle: getSubtitle(page), supportingText: getSupport(page) }; }
 function selected(id, value) { return String(state[id]) === String(value) ? 'true' : 'false'; }
 function choices(id, values, labels = {}) { return `<div class="choice-grid">${values.map(value => `<button class="choice-card" aria-pressed="${selected(id, value)}" data-action="set" data-key="${id}" data-value="${escapeHtml(value)}"><span class="choice-title">${escapeHtml(labels[value] || value)}</span></button>`).join('')}</div>`; }
 function pageShell(page, message, explanation, content, extra = '') { return `<div class="presentation-card"><div class="eyebrow">${escapeHtml(page.title)}</div><h2 class="question">${escapeHtml(message)}</h2>${explanation ? `<p class="lead">${escapeHtml(explanation)}</p>` : ''}${content}${extra}</div>`; }
