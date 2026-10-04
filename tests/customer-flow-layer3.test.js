@@ -20,7 +20,8 @@ test('dual result modes are independent and medical support is the default', () 
   assert.match(app, /data-mode="medical_support"/);
   assert.match(app, /data-mode="auto_accumulation"/);
   assert.match(app, /state\.resultMode = el\.dataset\.mode/);
-  assert.match(app, /medicalReserve/);
+  assert.match(app, /runForwardWithOfficialReturns/);
+  assert.doesNotMatch(app, /api\('medicalReserve'/);
   assert.doesNotMatch(app, /state\.autoResult\s*=\s*state\.medicalResult/);
   assert.doesNotMatch(app, /state\.medicalResult\s*=\s*state\.autoResult/);
 });

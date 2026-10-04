@@ -1,6 +1,7 @@
-import { CONTRIBUTION_ANCHORS, EVIDENCE, runOriginalIntentForward } from './research/ipos/original-intent-forward.js';
+import DEFAULT_DATASET, { CONTRIBUTION_ANCHORS, EVIDENCE, runOriginalIntentForward } from './research/ipos/original-intent-forward.js';
 
 export { EVIDENCE };
+export { DEFAULT_DATASET as FROZEN_FORWARD_DATASET };
 
 export const LAYER2_DATASET_ID = 'SavingPlanReturns';
 export const LAYER2_DATA_VERSION = 1;

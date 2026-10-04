@@ -1,5 +1,6 @@
 import { premiumTotal, validateBackup } from './domain.js';
 import { automaticAccumulation, validateLayer2Data } from './reserve-runtime.js';
+import { FROZEN_FORWARD_DATASET, runForwardWithOfficialReturns } from './saving-plan-returns.js';
 
 const CONFIG = Object.freeze({
   version: '1.1.0',
@@ -48,7 +49,20 @@ async function loadOfficial() {
 }
 async function loadPremiumRange() { if (!state.planId) return false; state.premiumRange = null; state.official.premiumError = null; render(); try { state.premiumRange = (await api('premiumRange', { plan_id: state.planId, retirement_age: state.retirementAge, coverage_age: state.coverageAge })).data; return true; } catch (error) { state.official.premiumError = error.message; render(); return false; } }
 async function loadLayer2() { try { state.layer2 = validateLayer2Data((await api('savingPlanReturns')).data); return true; } catch (error) { state.layer2 = null; state.official.layer2Error = error.message; return false; } }
-async function loadMedicalSupport() { try { state.medicalResult = (await api('medicalReserve', { plan_id: state.planId, current_age: state.currentAge, support_start_age: state.supportStartAge, support_end_age: state.supportEndAge, arrangement: state.arrangement, phase1_contribution: state.phaseContributions.phase1, phase2_contribution: state.phaseContributions.phase2, phase3_contribution: state.phaseContributions.phase3 })).data; state.forward = { status: 'available' }; } catch (error) { state.medicalResult = null; state.forward = { status: 'blocked', reason: error.message }; } }
+async function loadMedicalSupport() {
+  try {
+    if (!state.premiumRange || !state.layer2) throw new Error('Official premium and SavingPlanReturns data are required');
+    const supportPremiumRange = (await api('premiumRange', {
+      plan_id: state.planId, support_start_age: state.supportStartAge, support_end_age: state.supportEndAge
+    })).data;
+    const phases = ['phase1', 'phase2', 'phase3'].slice(0, state.arrangement / 5).map(id => ({ id, enabled: true, annualContribution: state.phaseContributions[id] }));
+    state.medicalResult = runForwardWithOfficialReturns({
+      currentAge: state.currentAge, supportStartAge: state.supportStartAge, supportEndAge: state.supportEndAge,
+      planId: state.planId, phases, medicalPremiumSchedule: supportPremiumRange.annual_premiums
+    }, { ok: true, data: state.layer2 }, FROZEN_FORWARD_DATASET);
+    state.forward = { status: 'available' };
+  } catch (error) { state.medicalResult = null; state.forward = { status: 'blocked', reason: error.message }; }
+}
 
 function currentPage() { return state.flow[state.step] || state.flow[0]; }
 function selected(id, value) { return String(state[id]) === String(value) ? 'true' : 'false'; }
