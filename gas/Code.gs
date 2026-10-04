@@ -2,6 +2,13 @@
 const APP_ID = 'medicalreserve';
 const PLATFORM_AUTH_URL_PROPERTY = 'AVA_PLATFORM_ADMIN_AUTH_URL';
 const PLATFORM_AUTH_URL_FALLBACK = 'https://script.google.com/macros/s/AKfycbzVf1fuxcq8GPSOzS8WvcAtubqaawFj0rbVjxe0LOLKfwbYkRZf7Vs61Q0T73UG6dznww/exec';
+const SAVING_RETURN_SHEET = 'SavingPlanReturns';
+const SAVING_RETURN_DATASET = 'SavingPlanReturns';
+const SAVING_RETURN_PRODUCT = 'aia_hk_5pay';
+const SAVING_RETURN_CURRENCY = 'HKD';
+const SAVING_RETURN_PAY_TERM = 5;
+const SAVING_RETURN_FIELDS = ['return_data_id','dataset_id','data_version','product_id','medical_plan_id','currency','pay_term_years','annual_contribution','issue_age','policy_year','base_value','basic_amount','guaranteed_cash_value','reversionary_bonus_cash_value','terminal_dividend_cash_value','source_case_id','evidence_class','enabled'];
+const SAVING_RETURN_EVIDENCE = ['DIRECT','HOLDOUT_REFERENCE','INTERPOLATED_REFERENCE'];
 const REQUIRED_FLOW_IDS = ['funding','timeline','coverage','plan','journey','total','transition','strategy','support','summary'];
 const RESOURCE_RULES = {
   AppFlow: { key: ['step_id','page_id','id'], writable: ['step_id','page_id','id','title','subtitle','enabled','visible','sort_order'], required: REQUIRED_FLOW_IDS },
@@ -9,7 +16,7 @@ const RESOURCE_RULES = {
   MedicalPlans: { key: ['plan_id','id'], writable: ['plan_id','id','display_name','name','gender','deductible','premium_sheet','sheet_name','enabled','sort_order'] },
   ReserveStrategies: { key: ['strategy_id','id'], writable: ['strategy_id','id','display_name','name','sheet_name','strategy_sheet','start_year','enabled','sort_order'] },
   Visualization: { key: ['key','setting_key'], writable: ['key','setting_key','value','enabled'] },
-  SystemSettings: { key: ['key'], writable: ['key','value'], allowedKeys: ['checkpoint_interval','chart_type','allowed_visibility'] }
+  SystemSettings: { key: ['key'], writable: ['key','value'], allowedKeys: ['checkpoint_interval','chart_type','allowed_visibility','saving_return_data_version','saving_return_dataset','saving_return_updated_at'] }
 };
 
 function output_(value) { return ContentService.createTextOutput(JSON.stringify(value)).setMimeType(ContentService.MimeType.JSON); }
@@ -21,6 +28,7 @@ function doGet(e) {
     if (action === 'bootstrap') return output_({ ok: true, api_version: '1.1.0', action: 'bootstrap', data_version: version_(), data: readConfig_() });
     if (action === 'premium') return output_({ ok: true, api_version: '1.1.0', action: 'premium', data_version: version_(), data: premium_(e.parameter) });
     if (action === 'premiumRange') return output_({ ok: true, api_version: '1.1.0', action: 'premiumRange', data_version: version_(), data: premiumRange_(e.parameter) });
+    if (action === 'savingPlanReturns') return output_({ ok: true, api_version: '1.2.0', action: 'savingPlanReturns', data_version: savingReturnVersion_(), data: savingPlanReturns_() });
     return output_(error_('Unsupported action', 'UNSUPPORTED_ACTION'));
   } catch (error) { return output_(error_(error.message, error.code || 'READ_FAILED')); }
 }
@@ -56,7 +64,8 @@ function readConfig_() { const data = {}, missing = []; Object.keys(RESOURCE_RUL
 function health_() {
   const names = sheetNames_(), control = Object.keys(RESOURCE_RULES).map(sheet => ({ sheet, exists: names.includes(sheet) }));
   const mapped = []; if (names.length) rowsSafe_('MedicalPlans').forEach(row => mapped.push({ type: 'premium', id: String(row.plan_id || row.id || ''), sheet: String(row.premium_sheet || row.sheet_name || ''), exists: names.includes(String(row.premium_sheet || row.sheet_name || '')) }));
-  return { status: control.every(item => item.exists) ? 'ok' : 'warning', spreadsheet_name: SpreadsheetApp.getActive().getName(), control_sheets: control, mapped_data_sheets: mapped };
+  const savingReturnSheet = names.includes(SAVING_RETURN_SHEET), savingReturnVersion = savingReturnVersion_();
+  return { status: control.every(item => item.exists) && savingReturnSheet && savingReturnVersion != null ? 'ok' : 'warning', spreadsheet_name: SpreadsheetApp.getActive().getName(), control_sheets: control, mapped_data_sheets: mapped, saving_return_dataset: { sheet: SAVING_RETURN_SHEET, exists: savingReturnSheet, data_version: savingReturnVersion } };
 }
 function rowsSafe_(name) { try { return rows_(sheet_(name)); } catch (_) { return []; } }
 function readError_(code, message) { const error = new Error(message); error.code = code; return error; }
@@ -125,6 +134,37 @@ function premiumRange_(parameters) {
     total_premium: annual.reduce((total, row) => total + row.annual_premium, 0),
     annual_premiums: annual.map(row => ({ age: row.age, annual_premium: row.annual_premium, source_age: row.source_age })), checkpoints
   };
+}
+function savingReturnVersion_() {
+  const row = rowsSafe_('SystemSettings').find(item => String(item.key || '') === 'saving_return_data_version');
+  if (!row || row.value === '' || row.value == null) return null;
+  const version = Number(row.value);
+  if (!Number.isInteger(version) || version < 1) throw readError_('INVALID_SAVING_RETURN_VERSION', 'saving_return_data_version must be a positive integer');
+  return version;
+}
+function savingPlanReturns_() {
+  const version = savingReturnVersion_();
+  if (version == null) throw readError_('SAVING_RETURN_VERSION_MISSING', 'SavingPlanReturns dataset version is unavailable');
+  let rows;
+  try { rows = rows_(sheet_(SAVING_RETURN_SHEET)); } catch (_) { throw readError_('SAVING_RETURN_SHEET_NOT_FOUND', `Official sheet not found: ${SAVING_RETURN_SHEET}`); }
+  const headers = rows.length ? Object.keys(rows[0]) : [];
+  if (!SAVING_RETURN_FIELDS.every(field => headers.includes(field))) throw readError_('SAVING_RETURN_SCHEMA_INVALID', 'SavingPlanReturns does not match the approved Layer 2 schema');
+  const seen = new Set(), normalized = [];
+  rows.forEach((row, index) => {
+    const id = String(row.return_data_id || '').trim();
+    if (!id || seen.has(id)) throw readError_('SAVING_RETURN_DUPLICATE_KEY', `SavingPlanReturns row ${index + 2} has a missing or duplicate return_data_id`);
+    seen.add(id);
+    if (Number(row.data_version) !== version || String(row.dataset_id) !== SAVING_RETURN_DATASET || String(row.product_id) !== SAVING_RETURN_PRODUCT || String(row.currency) !== SAVING_RETURN_CURRENCY || Number(row.pay_term_years) !== SAVING_RETURN_PAY_TERM) throw readError_('SAVING_RETURN_SCHEMA_INVALID', `SavingPlanReturns row ${index + 2} has inconsistent dataset metadata`);
+    const contribution = Number(row.annual_contribution), issueAge = Number(row.issue_age), policyYear = Number(row.policy_year);
+    if (!Number.isFinite(contribution) || contribution < 40000 || contribution > 200000 || !Number.isInteger(issueAge) || issueAge < 0 || issueAge > 100 || !Number.isInteger(policyYear) || policyYear < 1) throw readError_('SAVING_RETURN_FIELD_INVALID', `SavingPlanReturns row ${index + 2} has an invalid contribution or policy-year field`);
+    ['base_value','basic_amount','guaranteed_cash_value','reversionary_bonus_cash_value','terminal_dividend_cash_value'].forEach(field => { if (!Number.isFinite(Number(row[field])) || Number(row[field]) < 0) throw readError_('SAVING_RETURN_FIELD_INVALID', `SavingPlanReturns row ${index + 2} has an invalid ${field}`); });
+    if (!String(row.medical_plan_id || '').trim() || !String(row.source_case_id || '').trim() || !SAVING_RETURN_EVIDENCE.includes(String(row.evidence_class || '').trim())) throw readError_('SAVING_RETURN_FIELD_INVALID', `SavingPlanReturns row ${index + 2} has invalid evidence metadata`);
+    if (row.enabled === '' || row.enabled == null) throw readError_('SAVING_RETURN_FIELD_INVALID', `SavingPlanReturns row ${index + 2} has an invalid enabled flag`);
+    const enabled = boolean_(row.enabled); if (enabled === null) throw readError_('SAVING_RETURN_FIELD_INVALID', `SavingPlanReturns row ${index + 2} has an invalid enabled flag`);
+    if (enabled) normalized.push({ return_data_id: id, dataset_id: SAVING_RETURN_DATASET, data_version: version, product_id: SAVING_RETURN_PRODUCT, medical_plan_id: String(row.medical_plan_id), currency: SAVING_RETURN_CURRENCY, pay_term_years: SAVING_RETURN_PAY_TERM, annual_contribution: contribution, issue_age: issueAge, policy_year: policyYear, base_value: Number(row.base_value), basic_amount: Number(row.basic_amount), guaranteed_cash_value: Number(row.guaranteed_cash_value), reversionary_bonus_cash_value: Number(row.reversionary_bonus_cash_value), terminal_dividend_cash_value: Number(row.terminal_dividend_cash_value), source_case_id: String(row.source_case_id), evidence_class: String(row.evidence_class), enabled: true });
+  });
+  if (!normalized.length) throw readError_('SAVING_RETURN_ROWS_MISSING', 'SavingPlanReturns has no enabled rows');
+  return { dataset_id: SAVING_RETURN_DATASET, data_version: version, product_id: SAVING_RETURN_PRODUCT, currency: SAVING_RETURN_CURRENCY, pay_term_years: SAVING_RETURN_PAY_TERM, rows: normalized };
 }
 function version_() { const rows = rowsSafe_('SystemSettings'); const row = rows.find(item => String(item.key || '') === 'medical_reserve_version' || String(item.key || '') === 'data_version'); return Number(row && row.value) || 1; }
 function updatedAt_() { const rows = rowsSafe_('SystemSettings'), row = rows.find(item => String(item.key || '') === 'medical_reserve_updated_at' || String(item.key || '') === 'updated_at'); return row ? new Date(row.value).toISOString() : new Date().toISOString(); }
