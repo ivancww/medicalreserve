@@ -36,7 +36,7 @@ function doGet(e) {
 function doPost(e) {
   try {
     const body = JSON.parse(e.postData && e.postData.contents || '{}');
-    if (body.action === 'exchangeAdminLaunch') return output_(exchangeAdminLaunch_(body));
+    if (body.action === 'exchangeAppLaunch' || body.action === 'exchangeAdminLaunch') return output_(exchangeAdminLaunch_(body));
     if (body.action === 'writeOfficial') return output_(writeOfficial_(body));
     return output_(error_('Unsupported action', 'UNSUPPORTED_ACTION'));
   } catch (error) { return output_(error_(error.message, error.code || 'REQUEST_REJECTED')); }
