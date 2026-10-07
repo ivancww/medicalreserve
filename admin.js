@@ -52,7 +52,7 @@ async function start() {
   try {
     const params = new URLSearchParams(location.search), ticket = params.get('avaAdminLaunch');
     if (!ticket) throw new Error('缺少 AVA Admin launch 授權');
-    const grant = await jsonRequest({ action: 'exchangeAdminLaunch', appId: APP_ID, launchTicket: ticket });
+    const grant = await jsonRequest({ action: 'exchangeAppLaunch', appId: APP_ID, launchTicket: ticket });
     if (!grant.appGrant || !grant.expiresAt) throw new Error('無法建立 Medical Reserve App Grant');
     state.grant = grant.appGrant; state.expiresAt = grant.expiresAt;
     const [health, bootstrap] = await Promise.all([readRequest('health'), readRequest('bootstrap')]);
