@@ -36,26 +36,27 @@ function doGet(e) {
 function doPost(e) {
   try {
     const body = JSON.parse(e.postData && e.postData.contents || '{}');
-    if (body.action === 'exchangeAppLaunch' || body.action === 'exchangeAdminLaunch') return output_(exchangeAdminLaunch_(body));
+    if (body.action === 'exchangeAdminSession') return output_(exchangeAdminSession_(body));
     if (body.action === 'writeOfficial') return output_(writeOfficial_(body));
     return output_(error_('Unsupported action', 'UNSUPPORTED_ACTION'));
   } catch (error) { return output_(error_(error.message, error.code || 'REQUEST_REJECTED')); }
 }
 
-function exchangeAdminLaunch_(body) {
-  if (String(body.appId || '') !== APP_ID || !body.launchTicket) throw new Error('Invalid Medical Reserve Admin launch');
+function exchangeAdminSession_(body) {
+  if (String(body.appId || '') !== APP_ID || !body.launchTicket || !body.launchNonce || !body.browserProof) throw new Error('Invalid Medical Reserve browser-bound Admin launch');
   const endpoint = PropertiesService.getScriptProperties().getProperty(PLATFORM_AUTH_URL_PROPERTY) || PLATFORM_AUTH_URL_FALLBACK;
-  const response = UrlFetchApp.fetch(endpoint, { method: 'post', contentType: 'text/plain', muteHttpExceptions: true, payload: JSON.stringify({ action: 'exchangeAppLaunch', launchTicket: String(body.launchTicket), appId: APP_ID }) });
+  const request = { action: 'exchangeAdminSession', launchTicket: String(body.launchTicket), launchNonce: String(body.launchNonce), browserProof: String(body.browserProof), appId: APP_ID };
+  const response = UrlFetchApp.fetch(endpoint, { method: 'post', contentType: 'text/plain', muteHttpExceptions: true, payload: JSON.stringify(request) });
   const value = JSON.parse(response.getContentText() || '{}');
-  if (response.getResponseCode() >= 400 || value.success !== true || !value.appGrant) throw new Error('AVA Admin launch authorization failed');
+  if (response.getResponseCode() >= 400 || value.success !== true || value.appId !== APP_ID || !value.adminSessionProof || value.contract !== 'ava-admin-session-v1' || !value.expiresAt || new Date(value.expiresAt).getTime() <= Date.now()) throw new Error('AVA Admin session exchange failed');
   return value;
 }
-function verifyGrant_(body) {
-  if (String(body.appId || '') !== APP_ID || !body.appGrant) throw new Error('Missing App Admin authorization');
+function verifyAdminSession_(body, operation) {
+  if (String(body.appId || '') !== APP_ID || !body.adminSessionProof || !operation) throw new Error('Missing AVA Admin session authorization');
   const endpoint = PropertiesService.getScriptProperties().getProperty(PLATFORM_AUTH_URL_PROPERTY) || PLATFORM_AUTH_URL_FALLBACK;
-  const response = UrlFetchApp.fetch(endpoint, { method: 'post', contentType: 'text/plain', muteHttpExceptions: true, payload: JSON.stringify({ action: 'verifyAppGrant', appGrant: String(body.appGrant), appId: APP_ID, operation: 'medical-reserve:official-write' }) });
+  const response = UrlFetchApp.fetch(endpoint, { method: 'post', contentType: 'text/plain', muteHttpExceptions: true, payload: JSON.stringify({ action: 'verifyAdminSession', adminSessionProof: String(body.adminSessionProof), appId: APP_ID, operation }) });
   const value = JSON.parse(response.getContentText() || '{}');
-  if (response.getResponseCode() >= 400 || value.success !== true || value.appId !== APP_ID || value.operation !== 'medical-reserve:official-write') throw new Error('Invalid or expired App Admin authorization');
+  if (response.getResponseCode() >= 400 || value.success !== true || value.appId !== APP_ID || value.operation !== operation || value.contract !== 'ava-admin-session-v1' || !value.expiresAt || new Date(value.expiresAt).getTime() <= Date.now()) throw new Error('Invalid or expired AVA Admin session');
   return value;
 }
 function sheet_(name) { const value = SpreadsheetApp.getActive().getSheetByName(name); if (!value) throw new Error(`Sheet not found: ${name}`); return value; }
@@ -190,8 +191,9 @@ function validateRows_(resource, incoming, current) {
   current.forEach(row => { const key = keyOf_(row, rule); if (key && !seen.has(key) && resource === 'AppFlow') throw new Error(`Protected existing flow ID ${key} cannot be removed`); });
 }
 function writeOfficial_(body) {
-  verifyGrant_(body); const resource = String(body.resource || ''), rule = RESOURCE_RULES[resource]; if (!rule) throw new Error('Unauthorized official resource');
-  const lock = LockService.getScriptLock(); lock.waitLock(10000);
+  const resource = String(body.resource || ''), rule = RESOURCE_RULES[resource];
+  if (!resource || !rule || String(body.operation || '') !== `medicalreserve:official-write:${resource}`) throw new Error('Unauthorized official resource');
+  verifyAdminSession_(body, String(body.operation)); const lock = LockService.getScriptLock(); lock.waitLock(10000);
   try {
     const target = sheet_(resource), current = rows_(target), incoming = body.rows; validateRows_(resource, incoming, current);
     const headers = target.getDataRange().getValues()[0].map(String), currentByKey = new Map(current.map(row => [keyOf_(row, rule), row]));
