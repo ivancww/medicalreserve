@@ -1,62 +1,19 @@
-import { ADMIN_RESOURCES, validateAdminRows } from './domain.js';
-
-const API = 'https://script.google.com/macros/s/AKfycbzq07F_WpjaCtW3BK5_Bziiq9Ap1-DOT47Z7mz5-JSN-9m7nDvn9cqfZBvw9otAeZPr/exec';
-const APP_ID = 'medicalreserve';
-const RETURN_TO_AVA = 'https://ivancww.github.io/avaplatform/';
-const state = { grant: '', expiresAt: '', health: null, config: null, drafts: {}, status: 'authorizing', error: '' };
-
-function escapeHtml(value) { return String(value ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c])); }
-function jsonRequest(body) {
-  return fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8', Accept: 'application/json' }, body: JSON.stringify(body) }).then(async response => {
-    const payload = await response.json(); if (!response.ok || payload.success === false || payload.ok === false) throw new Error(payload.error?.message || payload.error || '官方同步失敗'); return payload;
-  });
-}
-function readRequest(action) { return fetch(`${API}?action=${encodeURIComponent(action)}`, { headers: { Accept: 'application/json' } }).then(async response => { const payload = await response.json(); if (!response.ok || payload.ok === false || payload.success === false) throw new Error(payload.error?.message || payload.error || '官方資料讀取失敗'); return payload; }); }
-function normalizeConfig(payload) { const root = payload?.data || payload || {}; return root.config || root.configuration || root; }
-function rowsFor(resource) { const value = state.drafts[resource] ?? state.config?.[resource] ?? state.config?.[resource.replace(/^./, c => c.toLowerCase())] ?? []; return Array.isArray(value) ? value : Object.entries(value || {}).map(([key, item]) => typeof item === 'object' ? { key, ...item } : { key, value: item }); }
-function fieldNames(rows) { const fields = []; rows.forEach(row => Object.keys(row || {}).forEach(key => { if (!fields.includes(key)) fields.push(key); })); return fields.filter(key => !['updated_at', 'created_at'].includes(key)); }
-function adminRows(resource) {
-  const rows = rowsFor(resource), fields = fieldNames(rows);
-  if (!rows.length) return `<div class="admin-empty">官方目前沒有可編輯資料；空白狀態不代表可安全新增任意欄位。</div>`;
-  return `<div class="admin-table-wrap"><table class="admin-table"><thead><tr>${fields.map(field => `<th>${escapeHtml(field)}</th>`).join('')}<th>狀態</th></tr></thead><tbody>${rows.map((row, index) => `<tr>${fields.map(field => `<td data-label="${escapeHtml(field)}"><input class="input" data-admin-resource="${escapeHtml(resource)}" data-admin-row="${index}" data-admin-field="${escapeHtml(field)}" value="${escapeHtml(row[field])}" ${isReadOnly(resource, field) ? 'readonly' : ''}></td>`).join('')}<td data-label="狀態"><span class="caption">官方資料</span></td></tr>`).join('')}</tbody></table></div>`;
-}
-function isReadOnly(resource, field) { return resource === 'SystemSettings' && !['checkpoint_interval', 'chart_type', 'allowed_visibility', 'default_result_mode'].includes(field); }
-function render() {
-  const app = document.getElementById('app');
-  if (state.status === 'authorizing') { app.innerHTML = shell('<section class="card"><h1 class="title">Medical Reserve Admin</h1><p class="support">正在驗證 AVA Admin 授權…</p></section>'); return; }
-  if (state.status === 'error') { app.innerHTML = shell(`<section class="card"><h1 class="title">Admin 存取未獲授權</h1><p class="warning">${escapeHtml(state.error || '授權無效或已過期。官方編輯功能已鎖定。')}</p><a class="button secondary" href="${RETURN_TO_AVA}">返回 AVA</a></section>`); return; }
-  const health = state.health?.data || {}, controls = (health.control_sheets || []).map(item => `<span class="status-chip ${item.exists ? 'ok' : 'bad'}">${escapeHtml(item.sheet)}: ${item.exists ? '可用' : '缺少'}</span>`).join('');
-  app.innerHTML = shell(`<div class="hero"><p class="caption">AVA Official Cloud · Medical Reserve</p><h1 class="title">Official Default 管理</h1><p class="support">只編輯官方 Google Sheet。User Override、備份及本機資料不會被改寫。</p><div class="status-line"><span class="status-chip">data version ${escapeHtml(health.data_version ?? '—')}</span>${controls}</div></div><div class="warning">${state.health?.data?.status === 'ok' ? '官方資料狀態正常。' : '官方資料有缺項或警告；未通過驗證的資料不能同步。'}</div>${ADMIN_RESOURCES.map(resource => `<section class="admin-section card"><div class="admin-section-head"><div><h2 class="section-title">${escapeHtml(resource)}</h2><p class="support">Current Official Data → 編輯 → 驗證 → 同步</p></div><button class="button primary" data-admin-save="${resource}">Save to Official Sheet</button></div><div id="admin-${resource}">${adminRows(resource)}</div><p class="status" id="admin-status-${resource}" role="status"></p></section>`).join('')}<p class="caption">最後讀取：${escapeHtml(health.updated_at || '—')} · Admin grant expires: ${escapeHtml(state.expiresAt || '—')}</p>`);
-}
-function shell(content) { return `<div class="shell"><header class="header"><a class="brand" href="./"><img class="brand-mark" src="icon.svg" alt=""><span>Medical Reserve Admin</span></a><div class="header-actions"><a class="button secondary" href="${RETURN_TO_AVA}">← 返回 AVA</a></div></header><main class="container admin-container">${content}</main></div>`; }
-function collect(resource) {
-  const rows = rowsFor(resource).map(row => ({ ...row }));
-  document.querySelectorAll(`[data-admin-resource="${resource}"]`).forEach(input => { const row = Number(input.dataset.adminRow); rows[row][input.dataset.adminField] = input.value; });
-  return rows;
-}
-async function save(resource) {
-  const status = document.getElementById(`admin-status-${resource}`); status.textContent = '正在驗證並同步…';
-  const rows = collect(resource), validation = validateAdminRows(resource, rows, { requiredFlowIds: ['protection_importance', 'premium_budget_awareness', 'premium_need_setup', 'premium_need_result', 'funding_source', 'reserve_intro', 'reserve_setup', 'reserve_result', 'summary'], writableSystemKeys: ['checkpoint_interval', 'chart_type', 'allowed_visibility', 'default_result_mode'] });
-  if (!validation.ok) { status.textContent = `未同步：${validation.errors.join('；')}`; status.className = 'status error'; return; }
-  try {
-    const result = await jsonRequest({ action: 'writeOfficial', appId: APP_ID, appGrant: state.grant, resource, rows });
-    if (!result.readBack || result.version == null) throw new Error('GAS 未提供讀回確認或新版本');
-    state.drafts[resource] = result.readBack; state.health.data_version = result.version;
-    status.textContent = `已同步至 Official Google Sheet · data version ${result.version}`; status.className = 'status success';
-  } catch (error) { status.textContent = `同步失敗：${error.message}`; status.className = 'status error'; }
-}
-document.addEventListener('click', event => { const button = event.target.closest('[data-admin-save]'); if (button) save(button.dataset.adminSave); });
-
-async function start() {
+atus.textContent = '正在驗證並同步…';  const rows = collect(resource), validation = validateAdminRows(resource, rows, { requiredFlowIds: ['protection_importance', 'premium_budget_awareness', 'premium_need_setup', 'premium_need_result', 'funding_source', 'reserve_intro', 'reserve_setup', 'reserve_result', 'summary'], writableSystemKeys: ['checkpoint_interval', 'chart_type', 'allowed_visibility', 'default_result_mode'] });  if (!validation.ok) { status.textContent = `未同步：${validation.errors.join('；')}`; status.className = 'status error'; return; }  try {    const result = await jsonRequest({ action: 'writeOfficial', appId: APP_ID, adminSessionProof: state.adminSessionProof, operation: `medicalreserve:official-write:${resource}`, resource, rows });    if (!result.readBack || result.version == null) throw new Error('GAS 未提供讀回確認或新版本');    state.drafts[resource] = result.readBack; state.health.data_version = result.version;    status.textContent = `已同步至 Official Google Sheet · data version ${result.version}`; status.className = 'status success';  } catch (error) { status.textContent = `同步失敗：${error.message}`; status.className = 'status error'; }}document.addEventListener('click', event => { const button = event.target.closest('[data-admin-save]'); if (button) save(button.dataset.adminSave); });async function start() {
   render();
   try {
-    const params = new URLSearchParams(location.search), ticket = params.get('avaAdminLaunch');
-    if (!ticket) throw new Error('缺少 AVA Admin launch 授權');
-    const grant = await jsonRequest({ action: 'exchangeAppLaunch', appId: APP_ID, launchTicket: ticket });
-    if (!grant.appGrant || !grant.expiresAt) throw new Error('無法建立 Medical Reserve App Grant');
-    state.grant = grant.appGrant; state.expiresAt = grant.expiresAt;
+    const params = new URLSearchParams(location.search), ticket = params.get('avaAdminLaunch'), launchNonce = params.get('avaAdminLaunchNonce');
+    if (!ticket || !launchNonce || !window.opener) throw new Error('缺少 AVA Admin browser launch');
+    const openerOrigin = 'https://ivancww.github.io';
+    const browser = await new Promise((resolve, reject) => {
+      const timer = setTimeout(() => reject(new Error('AVA Admin browser binding expired')), 10000);
+      const onMessage = event => { const data = event.data || {}; if (event.source !== window.opener || event.origin !== openerOrigin || data.type !== 'ava-admin-session-response' || data.appId !== APP_ID || data.launchTicket !== ticket || data.launchNonce !== launchNonce || !data.browserProof) return; clearTimeout(timer); window.removeEventListener('message', onMessage); resolve(data); };
+      window.addEventListener('message', onMessage);
+      window.opener.postMessage({ type: 'ava-admin-session-request', appId: APP_ID, launchTicket: ticket, launchNonce }, openerOrigin);
+    });
+    const exchange = await jsonRequest({ action: 'exchangeAdminSession', appId: APP_ID, launchTicket: ticket, launchNonce, browserProof: browser.browserProof });
+    if (exchange.success !== true || exchange.appId !== APP_ID || !exchange.adminSessionProof || exchange.contract !== 'ava-admin-session-v1' || !exchange.expiresAt || Date.parse(exchange.expiresAt) <= Date.now()) throw new Error('AVA Admin session exchange failed');
+    state.adminSessionProof = exchange.adminSessionProof; state.expiresAt = exchange.expiresAt;
     const [health, bootstrap] = await Promise.all([readRequest('health'), readRequest('bootstrap')]);
     state.health = health; state.config = normalizeConfig(bootstrap); state.status = 'ready'; render();
   } catch (error) { state.status = 'error'; state.error = error.message; render(); }
 }
-start();
