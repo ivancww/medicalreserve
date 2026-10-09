@@ -17,3 +17,5 @@ import { ADMIN_RESOURCES, validateAdminRows } from './domain.js';const API = 'ht
     state.health = health; state.config = normalizeConfig(bootstrap); state.status = 'ready'; render();
   } catch (error) { state.status = 'error'; state.error = error.message; render(); }
 }
+
+start();
