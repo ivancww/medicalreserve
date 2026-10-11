@@ -1,124 +1,138 @@
 import { APP_VERSION } from './version.js';
+import { premiumTotal, validateBackup } from './domain.js';
+import { automaticAccumulation, validateLayer2Data } from './reserve-runtime.js';
+import { FROZEN_FORWARD_DATASET, runForwardWithOfficialReturns } from './saving-plan-returns.js';
+import { formatMoneyInput, parseMoneyInput, validateSupportAgeRange } from './customer-input.js';
 
 const CONFIG = Object.freeze({
+  version: APP_VERSION,
   api: 'https://script.google.com/macros/s/AKfycbzq07F_WpjaCtW3BK5_Bziiq9Ap1-DOT47Z7mz5-JSN-9m7nDvn9cqfZBvw9otAeZPr/exec',
   returnToAva: 'https://ivancww.github.io/avaplatform/',
-  cacheKey: 'medical-reserve:official-cache:v1',
-  userKey: 'medical-reserve:user-layer:v1',
-  backupSchema: 'medical-reserve-backup-v1',
-  version: APP_VERSION
+  cacheKey: 'medical-reserve:official-cache:v3', userKey: 'medical-reserve:user-layer:v1', backupSchema: 'medical-reserve-backup-v1'
 });
 
-const STATIC_FLOW = [
-  { id: 'funding', title: '退休後，你預計主要會用哪方面的資金支付醫療保費？', kind: 'choice', options: ['銀行存款', '投資資產', '家庭財務', '退休生活資金'] },
-  { id: 'timeline', title: '先看看你的退休時間線', kind: 'timeline' },
-  { id: 'coverage', title: '你希望醫療保障大約維持到幾多歲？', kind: 'coverage' },
-  { id: 'plan', title: '選擇醫療計劃', kind: 'plan' },
-  { id: 'journey', title: '醫療保費旅程', kind: 'journey' },
-  { id: 'total', title: '退休期間的醫療保費需要', kind: 'total' },
-  { id: 'transition', title: '由醫療需要，走到 Medical Reserve', kind: 'transition' },
-  { id: 'strategy', title: '建立 Medical Reserve', kind: 'strategy' },
-  { id: 'support', title: 'Medical Reserve Support', kind: 'support' },
-  { id: 'summary', title: '重點總結', kind: 'summary' }
-];
-const params = new URLSearchParams(location.search);
-const requestedEntry = params.get('avaEntry') || '';
-const legacyMode = params.get('mode') || '';
-const appEntry = requestedEntry || (legacyMode === 'edit' ? 'user' : 'frontend');
-const unsupportedEntry = Boolean(requestedEntry) && !['frontend', 'user'].includes(requestedEntry);
+const FLOW = Object.freeze([
+  { id: 'protection_importance', title: '醫療保障重要性', kind: 'protection_importance' }, { id: 'premium_budget_awareness', title: '退休醫療保費預算', kind: 'premium_budget_awareness' },
+  { id: 'premium_need_setup', title: '設定醫療保費需要', kind: 'premium_need_setup' }, { id: 'premium_need_result', title: '退休後預計醫療保費', kind: 'premium_need_result' },
+  { id: 'funding_source', title: '醫療保費資金來源', kind: 'funding_source' }, { id: 'reserve_intro', title: 'Medical Reserve', kind: 'reserve_intro' },
+  { id: 'reserve_setup', title: '建立 Medical Reserve', kind: 'reserve_setup' }, { id: 'reserve_result', title: 'Medical Reserve 結果', kind: 'reserve_result' }, { id: 'summary', title: '規劃摘要', kind: 'summary' }
+]);
+const SAFE_FLOW_OPTIONS = Object.freeze({ protectionImportance: ['more_important', 'similar', 'less_important'], premiumBudgetAwareness: ['estimated', 'considered_unknown', 'not_planned'], funding: ['退休生活資金', '銀行／儲蓄', '投資資產', '家庭財務'], retirementAge: [55, 60, 65, 70], coverageAge: [80, 85, 90, 95, 100], arrangement: [5, 10, 15] });
+const entry = new URLSearchParams(location.search).get('avaEntry');
+const unsupportedEntry = Boolean(entry) && !['frontend', 'user'].includes(entry);
 const state = {
-  step: 0, mode: appEntry === 'user' ? 'edit' : legacyMode === 'presentation' ? 'presentation' : 'use',
+  step: 0, mode: entry === 'user' ? 'edit' : new URLSearchParams(location.search).get('mode') === 'presentation' ? 'presentation' : 'use',
+  dev: ['1', 'user'].includes(new URLSearchParams(location.search).get('dev') || entry),
   currentAge: 40, retirementAge: 65, coverageAge: 90, funding: '', planId: '', plans: [], premiumRange: null,
-  official: { status: 'not_loaded', version: null, updatedAt: null, warnings: [] }, user: loadUser()
+  arrangement: 5, phaseContributions: { phase1: 100000, phase2: 130000, phase3: 150000 }, supportStartAge: 65, supportEndAge: 90,
+  protectionImportance: '', premiumBudgetAwareness: '', expectedBudget: null, resultMode: 'medical_support', layer2: null, autoResult: null, medicalResult: null,
+  flow: FLOW, officialConfig: { flowOptions: SAFE_FLOW_OPTIONS, visualization: {} }, official: { status: 'not_loaded', version: null, updatedAt: null, warnings: [] }, resultError: '', user: loadUser(),
+  forward: { status: 'blocked', reason: '現有官方部署未提供已驗證的 production Forward Calculation endpoint。' }
 };
 
 function loadUser() { try { return JSON.parse(localStorage.getItem(CONFIG.userKey)) || { overrides: {}, pages: [] }; } catch { return { overrides: {}, pages: [] }; } }
 function saveUser() { localStorage.setItem(CONFIG.userKey, JSON.stringify(state.user)); }
 function escapeHtml(value) { return String(value ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c])); }
-function money(value) { return typeof value === 'number' ? new Intl.NumberFormat('zh-HK', { style:'currency', currency:'HKD', maximumFractionDigits:0 }).format(value) : '未有資料'; }
-function percent(value) { return typeof value === 'number' ? `${value.toFixed(2)}%` : '—'; }
+function money(value) { return typeof value === 'number' && Number.isFinite(value) ? new Intl.NumberFormat('zh-HK', { style: 'currency', currency: 'HKD', maximumFractionDigits: 0 }).format(value) : '未有資料'; }
 function getTitle(page) { return state.user.overrides[page.id]?.title || page.title; }
-function apiUrl(action, params = {}) { const url = new URL(CONFIG.api); url.searchParams.set('action', action); Object.entries(params).forEach(([k,v]) => { if (v !== '' && v != null) url.searchParams.set(k, v); }); return url; }
-
-async function api(action, params = {}) {
-  const response = await fetch(apiUrl(action, params), { headers: { Accept: 'application/json' } });
-  const json = await response.json();
-  if (!json.ok) throw new Error(json.error?.message || '官方資料暫時無法使用');
-  return json;
-}
+function getSubtitle(page) { return state.user.overrides[page.id]?.subtitle || page.subtitle || ''; }
+function getSupport(page) { return state.user.overrides[page.id]?.supportingText || page.supportingText || ''; }
+function normalizeOption(value) { return typeof value === 'object' ? (value.value ?? value.id ?? value.label ?? value.name) : value; }
+function normalizeFlowOptions(rawOptions) { const rows = Array.isArray(rawOptions) ? rawOptions : []; const values = (id, fallback) => { const found = rows.filter(row => String(row.step_id || row.flow_id || '') === id && row.enabled !== false).sort((a,b) => Number(a.sort_order || 0) - Number(b.sort_order || 0)).map(row => id === 'funding_source' ? (row.label ?? row.value) : ['retirement_age','coverage_age','reserve_arrangement'].includes(id) ? (row.value ?? row.option_id) : (row.option_id ?? row.value)); return found.length ? found : fallback; }; return { protectionImportance: values('protection_importance', SAFE_FLOW_OPTIONS.protectionImportance), premiumBudgetAwareness: values('premium_budget_awareness', SAFE_FLOW_OPTIONS.premiumBudgetAwareness), funding: values('funding_source', SAFE_FLOW_OPTIONS.funding), retirementAge: values('retirement_age', SAFE_FLOW_OPTIONS.retirementAge), coverageAge: values('coverage_age', SAFE_FLOW_OPTIONS.coverageAge), arrangement: values('reserve_arrangement', SAFE_FLOW_OPTIONS.arrangement) }; }
+function normalizeBootstrap(data) { const root = data?.data || data || {}, config = root.config || root.configuration || root, rows = config.AppFlow || config.appFlow || [], plans = config.MedicalPlans || config.medicalPlans || []; const byId = new Map(rows.filter(row => row.enabled !== false && row.visible !== false).map(row => [String(row.step_id || row.id), row])); return { flow: FLOW.map(page => ({ ...page, title: byId.get(page.id)?.title || page.title, subtitle: byId.get(page.id)?.subtitle || '' })), flowOptions: normalizeFlowOptions(config.FlowOptions || config.flowOptions || []), plans: (Array.isArray(plans) ? plans : Object.values(plans)).map(plan => ({ ...plan, plan_id: plan.plan_id ?? plan.id, premium_sheet: plan.premium_sheet ?? plan.sheet_name })), visualization: config.Visualization || config.visualization || {}, settings: config.SystemSettings || config.systemSettings || {} }; }
+function applyOfficialConfig(config) { state.officialConfig = config; state.flow = config.flow; state.plans = config.plans; if (!state.planId && state.plans.length) state.planId = state.plans.find(p => p.plan_id === 'prestige_16000')?.plan_id || state.plans[0].plan_id; }
+function apiUrl(action, params = {}) { const url = new URL(CONFIG.api); url.searchParams.set('action', action); Object.entries(params).forEach(([key, value]) => { if (value !== '' && value != null) url.searchParams.set(key, value); }); return url; }
+async function api(action, params = {}) { const response = await fetch(apiUrl(action, params), { headers: { Accept: 'application/json' } }); if (!response.ok) throw new Error('官方資料暫時無法使用。'); let json; try { json = await response.json(); } catch { throw new Error('官方資料暫時無法使用。'); } if (!json.ok) throw new Error(json.error?.message || '官方資料暫時無法使用。'); return json; }
 function cacheOfficial(data) { localStorage.setItem(CONFIG.cacheKey, JSON.stringify(data)); }
 function readOfficialCache() { try { return JSON.parse(localStorage.getItem(CONFIG.cacheKey)); } catch { return null; } }
-
 async function loadOfficial() {
-  const cached = readOfficialCache();
-  if (cached) { state.official = { ...cached.meta, status:'local' }; state.plans = cached.plans || []; }
-  render();
+  const cached = readOfficialCache(); if (cached?.config) { applyOfficialConfig(cached.config); state.official = { ...cached.meta, status: 'local' }; } render();
+  try { const health = await api('health'), bootstrap = await api('bootstrap'), config = normalizeBootstrap(bootstrap); applyOfficialConfig(config); state.official = { status: 'cloud', version: health.data_version, updatedAt: health.updated_at, warnings: health.data?.control_sheets?.filter(x => !x.exists).map(x => x.sheet) || [], bootstrapStatus: 'ok' }; cacheOfficial({ meta: state.official, config: state.officialConfig }); if (!state.planId && state.plans.length) state.planId = state.plans.find(p => p.plan_id === 'prestige_0')?.plan_id || state.plans[0].plan_id; }
+  catch (error) { state.official.status = cached ? 'local' : 'unavailable'; state.official.bootstrapStatus = 'unavailable'; state.official.error = error.message; } render();
+}
+async function loadPremiumRange() { if (!state.planId) return false; state.premiumRange = null; state.official.premiumError = null; render(); try { state.premiumRange = (await api('premiumRange', { plan_id: state.planId, retirement_age: state.retirementAge, coverage_age: state.coverageAge })).data; return true; } catch (error) { state.official.premiumError = error.message; state.resultError = error.message; state.official.status = 'unavailable'; render(); return false; } }
+async function loadLayer2() { try { state.layer2 = validateLayer2Data((await api('savingPlanReturns')).data); return true; } catch (error) { state.layer2 = null; state.official.layer2Error = error.message; state.resultError = error.message; state.official.status = 'unavailable'; return false; } }
+async function loadMedicalSupport() {
   try {
-    const health = await api('health');
-    let bootstrapError = '';
-    try { await api('bootstrap'); } catch (error) { bootstrapError = error.message; }
-    const mapped = (health.data?.mapped_data_sheets || []).filter(x => x.type === 'premium' && x.exists);
-    const plans = [];
-    for (const item of mapped) {
-      try {
-        const result = await api('premium', { plan_id: item.id, age: state.retirementAge });
-        plans.push({ plan_id:item.id, premium_sheet:item.sheet, display_name:result.data.display_name, gender:result.data.gender, deductible:result.data.deductible });
-      } catch { /* An unavailable plan is not shown as valid data. */ }
-    }
-    state.plans = plans;
-    state.official = { status:'cloud', version:health.data_version, updatedAt:health.updated_at, warnings: health.data?.control_sheets?.filter(x => !x.exists).map(x => x.sheet) || [], bootstrapError };
-    cacheOfficial({ meta: state.official, plans });
-    if (!state.planId && plans.length) state.planId = plans.find(p => p.plan_id === 'prestige_0')?.plan_id || plans[0].plan_id;
-  } catch (error) {
-    state.official.status = cached ? 'local' : 'unavailable';
-    state.official.error = error.message;
-  }
-  render();
-}
-async function loadPremiumRange() {
-  if (!state.planId) return;
-  state.premiumRange = null; render();
-  try { state.premiumRange = (await api('premiumRange', { plan_id:state.planId, retirement_age:state.retirementAge, coverage_age:state.coverageAge })).data; }
-  catch (error) { state.official.premiumError = error.message; }
-  render();
+    if (!state.premiumRange || !state.layer2) throw new Error('Official premium and SavingPlanReturns data are required');
+    const supportPremiumRange = (await api('premiumRange', {
+      plan_id: state.planId, support_start_age: state.supportStartAge, support_end_age: state.supportEndAge
+    })).data;
+    const phases = ['phase1', 'phase2', 'phase3'].slice(0, state.arrangement / 5).map(id => ({ id, enabled: true, annualContribution: state.phaseContributions[id] }));
+    state.medicalResult = runForwardWithOfficialReturns({
+      currentAge: state.currentAge, supportStartAge: state.supportStartAge, supportEndAge: state.supportEndAge,
+      planId: state.planId, phases, medicalPremiumSchedule: supportPremiumRange.annual_premiums
+    }, { ok: true, data: state.layer2 }, FROZEN_FORWARD_DATASET);
+    state.forward = { status: 'available' };
+  } catch (error) { state.medicalResult = null; state.forward = { status: 'blocked', reason: error.message }; state.resultError = error.message; state.official.status = 'unavailable'; return false; }
+  return true;
 }
 
-function currentPage() { return STATIC_FLOW[state.step]; }
-function selected(id, value) { return state[id] === value ? 'true' : 'false'; }
-function choices(id, items) { return `<div class="grid">${items.map(item => `<button class="choice" aria-pressed="${selected(id,item.value)}" data-action="set" data-key="${id}" data-value="${escapeHtml(item.value)}"><span class="choice-title">${escapeHtml(item.label)}</span>${item.detail ? `<span class="choice-detail">${escapeHtml(item.detail)}</span>` : ''}</button>`).join('')}</div>`; }
-function renderTimeline() { return `<div class="grid"><div class="field"><label class="label" for="currentAge">目前年齡</label><input class="input" id="currentAge" type="number" min="18" max="100" value="${state.currentAge}" data-action="number" data-key="currentAge"></div><div class="field"><label class="label" for="retirementAge">預計退休年齡</label><select class="select" id="retirementAge" data-action="number" data-key="retirementAge">${[55,60,65,70].map(v=>`<option ${state.retirementAge===v?'selected':''}>${v}</option>`).join('')}</select></div></div><div class="card"><div class="journey-row"><strong>${state.currentAge}</strong><div class="journey-track"><div class="journey-fill" style="width:${Math.min(100,Math.max(0,(state.currentAge-18)/82*100))}%"></div></div><span class="caption">目前</span></div><p class="support">距離退休約 ${Math.max(0,state.retirementAge-state.currentAge)} 年</p><div class="journey-row"><strong>${state.retirementAge}</strong><div class="journey-track"><div class="journey-fill" style="width:60%"></div></div><span class="caption">退休</span></div></div>`; }
-function renderPlan() { if (!state.plans.length) return `<div class="warning">官方 MedicalPlans 暫時未能載入。請稍後重試；未有官方計劃資料時，不會顯示假設保費。</div>`; return choices('planId', state.plans.map(p => ({ value:p.plan_id, label:p.display_name, detail:`${p.gender && p.gender !== 'ALL' ? p.gender+' · ' : ''}自付額 ${money(p.deductible)}` }))); }
-function renderJourney() { const data=state.premiumRange; if (!data) return `<div class="warning">請先選擇官方醫療計劃並載入保費旅程。</div>`; const max=Math.max(...data.annual_premiums.map(x=>x.annual_premium)); return `<div class="card journey"><p class="support">由 ${data.retirement_age} 歲至 ${data.coverage_age} 歲，官方資料共 ${data.years} 年。</p>${data.checkpoints.map((x,i)=>`<div class="journey-row"><span class="journey-age">${x.age}</span><div class="journey-track"><div class="journey-fill" style="width:${x.annual_premium/max*100}%"></div></div><span class="journey-value">${money(x.annual_premium)}</span></div><p class="caption">${i===0?'起點':`較上一個五年節點 ${percent(x.growth_from_previous_checkpoint_percent)}`}</p>`).join('')}</div>`; }
-function renderTotals() { const d=state.premiumRange; if (!d) return `<div class="warning">總額會在官方保費旅程載入後顯示。</div>`; return `<div class="metrics"><div class="metric card"><span class="support">退休醫療保費總額</span><strong class="metric-value">${money(d.total_premium)}</strong><span class="metric-unit">${d.currency} · ${d.years} 年</span></div><div class="metric card"><span class="support">開始年齡</span><strong class="metric-value">${d.retirement_age}</strong><span class="metric-unit">退休</span></div><div class="metric card"><span class="support">保障至</span><strong class="metric-value">${d.coverage_age}</strong><span class="metric-unit">歲</span></div></div>`; }
-function renderReserveUnavailable() { return `<div class="warning"><strong>Medical Reserve Support 暫未能計算</strong><p>官方 ReserveStrategies 資料目前未提供。為保障數據正確性，本頁不會自行估算儲備、支援額或剩餘醫療費用。</p></div>`; }
-function renderStep(page) {
-  const content = { funding:choices('funding',page.options.map(x=>({value:x,label:x}))), timeline:renderTimeline(), coverage:choices('coverageAge',[80,85,90,95,100].map(v=>({value:v,label:`${v} 歲`,detail:`退休後約 ${Math.max(0,v-state.retirementAge)} 年`}))), plan:renderPlan(), journey:renderJourney(), total:renderTotals(), transition:`<div class="card"><h3>先理解需要，再談 Medical Reserve</h3><p class="support">退休醫療保費是一段長期需要。當你看見保費旅程和總額後，下一步才是思考如何建立 Medical Reserve，為未來提供 Medical Reserve Support。</p></div>`, strategy:renderReserveUnavailable(), support:renderReserveUnavailable(), summary:`<div class="card-body">${renderTotals()}${renderReserveUnavailable()}</div>` }[page.kind];
-  return `<section class="section"><h2 class="section-title editable" data-page-id="${page.id}">${escapeHtml(getTitle(page))}</h2>${content}</section>`;
-}
-function renderCustomPages() { return state.user.pages.filter(p=>p.visible!==false).sort((a,b)=>(a.sortOrder||0)-(b.sortOrder||0)).map(p=>`<section class="section custom-page card"><h2>${escapeHtml(p.title)}</h2>${p.subtitle?`<p class="support">${escapeHtml(p.subtitle)}</p>`:''}<p>${escapeHtml(p.content||'')}</p>${p.pageType==='image' || p.pageType==='video'?`<div class="media-placeholder">媒體暫未連接<br><small>Cloud Storage capability unavailable — no binary stored locally</small></div>`:''}</section>`).join(''); }
+function currentPage() { const page = state.flow[state.step] || state.flow[0]; return { ...page, title: getTitle(page), subtitle: getSubtitle(page), supportingText: getSupport(page) }; }
+function selected(id, value) { return String(state[id]) === String(value) ? 'true' : 'false'; }
+function choices(id, values, labels = {}) { return `<div class="choice-grid">${values.map(value => `<button class="choice-card" aria-pressed="${selected(id, value)}" data-action="set" data-key="${id}" data-value="${escapeHtml(value)}"><span class="choice-title">${escapeHtml(labels[value] || value)}</span></button>`).join('')}</div>`; }
+function pageShell(page, message, explanation, content, extra = '') { return `<div class="presentation-card"><div class="eyebrow">${escapeHtml(page.title)}</div><h2 class="question">${escapeHtml(message)}</h2>${explanation ? `<p class="lead">${escapeHtml(explanation)}</p>` : ''}${content}${extra}</div>`; }
+function renderSetup() { const o = state.officialConfig.flowOptions; return `<div class="form-grid"><div class="field"><label class="label" for="currentAge">目前年齡</label><input class="input" id="currentAge" type="number" min="18" max="100" value="${state.currentAge}" data-action="number" data-key="currentAge"></div><div class="field"><label class="label" for="retirementAge">退休年齡</label><select class="select" id="retirementAge" data-action="number" data-key="retirementAge">${o.retirementAge.map(v => `<option value="${v}" ${state.retirementAge === Number(v) ? 'selected' : ''}>${v} 歲</option>`).join('')}</select></div><div class="field"><label class="label" for="coverageAge">保障終止年齡</label><select class="select" id="coverageAge" data-action="number" data-key="coverageAge">${o.coverageAge.map(v => `<option value="${v}" ${state.coverageAge === Number(v) ? 'selected' : ''}>${v} 歲</option>`).join('')}</select></div></div>${state.plans.length ? choices('planId', state.plans.map(p => p.plan_id), Object.fromEntries(state.plans.map(p => [p.plan_id, `${p.display_name || p.name || p.plan_id}${p.deductible != null ? ` · 自付額 ${money(Number(p.deductible))}` : ''}`]))) : '<div class="status-box warning">官方醫療計劃暫時未能載入；不會顯示假設保費。</div>'}<button class="button primary next-button" data-action="next">下一步</button>`; }
+function renderPremium() { const d = state.premiumRange; if (!d) return `<div class="status-box warning"><strong>官方醫療保費暫時未能顯示</strong><p>${escapeHtml(state.official.premiumError || '請先選擇醫療計劃。')}</p></div>`; const total = premiumTotal(d.annual_premiums), max = Math.max(...d.annual_premiums.map(r => Number(r.annual_premium))); return `<div class="metric-hero"><span class="metric-label">退休後預計醫療保費</span><strong class="metric-number">${money(total)}</strong><span class="metric-unit">${d.retirement_age} 歲 → ${d.coverage_age} 歲 · ${d.years} 年官方年度資料合計</span></div><div class="age-rail premium-rail" aria-label="醫療保費旅程">${d.checkpoints.map(p => `<div class="rail-point"><span class="rail-age">${p.age} 歲</span><span class="rail-bar"><i style="height:${Math.max(8, Number(p.annual_premium) / max * 100)}%"></i></span><span class="rail-value">${money(Number(p.annual_premium))}<small>每年</small></span></div>`).join('')}</div>${state.expectedBudget != null ? `<div class="comparison"><div><span>你原先預計</span><strong>${money(state.expectedBudget)}</strong></div><div><span>按目前資料估算</span><strong>${money(total)}</strong></div></div>` : ''}<details class="details"><summary>查看年度保費詳情</summary><div class="detail-table" tabindex="0">${d.annual_premiums.map(r => `<div><span>${r.age} 歲</span><strong>${money(Number(r.annual_premium))}</strong></div>`).join('')}</div></details>`; }
+function renderBuild() { const phases = state.arrangement / 5, labels = ['第一期','第二期','第三期']; return `<div class="arrangement-grid">${[5,10,15].map(y => `<button class="arrangement-card" aria-pressed="${state.arrangement === y}" data-action="arrangement" data-value="${y}"><strong>${y}年</strong><span>獨立 ${y / 5} 個五年階段</span></button>`).join('')}</div><p class="help">5年 = Phase 1；10年 = Phase 1 + Phase 2；15年 = Phase 1 + Phase 2 + Phase 3。每個 Phase 都是獨立 5Pay，並非官方 10Pay／15Pay。</p><div class="phase-inputs">${Array.from({length: phases}, (_, i) => { const id = `phase${i + 1}`; return `<div class="phase-input"><div><strong>${labels[i]}</strong><span>每年 HKD × 5 年</span></div><input class="input money-input" type="text" inputmode="numeric" autocomplete="off" min="40000" max="200000" value="${formatMoneyInput(state.phaseContributions[id])}" data-action="contribution" data-phase="${id}" aria-label="${labels[i]} 每年供款"><small>HK$40,000–200,000</small></div>`; }).join('')}</div><div class="form-grid"><div class="field"><label class="label" for="supportStartAge">預計開始年歲<input class="input" id="supportStartAge" type="number" inputmode="numeric" step="1" min="${state.currentAge}" max="100" value="${state.supportStartAge ?? ''}" data-action="support-age" data-key="supportStartAge"></label></div><div class="field"><label class="label" for="supportEndAge">預計終結年歲<input class="input" id="supportEndAge" type="number" inputmode="numeric" step="1" min="${state.supportStartAge ?? state.currentAge}" max="100" value="${state.supportEndAge ?? ''}" data-action="support-age" data-key="supportEndAge"></label></div></div><p class="help">醫療需要期間 ${state.retirementAge} → ${state.coverageAge}，與 Support period ${state.supportStartAge ?? '—'} → ${state.supportEndAge ?? '—'} 是兩個不同概念。支援年歲可輸入任何現有官方資料支援的整數，不會自動四捨五入。</p>${state.resultError ? `<div class="status-box error" role="alert"><strong>結果暫時未能顯示</strong><p>${escapeHtml(state.resultError)}</p></div>` : ''}<button class="button primary next-button" data-action="next">查看結果</button>`; }
+function renderTable(rows) { if (!rows?.length) return `<div class="status-box unavailable"><strong>結果暫未能顯示</strong><p>${escapeHtml(state.forward.reason || state.official.layer2Error || '官方資料暫時無法使用。')}</p></div>`; return `<div class="local-scroll" tabindex="0"><table><thead><tr><th>年齡</th><th>當年醫療保費</th><th>Medical Reserve Support</th><th>累積已支援醫療保費</th><th>預計剩餘醫療儲備</th></tr></thead><tbody>${rows.map(r => `<tr><td>${r.age}</td><td>${money(Number(r.officialMedicalPremium ?? r.medicalPremium ?? 0))}</td><td>${money(Number(r.medicalReserveSupport ?? r.support ?? 0))}</td><td>${money(Number(r.cumulativeMedicalReserveSupport ?? r.cumulativeMedicalSupport ?? 0))}</td><td>${money(Number(r.combinedRemainingMedicalReserveValue ?? r.remainingSurrenderValue ?? 0))}</td></tr>`).join('')}</tbody></table></div>`; }
+function renderResult() { const rows = state.resultMode === 'medical_support' ? state.medicalResult?.schedule : state.autoResult; return `<div class="mode-switch" role="group" aria-label="結果情境"><button class="button ${state.resultMode === 'medical_support' ? 'primary' : 'secondary'}" aria-pressed="${state.resultMode === 'medical_support'}" data-action="result-mode" data-mode="medical_support">交醫保保費</button><button class="button ${state.resultMode === 'auto_accumulation' ? 'primary' : 'secondary'}" aria-pressed="${state.resultMode === 'auto_accumulation'}" data-action="result-mode" data-mode="auto_accumulation">自動滾存</button></div><p class="lead">${state.resultMode === 'medical_support' ? '以下只顯示 Medical Reserve 支援退休後醫療保費的情境。' : '以下只顯示同一安排繼續自動滾存、未用作 Medical Reserve Support 的情境。'}</p>${state.resultMode === 'medical_support' ? renderTable(rows) : `<div class="local-scroll" tabindex="0"><table><thead><tr><th>年齡</th><th>預計自動滾存價值</th></tr></thead><tbody>${rows?.map(r => `<tr><td>${r.age}</td><td>${money(r.value)}</td></tr>`).join('') || ''}</tbody></table></div>`}<p class="help">兩個結果是同一組安排的替代情境，不代表同時擁有兩個結果。</p>`; }
+function renderSummary() { const total = state.premiumRange ? premiumTotal(state.premiumRange.annual_premiums) : null, plan = state.plans.find(p => p.plan_id === state.planId), support = state.medicalResult?.cumulativeMedicalReserveSupport ?? state.medicalResult?.totalMedicalPremiumSupported, remaining = state.medicalResult?.finalCombinedRemainingMedicalReserveValue ?? state.medicalResult?.finalRemainingSurrenderValue; return `<div class="summary-grid"><div><span class="summary-label">退休後預計醫療保費</span><strong>${money(total)}</strong></div><div><span class="summary-label">Medical Reserve為退休後醫療保費提供</span><strong>${money(Number(support))} 支援</strong></div><div><span class="summary-label">預計剩餘醫療儲備</span><strong>${money(Number(remaining))}</strong></div><div><span class="summary-label">設定</span><strong>${state.retirementAge} → ${state.coverageAge}</strong><small>${escapeHtml(plan?.display_name || '未選擇')} · ${state.arrangement}年</small><small>${Array.from({length: state.arrangement / 5}, (_, i) => `Phase ${i + 1} ${money(state.phaseContributions[`phase${i + 1}`])} / 年`).join(' · ')}</small><small>Support ${state.supportStartAge} → ${state.supportEndAge}</small></div></div>`; }
+function renderPage(page) { const o = state.officialConfig.flowOptions; switch (page.kind) {
+  case 'protection_importance': return pageShell(page, '退休後，你覺得醫療保障對你嚟講會係？', '先由你反思醫療保障的重要性，唔需要而家決定保留或者取消。', choices('protectionImportance', o.protectionImportance, { more_important:'更加重要', similar:'同而家差唔多', less_important:'冇咁重要' }));
+  case 'premium_budget_awareness': return pageShell(page, '如果退休後仍然希望擁有醫療保障，你有冇計劃過醫療保費方面，大概要預留幾多？', '呢個係你自己嘅估算，之後會獨立同 Official 保費資料比較。', choices('premiumBudgetAwareness', o.premiumBudgetAwareness, { estimated:'有，大概知道', considered_unknown:'有諗過，但唔知道要幾多', not_planned:'未有計劃過' }) + (state.premiumBudgetAwareness === 'estimated' ? `<div class="field"><label class="label" for="expectedBudget">你原先預計（HKD）</label><input class="input money-input" id="expectedBudget" type="text" inputmode="numeric" min="0" value="${formatMoneyInput(state.expectedBudget)}" data-action="budget"></div><button class="button primary next-button" data-action="next">下一步</button>` : ''));
+  case 'premium_need_setup': return pageShell(page, '設定退休後醫療保費需要', '用目前年齡、退休年齡、醫療計劃、自付額及保障終止年齡，讀取現有 Official Medical Premium data。', renderSetup());
+  case 'premium_need_result': return pageShell(page, '退休後預計醫療保費', '先看見醫療保費需要，再討論由邊部分資金支付。', renderPremium(), `<button class="button primary next-button" data-action="next">下一步</button>`);
+  case 'funding_source': return pageShell(page, '如果冇另外準備，呢筆退休後醫療保費，你預計主要會由邊部分資金支付？', '', choices('funding', o.funding));
+  case 'reserve_intro': return pageShell(page, 'Medical Reserve', '工作期間逐步建立一筆醫療儲備，為退休後醫療保費作準備。', '<div class="bridge-card"><span>NEED</span><b>→</b><span>RESERVE</span></div><button class="button primary next-button" data-action="next">繼續</button>');
+  case 'reserve_setup': return pageShell(page, '建立 Medical Reserve', '選擇 5年、10年或 15年安排；每個啟用階段都有一個固定五年供款。', renderBuild());
+  case 'reserve_result': return pageShell(page, 'Medical Reserve 結果', '兩個結果係同一組安排的兩個替代情境；一次只顯示一個。', renderResult(), `<button class="button primary next-button" data-action="next">查看摘要</button>`);
+  case 'summary': return pageShell(page, '你的 Medical Reserve 重點', '以下只整理本次設定及目前可驗證結果。', renderSummary());
+  default: return pageShell(page, page.title, page.subtitle, '');
+} }
+function renderCustomPages(position) { return state.user.pages.filter(page => page.visible !== false && page.flowPosition === position).map(page => `<section class="custom-page presentation-card"><h2>${escapeHtml(page.title)}</h2>${page.subtitle ? `<p class="support">${escapeHtml(page.subtitle)}</p>` : ''}<p>${escapeHtml(page.content || '')}</p></section>`).join(''); }
+function renderEditPanel(page) { if (state.mode !== 'edit') return ''; return `<div class="edit-panel"><strong>Customer Presentation content</strong><div class="form-grid"><div class="field"><label class="label">Page title<input class="input" data-edit-field="title" data-page-id="${page.id}" value="${escapeHtml(page.title)}"></label></div><div class="field"><label class="label">Supporting label<input class="input" data-edit-field="subtitle" data-page-id="${page.id}" value="${escapeHtml(page.subtitle || '')}"></label></div></div></div>`; }
 function render() {
-  const page=currentPage(), presentation=state.mode==='presentation'; document.title=`${getTitle(page)} · Medical Reserve · V${APP_VERSION}`;
-  if (unsupportedEntry) { const app = document.getElementById('app'); app.dataset.avaMode = 'unsupported'; app.className = 'ava-front'; app.innerHTML = `<div class="shell"><header class="header"><a class="brand" href="./" aria-label="Medical Reserve"><img class="brand-mark" src="icon.svg" alt=""><span>Medical Reserve · V${APP_VERSION}</span></a><a class="button secondary" href="${CONFIG.returnToAva}">← 返回 AVA</a></header><div class="container"><section class="hero"><h1>此入口未配置</h1><p class="support">Medical Reserve 目前只提供 Frontstage 和 User 入口；Admin 入口會安全拒絕，不會授權任何官方寫入。</p></section></div></div>`; return; }
-  const progress=(state.step+1)/STATIC_FLOW.length*100;
-  document.getElementById('app').dataset.avaMode=state.mode; document.getElementById('app').className=`ava-front ${presentation?'presentation':''}`;
-  document.getElementById('app').innerHTML=`<div class="shell"><header class="header"><a class="brand" href="./" aria-label="Medical Reserve"><img class="brand-mark" src="icon.svg" alt=""><span>Medical Reserve</span></a><div class="header-actions"><a class="button secondary" href="${CONFIG.returnToAva}">← 返回 AVA</a><button class="button subtle agent-only" data-action="mode" data-mode="presentation">Customer View</button><button class="button subtle agent-only" data-action="mode" data-mode="edit">User Edit</button></div></header><div class="container">${state.mode!=='use'?`<div class="modebar ${state.mode}"><strong>${state.mode==='presentation'?'Customer Presentation':state.mode==='edit'?'User Edit Mode':'Preview Mode'}</strong><div class="actions">${state.mode==='edit'?'<button class="button primary" data-action="save">Save Local</button>':''}<button class="button secondary" data-action="mode" data-mode="use">返回使用模式</button></div></div>`:''}<div class="hero"><p class="caption">Easy for Agent · Natural Conversation · Instant Visualization</p><h1 class="title">${escapeHtml(page.title)}</h1><p class="support">由未來醫療需要開始，逐步看見保費、時間與 Medical Reserve Support。</p><div class="progress" aria-label="流程進度"><span style="width:${progress}%"></span></div><p class="caption">第 ${state.step+1} / ${STATIC_FLOW.length} 步</p></div>${renderStep(page)}${renderCustomPages()}<div class="actions"><button class="button secondary" data-action="prev" ${state.step===0?'disabled':''}>上一步</button><button class="button primary" data-action="next">${state.step===STATIC_FLOW.length-1?'重新開始':'繼續'}</button></div><p class="status ${state.official.status==='unavailable'?'error':''}">${state.official.status==='local'?'已使用本機官方資料快取。':state.official.status==='cloud'?'官方資料已更新。':state.official.status==='unavailable'?'官方資料暫時無法載入，請稍後重試。':'正在讀取官方資料…'}</p><footer class="footer"><span class="caption">Medical Reserve · Phase 1</span><div class="actions"><button class="button subtle agent-only" data-action="backup">匯出備份</button><label class="button subtle agent-only">匯入備份<input hidden type="file" accept="application/json" data-action="restore"></label><button class="button subtle agent-only" data-action="media">新增媒體頁面</button></div></footer></div></div>`;
+  if (unsupportedEntry) {
+    const app = document.getElementById('app');
+    app.dataset.avaMode = 'unsupported';
+    app.className = 'ava-front';
+    app.innerHTML = `<div class="shell"><header class="header"><a class="brand" href="./" aria-label="Medical Reserve"><img class="brand-mark" src="icon.svg" alt=""><span>Medical Reserve · V${APP_VERSION}</span></a><a class="button secondary" href="${CONFIG.returnToAva}">← 返回 AVA</a></header><div class="container"><section class="hero"><h1>此入口未配置</h1><p class="support">Medical Reserve 目前只提供 Frontstage 和 User 入口；Admin 入口會安全拒絕，不會授權任何官方寫入。</p></section></div></div>`;
+    return;
+  }
+  const page = currentPage();
+  const progress = Math.round((state.step / (state.flow.length - 1)) * 100);
+  const statusText = state.resultError || (state.official.status === 'unavailable' ? '官方資料暫時無法載入；未有官方資料時不會顯示假設保費。' : state.official.status === 'local' ? '已使用本機 Official Cache。' : state.official.status === 'cloud' ? '官方資料已更新。' : '正在讀取官方資料…');
+  const devFooter = state.dev ? '<button class="button subtle agent-only" data-action="backup">匯出備份</button><label class="button subtle agent-only">匯入備份<input hidden type="file" accept="application/json" data-action="restore"></label>' : '';
+  document.title = `${page.title} · AVA Medical Reserve · v${APP_VERSION}`;
+  document.getElementById('app').dataset.avaMode = state.mode;
+  document.getElementById('app').className = `ava-front ${state.mode === 'presentation' ? 'presentation' : ''}`;
+  document.getElementById('app').innerHTML = `<div class="shell"><header class="header"><div class="header-identity"><a class="brand" href="./" aria-label="AVA Medical Reserve"><img class="brand-mark" src="icon.svg" alt=""><span>AVA MEDICAL RESERVE · v${CONFIG.version}</span></a><span class="journey-title">${escapeHtml(page.title)}</span></div><div class="header-actions"><a class="button secondary return-ava" href="${CONFIG.returnToAva}">返回 AVA</a>${state.dev ? '<button class="button subtle agent-only" data-action="mode" data-mode="presentation">Customer View</button>' : ''}</div></header><main class="container">${state.mode !== 'use' ? `<div class="modebar ${state.mode}"><strong>${state.mode === 'presentation' ? 'Customer Presentation' : state.mode === 'edit' ? 'User Edit Mode' : 'Preview Mode'}</strong><div class="actions">${state.mode === 'edit' ? '<button class="button primary" data-action="save">Save Local</button>' : ''}<button class="button secondary" data-action="mode" data-mode="use">返回使用模式</button></div></div>` : ''}${state.step > 0 ? `<div class="journey-nav"><button class="back-link" data-action="prev">← 返回</button><div class="progress-wrap"><span>${state.step} / ${state.flow.length - 1}</span><div class="progress" role="progressbar" aria-valuenow="${progress}" aria-valuemin="0" aria-valuemax="100"><span style="width:${progress}%"></span></div></div></div>` : ''}${renderPage(page)}${renderEditPanel(page)}<p class="status ${state.resultError || state.official.status === 'unavailable' ? 'error' : ''}">${escapeHtml(statusText)}</p><footer class="footer"><span class="caption">AVA Medical Reserve</span><div class="actions">${devFooter}</div></footer></main></div>`;
 }
 
-document.addEventListener('click', async event => { const el=event.target.closest('[data-action]'); if(!el) return; const action=el.dataset.action;
-  if(action==='set'){ state[el.dataset.key]=el.dataset.value; if(el.dataset.key==='planId') await loadPremiumRange(); render(); }
-  if(action==='number'){ state[el.dataset.key]=Number(el.value); if(el.dataset.key==='retirementAge'||el.dataset.key==='coverageAge') await loadPremiumRange(); else render(); }
-  if(action==='next'){ if(state.step===STATIC_FLOW.length-1) state.step=0; else state.step++; if(currentPage().kind==='journey'||currentPage().kind==='total') await loadPremiumRange(); else render(); }
-  if(action==='prev'){ state.step=Math.max(0,state.step-1); render(); }
-  if(action==='mode'){ state.mode=el.dataset.mode; render(); }
-  if(action==='save'){ document.querySelectorAll('[data-page-id]').forEach(node=>{ const title=node.textContent.trim(); state.user.overrides[node.dataset.pageId]={ ...(state.user.overrides[node.dataset.pageId]||{}), title }; }); saveUser(); state.mode='preview'; render(); }
-  if(action==='backup') exportBackup();
-  if(action==='media') addUnavailableMediaPage();
-});
-document.addEventListener('change', async event => { const el=event.target; if(el.dataset.action==='restore' && el.files[0]) await restoreBackup(el.files[0]); });
-async function exportBackup(){ const payload={schema:CONFIG.backupSchema,createdAt:new Date().toISOString(),user:{overrides:state.user.overrides,pages:state.user.pages}}; const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='medical-reserve-backup.json'; a.click(); URL.revokeObjectURL(a.href); }
-async function restoreBackup(file){ try { const data=JSON.parse(await file.text()); if(data.schema!==CONFIG.backupSchema) throw new Error('不支援的備份版本'); if(!data.user||!Array.isArray(data.user.pages)) throw new Error('備份內容不完整'); state.user={overrides:data.user.overrides||{},pages:data.user.pages.map(p=>({...p,mediaBinary:undefined}))}; saveUser(); render(); alert('備份已還原。官方資料及計算來源沒有被覆蓋。'); } catch(error){ alert(`備份未能還原：${error.message}`); } }
-function addUnavailableMediaPage(){ state.user.pages.push({id:`page-${crypto.randomUUID()}`,pageType:'image',title:'新增媒體頁面',subtitle:'IMAGE PAGE — 需要連接 Cloud Storage',content:'媒體上載能力目前未連接。未有二進制資料會儲存在本機。',flowPosition:'after-summary',sortOrder:state.user.pages.length,visible:true,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),media:[]}); saveUser(); render(); }
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js', { scope: './', updateViaCache: 'none' }).then(registration => registration.update()).catch(()=>{});
+document.addEventListener('click', async event => { const el = event.target.closest('[data-action]'); if (!el) return; const action = el.dataset.action; if (action === 'set') { state[el.dataset.key] = ['retirementAge','coverageAge'].includes(el.dataset.key) ? Number(el.dataset.value) : el.dataset.value; if (['protectionImportance','funding'].includes(el.dataset.key)) state.step = Math.min(state.flow.length - 1, state.step + 1); if (el.dataset.key === 'premiumBudgetAwareness' && el.dataset.value !== 'estimated') state.step = Math.min(state.flow.length - 1, state.step + 1); render(); } if (action === 'arrangement') { state.arrangement = Number(el.dataset.value); render(); } if (action === 'result-mode') { state.resultMode = el.dataset.mode; render(); } if (action === 'next') { if (!validateStep()) { render(); return; } const page = currentPage(); if (page.kind === 'premium_need_setup') { if (!await loadPremiumRange()) return; } if (page.kind === 'reserve_setup') { state.resultError = ''; render(); const layer2Ready = await loadLayer2(); const forwardReady = layer2Ready && await loadMedicalSupport(); if (!forwardReady) { render(); return; } state.autoResult = automaticAccumulation({ rows: state.layer2.rows, currentAge: state.currentAge, supportStartAge: state.supportStartAge, supportEndAge: state.supportEndAge, arrangement: state.arrangement, phaseContributions: state.phaseContributions, medicalPlanId: state.planId }); } state.step = Math.min(state.flow.length - 1, state.step + 1); render(); } if (action === 'prev') { state.step = Math.max(0, state.step - 1); render(); } if (action === 'mode') { state.mode = el.dataset.mode; render(); } if (action === 'save') { document.querySelectorAll('[data-edit-field]').forEach(node => { state.user.overrides[node.dataset.pageId] = { ...(state.user.overrides[node.dataset.pageId] || {}), [node.dataset.editField]: node.value }; }); saveUser(); state.mode = 'preview'; render(); } if (action === 'backup') exportBackup(); });
+document.addEventListener('input', event => { const el = event.target; if (el.dataset.action === 'contribution') { el.type = 'text'; el.inputMode = 'numeric'; const value = parseMoneyInput(el.value); state.phaseContributions[el.dataset.phase] = value; el.value = formatMoneyInput(value); } if (el.dataset.action === 'budget') { el.type = 'text'; el.inputMode = 'numeric'; const value = parseMoneyInput(el.value); state.expectedBudget = value; el.value = formatMoneyInput(value); } if (el.dataset.action === 'support-age') state[el.dataset.key] = el.value === '' ? null : Number(el.value); });
+document.addEventListener('change', async event => { const el = event.target; if (el.dataset.action === 'restore' && el.files[0]) await restoreBackup(el.files[0]); if (el.dataset.action === 'number') { state[el.dataset.key] = Number(el.value); render(); } });
+function validateStep() { const page = currentPage(); state.resultError = ''; if (page.kind === 'premium_budget_awareness' && state.premiumBudgetAwareness === 'estimated' && (!Number.isFinite(state.expectedBudget) || state.expectedBudget < 0)) { state.resultError = '請輸入有效的醫療保費預算。'; render(); return false; } if (page.kind === 'premium_need_setup' && (!state.planId || !Number.isInteger(state.currentAge) || state.currentAge < 18 || state.retirementAge < state.currentAge || state.coverageAge < state.retirementAge)) { state.resultError = '請完成有效的醫療保費需要設定。'; render(); return false; } if (page.kind === 'reserve_setup') { const values = Object.entries(state.phaseContributions).slice(0, state.arrangement / 5); const maxSupportAge = Math.max(...FROZEN_FORWARD_DATASET.cases.flatMap(item => item.rows.map(row => Number(row.age)))); const ageValidation = validateSupportAgeRange({ start: state.supportStartAge, end: state.supportEndAge, minimum: state.currentAge, maximum: maxSupportAge }); if (values.some(([, value]) => !Number.isFinite(value) || value < 40000 || value > 200000)) { state.resultError = '每個啟用階段的年度供款必須介乎 HK$40,000 至 HK$200,000。'; render(); return false; } if (!ageValidation.ok) { state.resultError = ageValidation.message; render(); return false; } } return true; }
+function sanitizePortable(value) { if (Array.isArray(value)) return value.map(sanitizePortable); if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).filter(([key]) => !['mediaBinary', 'blob', 'base64', 'binary'].includes(key)).map(([key, item]) => [key, sanitizePortable(item)])); return value; }
+async function exportBackup() { const payload = { schema: CONFIG.backupSchema, appVersion: CONFIG.version, createdAt: new Date().toISOString(), user: sanitizePortable({ overrides: state.user.overrides, pages: state.user.pages }) }; const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = 'medical-reserve-backup.json'; link.click(); URL.revokeObjectURL(link.href); }
+async function restoreBackup(file) { try { const data = JSON.parse(await file.text()); if (!validateBackup(data, CONFIG.backupSchema)) throw new Error('備份內容不完整'); state.user = sanitizePortable({ overrides: data.user.overrides || {}, pages: data.user.pages }); saveUser(); render(); alert('備份已還原。官方資料及計算來源沒有被覆蓋。'); } catch (error) { alert(`備份未能還原：${error.message}`); } }
+function addUnavailableMediaPage(type) { const pageType = type === 'video' ? 'video' : 'image'; state.user.pages.push({ id: `page-${crypto.randomUUID()}`, pageType, title: `新增 ${pageType === 'image' ? 'IMAGE' : 'VIDEO'} PAGE`, subtitle: `${pageType === 'image' ? 'IMAGE PAGE' : 'VIDEO PAGE'} — 需要連接 Cloud Storage`, content: '媒體上載能力目前未連接。未有二進制資料會儲存在本機。', flowPosition: 'after:summary', sortOrder: state.user.pages.length, visible: true, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), media: [] }); saveUser(); render(); }
+function registerShellUpdates() {
+  if (!('serviceWorker' in navigator)) return;
+  let reloadInProgress = false;
+  const hadController = Boolean(navigator.serviceWorker.controller);
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!hadController || reloadInProgress) return;
+    reloadInProgress = true;
+    location.reload();
+  });
+  navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).then(registration => {
+    registration.update().catch(() => {});
+    if (registration.waiting) registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+  }).catch(() => {});
+}
+registerShellUpdates();
 loadOfficial();
 
-export { CONFIG, STATIC_FLOW, money, percent };
+export { CONFIG, FLOW, SAFE_FLOW_OPTIONS, money, state, validateStep };

@@ -18,5 +18,5 @@ test('Medical Reserve exposes explicit safe Frontstage/User entries and rejects 
 test('Medical Reserve independently revalidates its PWA shell and retires only owned caches', () => {
   assert.match(sw, /cache: 'no-store'/);
   assert.match(sw, /medical-reserve-shell-1\.1\.2/);
-  assert.match(sw, /startsWith\(OWNED_PREFIX\)/);
+  assert.match(sw, /startsWith\(SHELL_CACHE_PREFIX\)/);
 });

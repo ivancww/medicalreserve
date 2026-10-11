@@ -1,21 +1,46 @@
-const CACHE = 'medical-reserve-shell-1.1.2';
-const OWNED_PREFIX = 'medical-reserve-shell-';
-const SHELL = ['./', './index.html', './styles.css', './app.js?v=1.1.2', './version.js', './manifest.webmanifest', './icon.svg'];
-const updateSensitive = request => request.mode === 'navigate' || ['script', 'style'].includes(request.destination);
-self.addEventListener('install', event => event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(SHELL)).then(() => self.skipWaiting())));
-self.addEventListener('activate', event => event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key.startsWith(OWNED_PREFIX) && key !== CACHE).map(key => caches.delete(key)))).then(() => self.clients.claim())));
+const SHELL_CACHE = 'medical-reserve-shell-1.1.2';
+const SHELL_CACHE_PREFIX = 'medical-reserve-shell-';
+const SHELL = [
+  './', './index.html', './styles.css', './app.js?v=1.1.2', './version.js', './domain.js', './reserve-runtime.js', './saving-plan-returns.js',
+  './research/ipos/original-intent-forward.js', './research/ipos/fixtures/dataset.json', './admin.js',
+  './manifest.webmanifest', './icon.svg', './sw.js'
+];
+
+function isOwnedShellRequest(request) {
+  const url = new URL(request.url);
+  if (url.origin !== self.location.origin) return false;
+  if (request.mode === 'navigate') return true;
+  return SHELL.some(path => new URL(path, self.location.href).pathname === url.pathname);
+}
+
+self.addEventListener('install', event => {
+  event.waitUntil(caches.open(SHELL_CACHE).then(cache => cache.addAll(SHELL)).then(() => self.skipWaiting()));
+});
+
+self.addEventListener('activate', event => {
+  event.waitUntil(caches.keys().then(keys => Promise.all(keys
+    .filter(key => key.startsWith(SHELL_CACHE_PREFIX) && key !== SHELL_CACHE)
+    .map(key => caches.delete(key))
+  )).then(() => self.clients.claim()));
+});
+
+self.addEventListener('message', event => {
+  if (event.data?.type === 'SKIP_WAITING') self.skipWaiting();
+});
+
 self.addEventListener('fetch', event => {
+  if (event.request.method !== 'GET' || !isOwnedShellRequest(event.request)) return;
   const request = event.request;
-  if (request.method !== 'GET') return;
-  if (updateSensitive(request)) {
+  const updateSensitive = request.mode === 'navigate' || ['script', 'style'].includes(request.destination);
+  if (updateSensitive) {
     event.respondWith(fetch(request, { cache: 'no-store' }).then(response => {
-      event.waitUntil(caches.open(CACHE).then(cache => cache.put(request.mode === 'navigate' ? './index.html' : request, response.clone())));
+      if (response.ok) event.waitUntil(caches.open(SHELL_CACHE).then(cache => cache.put(request, response.clone())));
       return response;
-    }).catch(() => caches.match(request.mode === 'navigate' ? './index.html' : request)));
+    }).catch(() => caches.match(request).then(cached => cached || (request.mode === 'navigate' ? caches.match('./index.html') : Response.error()))));
     return;
   }
   event.respondWith(fetch(request).then(response => {
-    event.waitUntil(caches.open(CACHE).then(cache => cache.put(request, response.clone())));
+    if (response.ok) event.waitUntil(caches.open(SHELL_CACHE).then(cache => cache.put(request, response.clone())));
     return response;
-  }).catch(() => caches.match(request).then(cached => cached || caches.match('./index.html'))));
+  }).catch(() => caches.match(request).then(cached => cached || (request.mode === 'navigate' ? caches.match('./index.html') : Response.error()))));
 });
