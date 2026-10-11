@@ -1,7 +1,7 @@
-const SHELL_CACHE = 'medical-reserve-shell-1.1.2';
-const SHELL_CACHE_PREFIX = 'medical-reserve-shell-';
+const SHELL_CACHE = 'medical-reserve-shell';
+const SHELL_CACHE_PREFIX = 'medical-reserve-shell';
 const SHELL = [
-  './', './index.html', './styles.css', './app.js?v=1.1.2', './version.js', './domain.js', './reserve-runtime.js', './saving-plan-returns.js',
+  './', './index.html', './styles.css', './app.js', './version.js', './domain.js', './reserve-runtime.js', './saving-plan-returns.js',
   './research/ipos/original-intent-forward.js', './research/ipos/fixtures/dataset.json', './admin.js',
   './manifest.webmanifest', './icon.svg', './sw.js'
 ];

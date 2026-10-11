@@ -8,15 +8,17 @@ const sw = fs.readFileSync('sw.js', 'utf8');
 const version = fs.readFileSync('version.js', 'utf8');
 
 test('Medical Reserve exposes explicit safe Frontstage/User entries and rejects Admin', () => {
-  assert.match(app, /const appEntry = requestedEntry/);
-  assert.match(app, /!\['frontend', 'user'\]\.includes\(requestedEntry\)/);
+  assert.match(app, /const entry = new URLSearchParams/);
+  assert.match(app, /!\['frontend', 'user'\]\.includes\(entry\)/);
   assert.match(app, /不會授權任何官方寫入/);
-  assert.match(html, /app\.js\?v=1\.1\.2/);
+  assert.match(html, /<script type="module" src="app\.js"><\/script>/);
+  assert.doesNotMatch(html, /\?v=/);
   assert.match(version, /APP_VERSION = '1\.1\.2'/);
 });
 
-test('Medical Reserve independently revalidates its PWA shell and retires only owned caches', () => {
+test('Medical Reserve independently revalidates its PWA shell without release-specific cache names', () => {
   assert.match(sw, /cache: 'no-store'/);
-  assert.match(sw, /medical-reserve-shell-1\.1\.2/);
+  assert.match(sw, /SHELL_CACHE = 'medical-reserve-shell'/);
+  assert.doesNotMatch(sw, /medical-reserve-shell-1\.1\.2/);
   assert.match(sw, /startsWith\(SHELL_CACHE_PREFIX\)/);
 });
