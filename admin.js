@@ -330,7 +330,7 @@ function bind() {
     const next = tabs[(index + move + tabs.length) % tabs.length];
     selectTab(next.dataset.adminTab);
     document.getElementById(`admin-tab-${next.dataset.adminTab}`)?.focus();
-  });
+  }));
 }
 
 window.addEventListener('beforeunload', event => {
