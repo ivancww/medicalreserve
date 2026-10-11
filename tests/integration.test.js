@@ -16,7 +16,7 @@ test('Medical Reserve keeps Frontstage/User and routes Admin through its browser
   assert.match(admin, /缺少 AVA Studio browser launch/);
   assert.match(admin, /window\.opener/);
   assert.doesNotMatch(html, /\?v=/);
-  assert.match(version, /APP_VERSION = '1\.1\.2'/);
+  assert.match(version, /APP_VERSION = '1\\.1\\.3'/);
 });
 
 test('Medical Reserve independently revalidates its PWA shell without release-specific cache names', () => {
