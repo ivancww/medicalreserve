@@ -363,7 +363,7 @@ async function start() {
     });
 
     const exchange = await jsonRequest({ action: 'exchangeAdminSession', appId: APP_ID, launchTicket: ticket, launchNonce, browserProof: browser.browserProof });
-    if (exchange.success !== true || exchange.appId !== APP_ID || exchange.adminSessionProof == null || exchange.contract !== ADMIN_SESSION_CONTRACT || !exchange.expiresAt || Date.parse(exchange.expiresAt) <= Date.now()) throw new Error('AVA Admin session exchange failed');
+    if (exchange.success !== true || exchange.appId !== APP_ID || exchange.adminSessionProof == null || exchange.contract !== 'ava-admin-session-v1' || !exchange.expiresAt || Date.parse(exchange.expiresAt) <= Date.now()) throw new Error('AVA Admin session exchange failed');
     state.adminSessionProof = exchange.adminSessionProof;
     state.expiresAt = exchange.expiresAt;
 
