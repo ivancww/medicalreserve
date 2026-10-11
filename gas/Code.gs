@@ -12,10 +12,9 @@ const SAVING_RETURN_EVIDENCE = ['DIRECT','HOLDOUT_REFERENCE','INTERPOLATED_REFER
 const REQUIRED_FLOW_IDS = ['protection_importance','premium_budget_awareness','premium_need_setup','premium_need_result','funding_source','reserve_intro','reserve_setup','reserve_result','summary'];
 const BOOTSTRAP_RESOURCES = ['AppFlow', 'FlowOptions', 'MedicalPlans', 'Visualization', 'SystemSettings'];
 const RESOURCE_RULES = {
-  AppFlow: { key: ['step_id','page_id','id'], writable: ['step_id','page_id','id','title','subtitle','enabled','visible','sort_order'], required: REQUIRED_FLOW_IDS },
-  FlowOptions: { key: ['option_id','id'], writable: ['step_id','flow_id','option_id','id','label','value','sort_order','enabled'] },
-  MedicalPlans: { key: ['plan_id','id'], writable: ['plan_id','id','display_name','name','gender','deductible','premium_sheet','sheet_name','enabled','sort_order'] },
-  ReserveStrategies: { key: ['strategy_id','id'], writable: ['strategy_id','id','display_name','name','sheet_name','strategy_sheet','start_year','enabled','sort_order'] },
+  AppFlow: { key: ['step_id','page_id','id'], writable: ['title','subtitle','enabled','visible','sort_order'], required: REQUIRED_FLOW_IDS },
+  FlowOptions: { key: ['option_id','id'], writable: ['label','value','sort_order','enabled'] },
+  MedicalPlans: { key: ['plan_id','id'], writable: ['display_name','name','gender','deductible','enabled','sort_order'] },
   Visualization: { key: ['visual_id','setting'], writable: ['visual_id','setting','value'] },
   SystemSettings: { key: ['key'], writable: ['key','value'], allowedKeys: ['checkpoint_interval','chart_type','allowed_visibility','default_result_mode'] }
 };
@@ -263,8 +262,12 @@ function updateSystemSettingsVersion_(sheet, nextVersion) {
   if (!versionRow) throw new Error('SystemSettings version key is missing');
   sheet.getRange(versionRow.rowNumber, valueIndex + 1).setValue(nextVersion);
   const timestampRow = rows.find(row => ['medical_reserve_updated_at', 'updated_at'].includes(row.key));
-  if (timestampRow) sheet.getRange(timestampRow.rowNumber, valueIndex + 1).setValue(new Date().toISOString());
-  return { headers, versionRow, timestampRow };
+  let timestampValue = null;
+  if (timestampRow) {
+    timestampValue = new Date().toISOString();
+    sheet.getRange(timestampRow.rowNumber, valueIndex + 1).setValue(timestampValue);
+  }
+  return { headers, versionRow, timestampRow: timestampRow ? { ...timestampRow, value: timestampValue } : null };
 }
 function verifySystemSettingsReadBack_(sheet, headers, before, updates) {
   const after = settingRows_(sheet, headers), afterByKey = new Map(); after.forEach(row => afterByKey.set(row.key, row));
