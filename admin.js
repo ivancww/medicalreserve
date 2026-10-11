@@ -16,6 +16,14 @@ const RESOURCE_LABELS = Object.freeze({
   SystemSettings: '系統設定'
 });
 
+const RESOURCE_META = Object.freeze({
+  AppFlow: { source: 'Official · AppFlow', description: '管理 Medical Reserve 前台流程頁面的官方設定。' },
+  FlowOptions: { source: 'Official · FlowOptions', description: '管理流程內可選的官方選項及顯示次序。' },
+  MedicalPlans: { source: 'Official · MedicalPlans', description: '管理醫療計劃的官方顯示設定；保費資料表保持只讀。' },
+  Visualization: { source: 'Official · Visualization', description: '管理前台結果頁的視覺化設定。' },
+  SystemSettings: { source: 'Official · SystemSettings', description: '管理明確 allowlist 內的系統顯示設定。' }
+});
+
 const FIELD_LABELS = Object.freeze({
   step_id: '流程穩定 ID',
   option_id: '選項穩定 ID',
@@ -136,12 +144,25 @@ function stableDescription(resource, row) {
   return key || '未有穩定身份';
 }
 
+function recordLabel(resource, row) {
+  const candidates = resource === 'AppFlow'
+    ? [row?.title, row?.subtitle]
+    : resource === 'FlowOptions'
+      ? [row?.label, row?.value]
+      : resource === 'MedicalPlans'
+        ? [row?.display_name, row?.gender]
+        : resource === 'Visualization'
+          ? [row?.setting, row?.value]
+          : [row?.description, row?.value, row?.setting];
+  return candidates.map(value => String(value ?? '').trim()).find(Boolean) || '官方記錄';
+}
+
 function renderEditorField(resource, row, field, rowIndex) {
   const editable = isEditable(resource, field, row);
   const label = FIELD_LABELS[field] || field;
   const value = row?.[field] ?? '';
   const inputId = `admin-${resource}-${rowIndex}-${field}`;
-  const common = `id="${escapeHtml(inputId)}" data-admin-field="${escapeHtml(field)}" data-admin-row="${rowIndex}" ${editable ? '' : 'readonly'}`;
+  const common = `id="${escapeHtml(inputId)}" data-admin-resource="${escapeHtml(resource)}" data-admin-field="${escapeHtml(field)}" data-admin-row="${rowIndex}" ${editable ? '' : 'readonly'}`;
 
   if (isBooleanField(field)) {
     return `<label class="admin-field admin-check"><span>${escapeHtml(label)}</span><input type="checkbox" ${common.replace('readonly', editable ? '' : 'disabled')} ${value === true || value === 'true' || value === 1 || value === '1' ? 'checked' : ''}></label>`;
@@ -157,26 +178,29 @@ function renderEditorField(resource, row, field, rowIndex) {
 function renderPanel(resource) {
   const rows = rowsFor(resource);
   if (!rows.length) {
-    return `<section id="admin-panel-${resource}" class="admin-panel" role="tabpanel" aria-labelledby="admin-tab-${resource}"><div class="card"><h2 class="section-title">${escapeHtml(RESOURCE_LABELS[resource])}</h2><p class="support">Official Read 沒有回傳可管理記錄；不會由前端自行新增欄位或記錄。</p></div></section>`;
+    return `<section id="admin-panel-${resource}" class="admin-panel" role="tabpanel" aria-labelledby="admin-tab-${resource}" tabindex="-1"><div class="admin-empty-card"><span class="eyebrow">${escapeHtml(RESOURCE_META[resource].source)}</span><h2 class="section-title">${escapeHtml(RESOURCE_LABELS[resource])}</h2><p class="support">Official Read 沒有回傳可管理記錄；不會由前端自行新增欄位或記錄。</p></div></section>`;
   }
 
   const index = selectedIndex(resource, rows);
   const row = rows[index];
   const fields = fieldsFor(resource, rows);
-  const options = rows.map((item, itemIndex) => `<option value="${escapeHtml(officialRecordKey(resource, item))}" ${itemIndex === index ? 'selected' : ''}>${escapeHtml(officialRecordKey(resource, item))}</option>`).join('');
+  const options = rows.map((item, itemIndex) => `<option value="${escapeHtml(officialRecordKey(resource, item))}" ${itemIndex === index ? 'selected' : ''}>${escapeHtml(officialRecordKey(resource, item) || '未有穩定 ID')} · ${escapeHtml(recordLabel(resource, item))} · 第 ${itemIndex + 1} 筆</option>`).join('');
   const status = state.messages[resource] || '未有未儲存變更。';
-  const disabledNote = resource === 'SystemSettings' ? '只有明確 allowlist 內的設定可寫入；data_version、資料來源及研究／回報設定保持只讀。' : '穩定身份及資料來源欄位保持只讀，未知欄位會隨官方資料保留。';
+  const knownFields = new Set(FIELD_ORDER[resource] || []);
+  const unknown = [...new Set(rows.flatMap(item => Object.keys(item || {}).filter(field => !knownFields.has(field))))];
+  const disabledNote = resource === 'SystemSettings' ? '只有明確 allowlist 內的設定可寫入；data_version、資料來源及研究／回報設定保持只讀。' : RESOURCE_META[resource].description;
 
-  return `<section id="admin-panel-${resource}" class="admin-panel" role="tabpanel" aria-labelledby="admin-tab-${resource}">
+  return `<section id="admin-panel-${resource}" class="admin-panel" role="tabpanel" aria-labelledby="admin-tab-${resource}" tabindex="-1">
     <div class="admin-panel-head">
-      <div><p class="caption">Official Data Domain</p><h2 class="section-title">${escapeHtml(RESOURCE_LABELS[resource])}</h2><p class="support">${escapeHtml(disabledNote)}</p></div>
+      <div><p class="caption">${escapeHtml(RESOURCE_META[resource].source)}</p><h2 class="section-title">${escapeHtml(RESOURCE_LABELS[resource])}</h2><p class="support">${escapeHtml(disabledNote)}</p></div>
       <button class="button primary" type="button" data-admin-save="${escapeHtml(resource)}" ${state.messages[resource] === '正在同步…' ? 'disabled' : ''}>儲存至 Official</button>
     </div>
     <div class="admin-record-bar">
       <label class="admin-selector"><span>選擇記錄</span><select class="select" data-admin-record="${escapeHtml(resource)}">${options}</select></label>
-      <div class="admin-identity"><span>穩定身份</span><code>${escapeHtml(stableDescription(resource, row))}</code></div>
+      <div class="admin-identity"><span>目前記錄</span><strong>${escapeHtml(recordLabel(resource, row))}</strong><code>${escapeHtml(stableDescription(resource, row))}</code></div>
     </div>
     <div class="admin-form-grid">${fields.map(field => renderEditorField(resource, row, field, index)).join('')}</div>
+    ${unknown.length ? `<details class="admin-extra"><summary>其他欄位已保留（${unknown.length} 項）</summary><p class="quiet-note">${escapeHtml(unknown.join('、'))} 不在此編輯器修改；儲存時會原樣保留。</p></details>` : ''}
     <p class="status ${state.messages[resource]?.startsWith('同步失敗') || state.messages[resource]?.startsWith('未同步') ? 'error' : 'success'}" role="status">${escapeHtml(status)}</p>
   </section>`;
 }
@@ -204,19 +228,20 @@ function render() {
 
   const health = state.health?.data || state.health || {};
   const active = state.activeResource;
-  const tabs = ADMIN_RESOURCES.map(resource => `<button id="admin-tab-${resource}" class="admin-tab" type="button" role="tab" aria-selected="${resource === active}" aria-controls="admin-panel-${resource}" data-admin-tab="${resource}" tabindex="${resource === active ? '0' : '-1'}">${escapeHtml(RESOURCE_LABELS[resource])}</button>`).join('');
+  const tabs = ADMIN_RESOURCES.map(resource => `<button id="admin-tab-${resource}" class="admin-tab${resource === active ? ' is-active' : ''}" type="button" role="tab" aria-selected="${resource === active}" aria-controls="admin-panel-${resource}" data-admin-tab="${resource}" tabindex="${resource === active ? '0' : '-1'}"><span>${escapeHtml(RESOURCE_LABELS[resource])}</span><small>${rowsFor(resource).length} 筆</small></button>`).join('');
   const panels = ADMIN_RESOURCES.map(resource => {
     const panel = renderPanel(resource);
     return resource === active ? panel : panel.replace(' class="admin-panel"', ' class="admin-panel" hidden');
   }).join('');
 
-  const overall = state.view === 'ready' ? 'Official Read 已完成；草稿與 Official Data 分離。' : '正在讀取 Official Data…';
   const healthText = health.status === 'ok' ? 'Official sources 狀態正常。' : 'Official sources 有警告；請先核對資料狀態。';
 
-  app.innerHTML = shell(`<div class="hero"><p class="caption">AVA Studio · ${APP_ID}</p><h1 class="title">Medical Reserve Official Default</h1><p class="support">${escapeHtml(overall)} ${escapeHtml(healthText)}</p><div class="status-line"><span class="status-chip ${health.status === 'ok' ? 'ok' : 'bad'}">data version ${escapeHtml(health.data_version ?? '—')}</span><span class="status-chip">Admin session expires: ${escapeHtml(state.expiresAt || '—')}</span></div></div>
-    <div class="admin-tabs" role="tablist" aria-label="Medical Reserve Admin domains">${tabs}</div>
+  app.innerHTML = shell(`<div class="front-wrap admin-surface">
+    <div class="front-topline"><span>AVA Studio · ${APP_ID}</span><span>Official Layer only</span></div>
+    <nav class="admin-tabs" role="tablist" aria-label="Medical Reserve Admin domains">${tabs}</nav>
     <div class="admin-panels">${panels}</div>
-    <details class="admin-system-info"><summary>系統資訊</summary><dl><div><dt>App</dt><dd>${escapeHtml(APP_ID)}</dd></div><div><dt>前端版本</dt><dd>${escapeHtml(APP_VERSION)}</dd></div><div><dt>Official API</dt><dd>browser-bound ${escapeHtml(ADMIN_SESSION_CONTRACT)}</dd></div><div><dt>Official Read</dt><dd>${escapeHtml(READ_OPERATION)}</dd></div><div><dt>來源</dt><dd>App-owned Google Sheets · 不顯示 credentials / tokens</dd></div></dl></details>`);
+    <details class="admin-system-info"><summary>系統資料</summary><dl><div><dt>App</dt><dd>${escapeHtml(APP_ID)}</dd></div><div><dt>前端版本</dt><dd>${escapeHtml(APP_VERSION)}</dd></div><div><dt>Official 資料版本</dt><dd>${escapeHtml(health.data_version ?? '—')}</dd></div><div><dt>同步狀態</dt><dd>${escapeHtml(state.view === 'ready' ? 'Official Read 已完成；草稿與 Official Data 分離。' : '正在讀取 Official Data…')} ${escapeHtml(healthText)}</dd></div><div><dt>授權狀態</dt><dd>browser-bound ${escapeHtml(ADMIN_SESSION_CONTRACT)} · session expires ${escapeHtml(state.expiresAt || '—')}</dd></div><div><dt>來源</dt><dd>App-owned Google Sheets · 不顯示 credentials / tokens</dd></div><div><dt>Official Read</dt><dd>${escapeHtml(READ_OPERATION)}</dd></div></dl></details>
+  </div>`);
   bind();
 }
 
@@ -318,7 +343,6 @@ function bind() {
   document.querySelectorAll('[data-admin-record]').forEach(select => select.addEventListener('change', event => selectRecord(select.dataset.adminRecord, event.target.value)));
   document.querySelectorAll('[data-admin-save]').forEach(button => button.addEventListener('click', () => save(button.dataset.adminSave)));
   document.querySelectorAll('[data-admin-field]').forEach(input => {
-    input.dataset.adminResource = state.activeResource;
     input.addEventListener('input', () => updateDraft(input));
     input.addEventListener('change', () => updateDraft(input));
   });
@@ -383,3 +407,4 @@ async function start() {
 }
 
 start();
+
