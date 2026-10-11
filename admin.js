@@ -232,10 +232,17 @@ function draftRows(resource) {
     : rows;
 }
 
-function readBackMatches(requested, readBack) {
-  if (!Array.isArray(readBack) || readBack.length !== requested.length) return false;
-  const keys = new Set(requested.flatMap(row => Object.keys(row || {})));
-  return requested.every((row, index) => keys.size > 0 && [...keys].every(key => String(readBack[index]?.[key] ?? '') === String(row?.[key] ?? '')));
+function readBackMatches(resource, requested, readBack) {
+  if (!Array.isArray(readBack) || !requested.length) return false;
+  const matches = row => {
+    const key = officialRecordKey(resource, row);
+    return readBack.find(candidate => officialRecordKey(resource, candidate) === key);
+  };
+  return requested.every(row => {
+    const persisted = matches(row);
+    if (!persisted) return false;
+    return Object.keys(row).every(key => String(persisted[key] ?? '') === String(row[key] ?? ''));
+  });
 }
 
 async function save(resource) {
@@ -255,7 +262,7 @@ async function save(resource) {
     const expectedVersion = Number(state.health?.data_version ?? state.health?.data?.data_version);
     const operation = `medicalreserve:official-write:${resource}`;
     const result = await jsonRequest({ action: 'writeOfficial', appId: APP_ID, adminSessionProof: state.adminSessionProof, operation, expectedVersion, resource, rows });
-    if (result.appId !== APP_ID || result.contract !== ADMIN_SESSION_CONTRACT || result.resource !== resource || result.version == null || result.persisted !== true || result.readAfterWrite !== true || result.synchronized !== true || !readBackMatches(rows, result.readBack)) {
+    if (result.appId !== APP_ID || result.contract !== ADMIN_SESSION_CONTRACT || result.resource !== resource || result.version == null || result.persisted !== true || result.readAfterWrite !== true || result.synchronized !== true || !readBackMatches(resource, rows, result.readBack)) {
       throw new Error('Official Write 缺少完整 read-after-write persistence evidence');
     }
     state.confirmedConfig[resource] = clone(result.readBack);
