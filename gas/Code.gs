@@ -215,7 +215,6 @@ function validateRows_(resource, incoming, current) {
   });
   if (resource === 'AppFlow') rule.required.forEach(id => { if (!seen.has(id)) throw new Error('Protected flow ID ' + id + ' cannot be removed'); });
   if (resource === 'MedicalPlans') incoming.forEach(row => { const name = String(row.premium_sheet || row.sheet_name || ''); if (!sheetNames_().includes(name)) throw new Error('Mapped premium sheet does not exist: ' + name); });
-  if (resource === 'ReserveStrategies') incoming.forEach(row => { const name = String(row.sheet_name || row.strategy_sheet || ''); if (!sheetNames_().includes(name)) throw new Error('Mapped strategy sheet does not exist: ' + name); const headers = rows_(sheet_(name)); if (headers.length && !['policy_year','support_percent','value_multiple'].every(key => Object.prototype.hasOwnProperty.call(headers[0], key))) throw new Error('Strategy sheet ' + name + ' does not match the normalized strategy schema'); });
   current.forEach(row => { const key = keyOf_(row, rule); if (key && !seen.has(key) && resource === 'AppFlow') throw new Error('Protected existing flow ID ' + key + ' cannot be removed'); });
 }
 function headers_(sheet) {
