@@ -1,10 +1,11 @@
+import { APP_VERSION } from './version.js';
 import { premiumTotal, validateBackup } from './domain.js';
 import { automaticAccumulation, validateLayer2Data } from './reserve-runtime.js';
 import { FROZEN_FORWARD_DATASET, runForwardWithOfficialReturns } from './saving-plan-returns.js';
 import { formatMoneyInput, parseMoneyInput, validateSupportAgeRange } from './customer-input.js';
 
 const CONFIG = Object.freeze({
-  version: '1.1.1',
+  version: APP_VERSION,
   api: 'https://script.google.com/macros/s/AKfycbzq07F_WpjaCtW3BK5_Bziiq9Ap1-DOT47Z7mz5-JSN-9m7nDvn9cqfZBvw9otAeZPr/exec',
   returnToAva: 'https://ivancww.github.io/avaplatform/',
   cacheKey: 'medical-reserve:official-cache:v3', userKey: 'medical-reserve:user-layer:v1', backupSchema: 'medical-reserve-backup-v1'
@@ -18,6 +19,7 @@ const FLOW = Object.freeze([
 ]);
 const SAFE_FLOW_OPTIONS = Object.freeze({ protectionImportance: ['more_important', 'similar', 'less_important'], premiumBudgetAwareness: ['estimated', 'considered_unknown', 'not_planned'], funding: ['退休生活資金', '銀行／儲蓄', '投資資產', '家庭財務'], retirementAge: [55, 60, 65, 70], coverageAge: [80, 85, 90, 95, 100], arrangement: [5, 10, 15] });
 const entry = new URLSearchParams(location.search).get('avaEntry');
+const unsupportedEntry = Boolean(entry) && !['frontend', 'user'].includes(entry);
 const state = {
   step: 0, mode: entry === 'user' ? 'edit' : new URLSearchParams(location.search).get('mode') === 'presentation' ? 'presentation' : 'use',
   dev: ['1', 'user'].includes(new URLSearchParams(location.search).get('dev') || entry),
@@ -91,11 +93,18 @@ function renderPage(page) { const o = state.officialConfig.flowOptions; switch (
 function renderCustomPages(position) { return state.user.pages.filter(page => page.visible !== false && page.flowPosition === position).map(page => `<section class="custom-page presentation-card"><h2>${escapeHtml(page.title)}</h2>${page.subtitle ? `<p class="support">${escapeHtml(page.subtitle)}</p>` : ''}<p>${escapeHtml(page.content || '')}</p></section>`).join(''); }
 function renderEditPanel(page) { if (state.mode !== 'edit') return ''; return `<div class="edit-panel"><strong>Customer Presentation content</strong><div class="form-grid"><div class="field"><label class="label">Page title<input class="input" data-edit-field="title" data-page-id="${page.id}" value="${escapeHtml(page.title)}"></label></div><div class="field"><label class="label">Supporting label<input class="input" data-edit-field="subtitle" data-page-id="${page.id}" value="${escapeHtml(page.subtitle || '')}"></label></div></div></div>`; }
 function render() {
+  if (unsupportedEntry) {
+    const app = document.getElementById('app');
+    app.dataset.avaMode = 'unsupported';
+    app.className = 'ava-front';
+    app.innerHTML = `<div class="shell"><header class="header"><a class="brand" href="./" aria-label="Medical Reserve"><img class="brand-mark" src="icon.svg" alt=""><span>Medical Reserve · V${APP_VERSION}</span></a><a class="button secondary" href="${CONFIG.returnToAva}">← 返回 AVA</a></header><div class="container"><section class="hero"><h1>此入口未配置</h1><p class="support">Medical Reserve 目前只提供 Frontstage 和 User 入口；Admin 入口會安全拒絕，不會授權任何官方寫入。</p></section></div></div>`;
+    return;
+  }
   const page = currentPage();
   const progress = Math.round((state.step / (state.flow.length - 1)) * 100);
   const statusText = state.resultError || (state.official.status === 'unavailable' ? '官方資料暫時無法載入；未有官方資料時不會顯示假設保費。' : state.official.status === 'local' ? '已使用本機 Official Cache。' : state.official.status === 'cloud' ? '官方資料已更新。' : '正在讀取官方資料…');
   const devFooter = state.dev ? '<button class="button subtle agent-only" data-action="backup">匯出備份</button><label class="button subtle agent-only">匯入備份<input hidden type="file" accept="application/json" data-action="restore"></label>' : '';
-  document.title = `${page.title} · AVA Medical Reserve`;
+  document.title = `${page.title} · AVA Medical Reserve · v${APP_VERSION}`;
   document.getElementById('app').dataset.avaMode = state.mode;
   document.getElementById('app').className = `ava-front ${state.mode === 'presentation' ? 'presentation' : ''}`;
   document.getElementById('app').innerHTML = `<div class="shell"><header class="header"><div class="header-identity"><a class="brand" href="./" aria-label="AVA Medical Reserve"><img class="brand-mark" src="icon.svg" alt=""><span>AVA MEDICAL RESERVE · v${CONFIG.version}</span></a><span class="journey-title">${escapeHtml(page.title)}</span></div><div class="header-actions"><a class="button secondary return-ava" href="${CONFIG.returnToAva}">返回 AVA</a>${state.dev ? '<button class="button subtle agent-only" data-action="mode" data-mode="presentation">Customer View</button>' : ''}</div></header><main class="container">${state.mode !== 'use' ? `<div class="modebar ${state.mode}"><strong>${state.mode === 'presentation' ? 'Customer Presentation' : state.mode === 'edit' ? 'User Edit Mode' : 'Preview Mode'}</strong><div class="actions">${state.mode === 'edit' ? '<button class="button primary" data-action="save">Save Local</button>' : ''}<button class="button secondary" data-action="mode" data-mode="use">返回使用模式</button></div></div>` : ''}${state.step > 0 ? `<div class="journey-nav"><button class="back-link" data-action="prev">← 返回</button><div class="progress-wrap"><span>${state.step} / ${state.flow.length - 1}</span><div class="progress" role="progressbar" aria-valuenow="${progress}" aria-valuemin="0" aria-valuemax="100"><span style="width:${progress}%"></span></div></div></div>` : ''}${renderPage(page)}${renderEditPanel(page)}<p class="status ${state.resultError || state.official.status === 'unavailable' ? 'error' : ''}">${escapeHtml(statusText)}</p><footer class="footer"><span class="caption">AVA Medical Reserve</span><div class="actions">${devFooter}</div></footer></main></div>`;

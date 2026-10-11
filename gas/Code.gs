@@ -12,12 +12,11 @@ const SAVING_RETURN_EVIDENCE = ['DIRECT','HOLDOUT_REFERENCE','INTERPOLATED_REFER
 const REQUIRED_FLOW_IDS = ['protection_importance','premium_budget_awareness','premium_need_setup','premium_need_result','funding_source','reserve_intro','reserve_setup','reserve_result','summary'];
 const BOOTSTRAP_RESOURCES = ['AppFlow', 'FlowOptions', 'MedicalPlans', 'Visualization', 'SystemSettings'];
 const RESOURCE_RULES = {
-  AppFlow: { key: ['step_id','page_id','id'], writable: ['step_id','page_id','id','title','subtitle','enabled','visible','sort_order'], required: REQUIRED_FLOW_IDS },
-  FlowOptions: { key: ['option_id','id'], writable: ['step_id','flow_id','option_id','id','label','value','sort_order','enabled'] },
-  MedicalPlans: { key: ['plan_id','id'], writable: ['plan_id','id','display_name','name','gender','deductible','premium_sheet','sheet_name','enabled','sort_order'] },
-  ReserveStrategies: { key: ['strategy_id','id'], writable: ['strategy_id','id','display_name','name','sheet_name','strategy_sheet','start_year','enabled','sort_order'] },
-  Visualization: { key: ['key','setting_key'], writable: ['key','setting_key','value','enabled'] },
-  SystemSettings: { key: ['key'], writable: ['key','value'], allowedKeys: ['checkpoint_interval','chart_type','allowed_visibility','saving_return_data_version','saving_return_dataset','saving_return_updated_at','default_result_mode'] }
+  AppFlow: { key: ['step_id','page_id','id'], writable: ['title','subtitle','enabled','visible','sort_order'], required: REQUIRED_FLOW_IDS },
+  FlowOptions: { key: ['option_id','id'], writable: ['label','value','sort_order','enabled'] },
+  MedicalPlans: { key: ['plan_id','id'], writable: ['display_name','name','gender','deductible','enabled','sort_order'] },
+  Visualization: { key: ['visual_id','setting'], writable: ['value'] },
+  SystemSettings: { key: ['key'], writable: ['key','value'], allowedKeys: ['checkpoint_interval','chart_type','allowed_visibility','default_result_mode'] }
 };
 
 function output_(value) { return ContentService.createTextOutput(JSON.stringify(value)).setMimeType(ContentService.MimeType.JSON); }
@@ -37,6 +36,7 @@ function doPost(e) {
   try {
     const body = JSON.parse(e.postData && e.postData.contents || '{}');
     if (body.action === 'exchangeAdminSession') return output_(exchangeAdminSession_(body));
+    if (body.action === 'readOfficial') return output_(readOfficial_(body));
     if (body.action === 'writeOfficial') return output_(writeOfficial_(body));
     return output_(error_('Unsupported action', 'UNSUPPORTED_ACTION'));
   } catch (error) { return output_(error_(error.message, error.code || 'REQUEST_REJECTED')); }
@@ -50,6 +50,13 @@ function exchangeAdminSession_(body) {
   const value = JSON.parse(response.getContentText() || '{}');
   if (response.getResponseCode() >= 400 || value.success !== true || value.appId !== APP_ID || !value.adminSessionProof || value.contract !== 'ava-admin-session-v1' || !value.expiresAt || new Date(value.expiresAt).getTime() <= Date.now()) throw new Error('AVA Admin session exchange failed');
   return value;
+}
+function readOfficial_(body) {
+  const operation = String(body.operation || '');
+  if (operation !== 'medicalreserve:official-read') throw new Error('Unauthorized official read operation');
+  verifyAdminSession_(body, operation);
+  const read = readConfig_();
+  return { success: true, appId: APP_ID, contract: 'ava-admin-session-v1', operation, officialRead: true, data_version: version_(), health: health_(), data: read.config, missing: read.missing };
 }
 function verifyAdminSession_(body, operation) {
   if (String(body.appId || '') !== APP_ID || !body.adminSessionProof || !operation) throw new Error('Missing AVA Admin session authorization');
@@ -170,7 +177,14 @@ function savingPlanReturns_() {
 }
 function version_() { const rows = rowsSafe_('SystemSettings'); const row = rows.find(item => String(item.key || '') === 'medical_reserve_version' || String(item.key || '') === 'data_version'); return Number(row && row.value) || 1; }
 function updatedAt_() { const rows = rowsSafe_('SystemSettings'), row = rows.find(item => String(item.key || '') === 'medical_reserve_updated_at' || String(item.key || '') === 'updated_at'); return row ? new Date(row.value).toISOString() : new Date().toISOString(); }
-function keyOf_(row, rule) { for (const key of rule.key) if (String(row[key] ?? '').trim()) return String(row[key]).trim(); return ''; }
+function keyOf_(row, rule) {
+  if (rule === RESOURCE_RULES.Visualization) {
+    const visualId = String(row.visual_id ?? '').trim(), setting = String(row.setting ?? '').trim();
+    return visualId && setting ? visualId + '::' + setting : '';
+  }
+  for (const key of rule.key) if (String(row[key] ?? '').trim()) return String(row[key]).trim();
+  return '';
+}
 function boolean_(value) { if (typeof value === 'boolean') return value; const text = String(value).toLowerCase(); if (['true','1','yes'].includes(text)) return true; if (['false','0','no',''].includes(text)) return false; return null; }
 function number_(value, label, minimum) { if (value === '' || value == null) return value; const number = Number(value); if (!Number.isFinite(number) || (minimum != null && number < minimum)) throw new Error(`${label} is invalid`); return number; }
 function validateSettingValue_(key, value) {
@@ -197,11 +211,10 @@ function validateRows_(resource, incoming, current) {
     if (resource === 'AppFlow' && row.sort_order !== undefined) number_(row.sort_order, resource + '.sort_order');
     if (resource === 'FlowOptions' && row.sort_order !== undefined) number_(row.sort_order, resource + '.sort_order');
     if (resource === 'MedicalPlans') { if (row.deductible !== undefined) number_(row.deductible, resource + '.deductible', 0); if (row.sort_order !== undefined) number_(row.sort_order, resource + '.sort_order'); }
-    if (resource === 'ReserveStrategies') { if (row.start_year !== undefined) number_(row.start_year, resource + '.start_year'); if (row.sort_order !== undefined) number_(row.sort_order, resource + '.sort_order'); }
+    if (resource === 'Visualization' && String(row.setting || '').toLowerCase().includes('interval')) number_(row.value, resource + '.value', 1);
   });
   if (resource === 'AppFlow') rule.required.forEach(id => { if (!seen.has(id)) throw new Error('Protected flow ID ' + id + ' cannot be removed'); });
   if (resource === 'MedicalPlans') incoming.forEach(row => { const name = String(row.premium_sheet || row.sheet_name || ''); if (!sheetNames_().includes(name)) throw new Error('Mapped premium sheet does not exist: ' + name); });
-  if (resource === 'ReserveStrategies') incoming.forEach(row => { const name = String(row.sheet_name || row.strategy_sheet || ''); if (!sheetNames_().includes(name)) throw new Error('Mapped strategy sheet does not exist: ' + name); const headers = rows_(sheet_(name)); if (headers.length && !['policy_year','support_percent','value_multiple'].every(key => Object.prototype.hasOwnProperty.call(headers[0], key))) throw new Error('Strategy sheet ' + name + ' does not match the normalized strategy schema'); });
   current.forEach(row => { const key = keyOf_(row, rule); if (key && !seen.has(key) && resource === 'AppFlow') throw new Error('Protected existing flow ID ' + key + ' cannot be removed'); });
 }
 function headers_(sheet) {
@@ -248,8 +261,12 @@ function updateSystemSettingsVersion_(sheet, nextVersion) {
   if (!versionRow) throw new Error('SystemSettings version key is missing');
   sheet.getRange(versionRow.rowNumber, valueIndex + 1).setValue(nextVersion);
   const timestampRow = rows.find(row => ['medical_reserve_updated_at', 'updated_at'].includes(row.key));
-  if (timestampRow) sheet.getRange(timestampRow.rowNumber, valueIndex + 1).setValue(new Date().toISOString());
-  return { headers, versionRow, timestampRow };
+  let timestampValue = null;
+  if (timestampRow) {
+    timestampValue = new Date().toISOString();
+    sheet.getRange(timestampRow.rowNumber, valueIndex + 1).setValue(timestampValue);
+  }
+  return { headers, versionRow, timestampRow: timestampRow ? { ...timestampRow, value: timestampValue } : null };
 }
 function verifySystemSettingsReadBack_(sheet, headers, before, updates) {
   const after = settingRows_(sheet, headers), afterByKey = new Map(); after.forEach(row => afterByKey.set(row.key, row));
@@ -299,13 +316,18 @@ function writeOfficial_(body) {
     const nextVersion = currentVersion + 1;
     if (isSystemSettings) updateSystemSettingsByKey_(target, targetHeaders, settingsCurrent, settingsPatch);
     else { const clearRows = Math.max(target.getLastRow() - 1, values.length, 0); if (clearRows) target.getRange(2, 1, clearRows, targetHeaders.length).clearContent(); if (values.length) target.getRange(2, 1, values.length, targetHeaders.length).setValues(values); }
-    updateSystemSettingsVersion_(settings, nextVersion);
+    const versionUpdate = updateSystemSettingsVersion_(settings, nextVersion);
     const readBack = rows_(target);
-    if (isSystemSettings) verifySystemSettingsReadBack_(target, targetHeaders, settingsBefore, settingsPatch);
+    if (isSystemSettings) {
+      const expectedSettingsUpdates = settingsPatch.slice();
+      if (versionUpdate.versionRow) expectedSettingsUpdates.push({ key: versionUpdate.versionRow.key, value: nextVersion });
+      if (versionUpdate.timestampRow) expectedSettingsUpdates.push({ key: versionUpdate.timestampRow.key, value: versionUpdate.timestampRow.value });
+      verifySystemSettingsReadBack_(target, targetHeaders, settingsBefore, expectedSettingsUpdates);
+    }
     else { const expected = values.map(row => Object.fromEntries(targetHeaders.map((header, index) => [header, row[index]]))); if (JSON.stringify(readBack) !== JSON.stringify(expected)) throw new Error('Official read-back verification failed'); }
     const settingsAfter = settingRows_(settings, settingsHeaders), versionAfter = settingsAfter.find(row => ['medical_reserve_version', 'data_version'].includes(row.key));
     if (Number(versionAfter?.value) !== nextVersion) throw new Error('SystemSettings version read-back verification failed');
-    return { success: true, resource, version: nextVersion, readBack, synchronized: true };
+    return { success: true, appId: APP_ID, contract: 'ava-admin-session-v1', resource, version: nextVersion, expectedVersion, readBack, synchronized: true, persisted: true, readAfterWrite: true };
   } catch (error) {
     try { if (targetSnapshot && target) restoreRange_(target, targetSnapshot); } catch (_) {}
     try { if (settingsSnapshot && settings) restoreRange_(settings, settingsSnapshot); } catch (_) {}

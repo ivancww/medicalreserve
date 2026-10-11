@@ -1,7 +1,7 @@
 const SHELL_CACHE = 'medical-reserve-shell';
 const SHELL_CACHE_PREFIX = 'medical-reserve-shell';
 const SHELL = [
-  './', './index.html', './styles.css', './app.js', './domain.js', './reserve-runtime.js', './saving-plan-returns.js',
+  './', './index.html', './styles.css', './app.js', './version.js', './domain.js', './reserve-runtime.js', './saving-plan-returns.js',
   './research/ipos/original-intent-forward.js', './research/ipos/fixtures/dataset.json', './admin.js',
   './manifest.webmanifest', './icon.svg', './sw.js'
 ];
@@ -30,11 +30,17 @@ self.addEventListener('message', event => {
 
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET' || !isOwnedShellRequest(event.request)) return;
-  event.respondWith(fetch(event.request).then(response => {
-    if (response.ok) {
-      const copy = response.clone();
-      caches.open(SHELL_CACHE).then(cache => cache.put(event.request, copy));
-    }
+  const request = event.request;
+  const updateSensitive = request.mode === 'navigate' || ['script', 'style'].includes(request.destination);
+  if (updateSensitive) {
+    event.respondWith(fetch(request, { cache: 'no-store' }).then(response => {
+      if (response.ok) event.waitUntil(caches.open(SHELL_CACHE).then(cache => cache.put(request, response.clone())));
+      return response;
+    }).catch(() => caches.match(request).then(cached => cached || (request.mode === 'navigate' ? caches.match('./index.html') : Response.error()))));
+    return;
+  }
+  event.respondWith(fetch(request).then(response => {
+    if (response.ok) event.waitUntil(caches.open(SHELL_CACHE).then(cache => cache.put(request, response.clone())));
     return response;
-  }).catch(() => caches.match(event.request).then(cached => cached || (event.request.mode === 'navigate' ? caches.match('./index.html') : Response.error()))));
+  }).catch(() => caches.match(request).then(cached => cached || (request.mode === 'navigate' ? caches.match('./index.html') : Response.error()))));
 });
