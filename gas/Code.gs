@@ -15,7 +15,7 @@ const RESOURCE_RULES = {
   AppFlow: { key: ['step_id','page_id','id'], writable: ['title','subtitle','enabled','visible','sort_order'], required: REQUIRED_FLOW_IDS },
   FlowOptions: { key: ['option_id','id'], writable: ['label','value','sort_order','enabled'] },
   MedicalPlans: { key: ['plan_id','id'], writable: ['display_name','name','gender','deductible','enabled','sort_order'] },
-  Visualization: { key: ['visual_id','setting'], writable: ['visual_id','setting','value'] },
+  Visualization: { key: ['visual_id','setting'], writable: ['value'] },
   SystemSettings: { key: ['key'], writable: ['key','value'], allowedKeys: ['checkpoint_interval','chart_type','allowed_visibility','default_result_mode'] }
 };
 
@@ -211,7 +211,7 @@ function validateRows_(resource, incoming, current) {
     if (resource === 'AppFlow' && row.sort_order !== undefined) number_(row.sort_order, resource + '.sort_order');
     if (resource === 'FlowOptions' && row.sort_order !== undefined) number_(row.sort_order, resource + '.sort_order');
     if (resource === 'MedicalPlans') { if (row.deductible !== undefined) number_(row.deductible, resource + '.deductible', 0); if (row.sort_order !== undefined) number_(row.sort_order, resource + '.sort_order'); }
-    if (resource === 'ReserveStrategies') { if (row.start_year !== undefined) number_(row.start_year, resource + '.start_year'); if (row.sort_order !== undefined) number_(row.sort_order, resource + '.sort_order'); }
+    if (resource === 'Visualization' && String(row.setting || '').toLowerCase().includes('interval')) number_(row.value, resource + '.value', 1);
   });
   if (resource === 'AppFlow') rule.required.forEach(id => { if (!seen.has(id)) throw new Error('Protected flow ID ' + id + ' cannot be removed'); });
   if (resource === 'MedicalPlans') incoming.forEach(row => { const name = String(row.premium_sheet || row.sheet_name || ''); if (!sheetNames_().includes(name)) throw new Error('Mapped premium sheet does not exist: ' + name); });
