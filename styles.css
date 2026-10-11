@@ -96,4 +96,3 @@ html,body{overflow-x:hidden}
   .admin-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
   .admin-tab{min-height:56px;font-size:14px}
 }
-
