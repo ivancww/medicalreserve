@@ -13,6 +13,13 @@
 .mode-switch{display:flex;flex-wrap:wrap;gap:8px}.comparison{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.comparison>div{display:grid;gap:4px;padding:16px;border:1px solid var(--border);border-radius:10px}.comparison span{color:var(--muted);font-size:14px}.comparison strong{font-size:24px}.local-scroll{max-width:100%;overflow-x:auto;border:1px solid var(--border);border-radius:10px}.local-scroll table{min-width:720px;width:100%;border-collapse:collapse}.local-scroll th,.local-scroll td{padding:10px 12px;text-align:start;white-space:nowrap;border-bottom:1px solid var(--border)}.local-scroll th{background:var(--bg);font-size:13px}.local-scroll tr:last-child td{border-bottom:0}@media (max-width:650px){.comparison{grid-template-columns:1fr}}
 
 [hidden]{display:none!important}
+
+.card-navigation{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:8px;padding-top:12px;border-top:1px solid var(--border)}
+.card-navigation>span{min-width:var(--touch)}
+.card-navigation .next-button{margin-top:0}
+.spinner{width:16px;height:16px;margin-right:8px;border:2px solid #ffffff66;border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+.developer-tools{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+@keyframes spin{to{transform:rotate(360deg)}}
 .admin-container{max-width:1180px}
 .admin-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0 14px;padding:6px;background:#eaf0f8;border-radius:12px}
 .admin-tab{min-height:44px;padding:8px 14px;border:1px solid transparent;border-radius:9px;background:transparent;color:var(--muted);font-weight:700}
