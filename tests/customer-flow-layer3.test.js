@@ -27,9 +27,12 @@ test('dual result modes are independent and medical support is the default', () 
 });
 
 test('phase structure and support period remain explicit', () => {
-  assert.match(app, /5年 = Phase 1；10年 = Phase 1 \+ Phase 2；15年 = Phase 1 \+ Phase 2 \+ Phase 3/);
+  assert.match(app, /<span>\$\{y \/ 5\}個五年階段<\/span>/);
+  assert.doesNotMatch(app, /5年 = Phase 1/);
   assert.match(app, /min="40000" max="200000"/);
-  assert.match(app, /Support period/);
+  assert.match(app, /預計開始年歲/);
+  assert.match(app, /預計終結年歲/);
+  assert.doesNotMatch(app, /Support period/);
   assert.match(gas, /savingPlanReturns/);
 });
 

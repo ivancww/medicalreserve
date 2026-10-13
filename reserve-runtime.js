@@ -24,8 +24,12 @@ export function automaticAccumulation({ rows, currentAge, supportStartAge, suppo
   const count = Number(arrangement) / 5, ids = ['phase1','phase2','phase3'].slice(0, count), output = [];
   for (let age = Number(supportStartAge); age <= Number(supportEndAge); age += 1) {
     let value = 0;
-    for (const id of ids) { const issueAge = Number(currentAge) + OFFSETS[id], policyYear = age - issueAge, contribution = Number(phaseContributions[id]); if (policyYear < 1) continue; const resolved = resolve(rows, medicalPlanId, issueAge, policyYear, contribution); if (resolved == null) return null; value += resolved; }
-    output.push({ age, value });
+    let supported = true;
+    for (const id of ids) { const issueAge = Number(currentAge) + OFFSETS[id], policyYear = age - issueAge, contribution = Number(phaseContributions[id]); if (policyYear < 1) { supported = false; break; } const resolved = resolve(rows, medicalPlanId, issueAge, policyYear, contribution); if (resolved == null) { supported = false; break; } value += resolved; }
+    // SavingPlanReturns is an official evidence dataset with checkpoint rows,
+    // not an annual projection table. Show only ages backed by every enabled
+    // phase; never fill gaps with Forward remaining-reserve state or invented values.
+    if (supported) output.push({ age, value });
   }
   return output;
 }
